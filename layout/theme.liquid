@@ -15,10 +15,10 @@
       {% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}
     </title>
     {{ content_for_header }}
-    <link rel="stylesheet" href="/assets/theme.css">
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
   </head>
   <body>
     {{ content_for_layout }}
-    <script src="/assets/theme.js" defer></script>
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
   </body>
 </html>
