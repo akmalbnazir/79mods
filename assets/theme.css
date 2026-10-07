@@ -918,11 +918,23 @@ button, input { font: inherit; }
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 30px;
+  align-items: start;
 }
 .product-gallery {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+.product-gallery-card {
+  padding: 12px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 32px;
+  border: 1px solid rgba(16,19,33,0.08);
+  box-shadow: 0 18px 32px rgba(17,20,30,0.04);
+}
+.product-main-image {
+  grid-column: 1 / -1;
+  height: 540px;
 }
 .product-gallery img {
   width: 100%;
@@ -936,6 +948,7 @@ button, input { font: inherit; }
   border-radius: 30px;
   padding: 28px;
   border: 1px solid rgba(16,19,33,0.08);
+  box-shadow: 0 18px 32px rgba(17,20,30,0.04);
 }
 .product-info .eyebrow {
   margin-bottom: 12px;
@@ -949,19 +962,51 @@ button, input { font: inherit; }
   text-transform: uppercase;
 }
 .product-price {
+  display: inline-block;
   margin: 0 0 18px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(109,99,255,0.08);
+  color: var(--ink);
   font-size: 1.8rem;
   font-weight: 800;
+}
+.product-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.product-badges span {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(17,20,30,0.04);
+  color: rgba(16,19,33,0.8);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 .product-description {
   color: rgba(16,19,33,0.76);
   margin-bottom: 20px;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 .product-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 18px;
+}
+.product-form {
+  display: inline-block;
+}
+.product-secondary {
+  background: linear-gradient(135deg, rgba(51,104,255,0.12), rgba(138,76,245,0.12));
+  color: var(--ink);
+  border-color: rgba(109,99,255,0.2);
 }
 .product-meta {
   display: grid;

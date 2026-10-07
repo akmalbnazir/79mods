@@ -1,7 +1,7 @@
-<section class="product-template">
-  <div class="product-gallery">
+<section class="product-template product-page-shell">
+  <div class="product-gallery product-gallery-card">
     {% if product.featured_image %}
-      <img src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.featured_image.alt | escape }}">
+      <img class="product-main-image" src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.featured_image.alt | escape }}">
     {% endif %}
 
     {% for image in product.images offset: 1 limit: 3 %}
@@ -9,10 +9,15 @@
     {% endfor %}
   </div>
 
-  <div class="product-info">
+  <div class="product-info product-info-card">
     <p class="eyebrow"><span>01</span> PARTS FOR THE WAY YOU RIDE</p>
     <h1>{{ product.title }}</h1>
     <div class="product-price">{{ product.price | money }}</div>
+    <div class="product-badges">
+      <span>Free shipping over $150</span>
+      <span>Rider support</span>
+      <span>Same-day dispatch</span>
+    </div>
     <div class="product-description">{{ product.description }}</div>
 
     <div class="product-buttons">
@@ -20,13 +25,13 @@
         <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
         <button type="submit" class="button button-dark">Add to cart</button>
       {% endform %}
-      <a class="button button-light" href="{{ routes.all_products_collection_url }}">See more parts</a>
+      <a class="button button-light product-secondary" href="{{ routes.all_products_collection_url }}">See more parts</a>
     </div>
 
     <div class="product-meta">
-      <span>Free shipping over $150</span>
-      <span>Fast dispatch · Rider support</span>
       <span>Built for electric dirt bikes</span>
+      <span>Fast dispatch · Rider support</span>
+      <span>Orders ship from 79mods</span>
     </div>
   </div>
 </section>
