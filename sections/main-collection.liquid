@@ -1,0 +1,21 @@
+<section class="collection-page">
+  <h1>{{ collection.title }}</h1>
+
+  {% if collection.products.size > 0 %}
+    <div class="collection-product-grid">
+      {% for product in collection.products %}
+        <a class="collection-product" href="{{ product.url }}">
+          {% if product.featured_image %}
+            <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | escape }}" loading="lazy">
+          {% endif %}
+          <div class="info">
+            <h3>{{ product.title }}</h3>
+            <span>{{ product.price | money }}</span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Products coming soon.</p>
+  {% endif %}
+</section>

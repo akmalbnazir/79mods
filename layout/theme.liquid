@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#f1f0ed">
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+    <title>
+      {{ page_title }}
+      {% if current_tags %} – tagged "{{ current_tags | join: ', ' }}"{% endif %}
+      {% if current_page != 1 %} – Page {{ current_page }}{% endif %}
+      {% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}
+    </title>
+    {{ content_for_header }}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+  </head>
+  <body>
+    {{ content_for_layout }}
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  </body>
+</html>

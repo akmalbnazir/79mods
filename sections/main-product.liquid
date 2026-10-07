@@ -1,0 +1,32 @@
+<section class="product-template">
+  <div class="product-gallery">
+    {% if product.featured_image %}
+      <img src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.featured_image.alt | escape }}">
+    {% endif %}
+
+    {% for image in product.images offset: 1 limit: 3 %}
+      <img src="{{ image | image_url: width: 1200 }}" alt="{{ image.alt | escape }}">
+    {% endfor %}
+  </div>
+
+  <div class="product-info">
+    <p class="eyebrow"><span>01</span> PARTS FOR THE WAY YOU RIDE</p>
+    <h1>{{ product.title }}</h1>
+    <div class="product-price">{{ product.price | money }}</div>
+    <div class="product-description">{{ product.description }}</div>
+
+    <div class="product-buttons">
+      {% form 'product', product, class: 'product-form' %}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <button type="submit" class="button button-dark">Add to cart</button>
+      {% endform %}
+      <a class="button button-light" href="{{ routes.all_products_collection_url }}">See more parts</a>
+    </div>
+
+    <div class="product-meta">
+      <span>Free shipping over $150</span>
+      <span>Fast dispatch · Rider support</span>
+      <span>Built for electric dirt bikes</span>
+    </div>
+  </div>
+</section>

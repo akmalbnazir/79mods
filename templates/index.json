@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "announcement_bar": { "type": "announcement-bar" },
+    "header": { "type": "header" },
+    "hero": { "type": "hero" },
+    "category_grid": { "type": "category-grid" },
+    "favorites": { "type": "favorites-section" },
+    "fitment": { "type": "fitment-section" },
+    "closing": { "type": "closing-section" },
+    "footer": { "type": "footer" }
+  },
+  "order": [
+    "announcement_bar",
+    "header",
+    "hero",
+    "category_grid",
+    "favorites",
+    "fitment",
+    "closing",
+    "footer"
+  ]
+}
