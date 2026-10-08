@@ -33,10 +33,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .live-dot, .fitment-bullet { display: inline-block; width: 6px; height: 6px; margin: 0 8px 1px 0; border-radius: 50%; background: #a284ff; box-shadow: 0 0 10px #a284ff; }
 
 .site-header { height: 76px; display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding: 0 4.2vw; border-bottom: 1px solid var(--line); background: rgba(241,240,237,.94); position: sticky; top: 0; z-index: 20; backdrop-filter: blur(15px); }
-.wordmark { display: inline-flex; position: relative; align-items: baseline; width: max-content; color: #29255f; font-family: var(--display); font-size: 34px; font-style: italic; font-weight: 900; line-height: .8; letter-spacing: .015em; }
-.wordmark span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.wordmark b { font-size: 26px; }
-.wordmark i { position: absolute; bottom: -6px; left: 1px; width: 100%; height: 3px; background: var(--grad); transform: skew(-24deg); }
+.wordmark { display: inline-flex; align-items: center; width: max-content; }
+.wordmark img { display: block; height: 84px; width: auto; max-width: 440px; object-fit: contain; filter: drop-shadow(0 8px 18px rgba(72, 62, 181, .18)); }
+.footer-wordmark img { height: 60px; max-width: 420px; }
 .primary-nav { display: flex; justify-content: center; gap: clamp(22px, 3vw, 48px); }
 .primary-nav a, .header-actions { font-size: 11px; font-weight: 600; }
 .primary-nav a { transition: color .2s ease; }
@@ -64,7 +63,7 @@ h1, h2, h3, p { margin-top: 0; }
 .text-link { font-size: 11px; font-weight: 700; transition: color .2s ease; }
 .text-link span { padding-left: 6px; }
 .hero-footnote { position: static; display: flex; align-items: center; gap: 11px; margin-top: 24px; color: #6d6a71; font-size: 8px; line-height: 1.5; letter-spacing: .1em; }
-.hero-mark { color: #7058e7; font-family: var(--display); font-size: 28px; font-weight: 900; font-style: italic; }
+.hero-mark { display: block; width: auto; height: 24px; filter: drop-shadow(0 8px 18px rgba(72, 62, 181, .18)); }
 .hero-index { position: absolute; right: 0; bottom: 24px; color: #8b8990; font-size: 9px; }
 .hero-index span { color: #1b1a21; font-weight: 700; }
 .hero-visual { min-width: 0; min-height: 490px; position: relative; display: flex; flex-direction: column; overflow: hidden; padding: 14px 18px; color: white; background: #16151b; animation: arrive .9s .15s both; }
@@ -159,7 +158,7 @@ h1, h2, h3, p { margin-top: 0; }
 .fitment-orbit::before { position: absolute; top: 21%; left: 9%; width: 7px; height: 7px; border-radius: 50%; content: ''; background: #b199ff; box-shadow: 0 0 16px #9679ff; }
 .orbit-two::before { top: 78%; left: 84%; width: 5px; height: 5px; }
 .fitment-center { position: relative; width: 122px; height: 122px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid rgba(255,255,255,.45); border-radius: 50%; background: rgba(30,27,47,.62); box-shadow: 0 0 65px rgba(120,87,236,.3); }
-.fitment-center span { color: white; font-family: var(--display); font-size: 59px; font-weight: 900; font-style: italic; line-height: .8; }
+.fitment-center img { display: block; width: 72px; height: auto; filter: drop-shadow(0 8px 18px rgba(162, 132, 255, .26)); }
 .fitment-center small { margin-top: 8px; color: #c7b6ff; font-size: 7px; text-align: center; line-height: 1.3; letter-spacing: .1em; }
 .fitment-tag { position: absolute; color: rgba(255,255,255,.67); font-size: 7px; line-height: 1.5; letter-spacing: .12em; }
 .fitment-tag b { color: #bbaaff; font-size: 9px; }
@@ -221,6 +220,7 @@ h1, h2, h3, p { margin-top: 0; }
   .announcement a { display: none; }
   .site-header { height: 66px; grid-template-columns: 1fr auto; padding: 0 5vw; }
   .wordmark { font-size: 31px; }
+  .wordmark img { height: 52px; max-width: 220px; }
   .wordmark b { font-size: 23px; }
   .primary-nav { position: absolute; top: 65px; right: 0; left: 0; display: none; flex-direction: column; gap: 0; padding: 8px 5vw 15px; border-bottom: 1px solid var(--line); background: var(--paper); }
   .primary-nav.is-open { display: flex; }
