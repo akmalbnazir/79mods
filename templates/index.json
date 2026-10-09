@@ -1,11 +1,38 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "announcement_bar": { "type": "announcement-bar" },
-    "header": { "type": "header" },
-    "hero": { "type": "hero" },
-    "category_grid": { "type": "category-grid" },
-    "favorites": { "type": "favorites-section" },
-    "footer": { "type": "footer" }
+    "announcement_bar": {
+      "type": "announcement-bar",
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": {}
+    },
+    "hero": {
+      "type": "hero",
+      "settings": {}
+    },
+    "category_grid": {
+      "type": "category-grid",
+      "settings": {}
+    },
+    "favorites": {
+      "type": "favorites-section",
+      "settings": {}
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {}
+    }
   },
   "order": [
     "announcement_bar",
