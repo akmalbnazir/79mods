@@ -16,7 +16,6 @@
             {% if product.featured_image %}
               <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
             {% endif %}
-            <span class="favorite-index">PART {{ forloop.index }}</span>
             <span class="favorite-arrow" aria-hidden="true">↗</span>
           </div>
           <div class="favorite-details"><div><h3>{{ product.title }}</h3><span>{{ product.type | default: 'Rider favorite' }}</span></div><strong>{{ product.price | money }}</strong></div>
