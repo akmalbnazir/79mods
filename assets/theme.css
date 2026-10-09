@@ -121,7 +121,7 @@ h1, h2, h3, p { margin-top: 0; }
 .hero-image-wrap::after { position: absolute; z-index: 2; inset: 0; content: ''; border-radius: inherit; background: radial-gradient(circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(119, 111, 255, .3), rgba(255, 175, 220, .16) 24%, transparent 52%); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
 .hero-image-wrap.is-pointer-active::after { opacity: 1; }
 .hero-image-glow { position: absolute; z-index: 1; width: 70%; height: 65%; border-radius: 50%; background: var(--grad); filter: blur(70px); opacity: .42; animation: pulse-glow 5s ease-in-out infinite alternate; transform: translateZ(8px); }
-.hero-image { width: 90%; height: auto; max-width: 100%; max-height: clamp(284px, calc(42vw - 16px), 444px); position: relative; z-index: 3; top: -13px; object-fit: contain; animation: bike-float 6s ease-in-out infinite; filter: drop-shadow(0 22px 24px rgba(83, 53, 150, .24)); }
+.hero-image { width: 90%; height: auto; max-width: 100%; max-height: clamp(284px, calc(42vw - 16px), 444px); position: relative; z-index: 3; top: -13px; object-fit: contain; filter: drop-shadow(0 22px 24px rgba(83, 53, 150, .24)); }
 .image-stamp { position: absolute; right: 2%; top: 18%; display: grid; place-items: center; width: 74px; height: 74px; border: 1px solid rgba(255,255,255,.47); border-radius: 50%; color: white; font-size: 8px; line-height: 1.35; text-align: center; letter-spacing: .08em; transform: rotate(13deg); background: rgba(255,255,255,.04); box-shadow: 0 0 26px rgba(137,116,255,.22); animation: stampRoll 10s ease-in-out infinite; }
 .image-crosshair { position: absolute; left: 7%; bottom: 14%; color: #b396ff; font-size: 25px; animation: crossPulse 2s ease-in-out infinite; }
 .visual-caption { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.19); }
@@ -246,7 +246,6 @@ h1, h2, h3, p { margin-top: 0; }
 
 @keyframes rise-in { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes arrive { from { opacity: 0; translate: 22px 0; } to { opacity: 1; translate: 0 0; } }
-@keyframes bike-float { 0%, 100% { transform: translate3d(0, 0, 24px) rotate(-.5deg); } 50% { transform: translate3d(0, -8px, 24px) rotate(.5deg); } }
 @keyframes pulse-glow { from { opacity: .19; transform: scale(.85); } to { opacity: .38; transform: scale(1.08); } }
 @keyframes shimmer { 0% { transform: scale(1) translate3d(0, 0, 0); opacity: .85; } 50% { transform: scale(1.09) translate3d(2%, 1%, 0); opacity: 1; } 100% { transform: scale(1.18) translate3d(-2%, 2%, 0); opacity: .92; } }
 @keyframes blobFloat { 0% { transform: translate3d(0, 0, 0) scale(1); } 50% { transform: translate3d(2vw, 3vw, 0) scale(1.1); } 100% { transform: translate3d(-1vw, -2vw, 0) scale(1.2); } }
