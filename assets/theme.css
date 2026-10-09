@@ -78,23 +78,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .bag-link b { color: #7053e8; font-size: 14px; }
 .menu-toggle { display: none; }
 
-.hero { min-height: 615px; position: relative; display: grid; grid-template-columns: .86fr 1.14fr; gap: 4vw; padding: 55px 4.2vw 45px; overflow: hidden; background:
-  radial-gradient(circle at 12% 18%, rgba(118, 92, 255, .28), transparent 20%),
-  radial-gradient(circle at 82% 28%, rgba(255, 80, 195, .24), transparent 25%),
-  linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(138,128,255,.08) 100%);
-  border-bottom: 1px solid rgba(60, 52, 100, .1);
-}
-.hero::before {
-  position: absolute;
-  inset: -15% -10% 10% -10%;
-  content: '';
-  background:
-    radial-gradient(circle at 18% 25%, rgba(109, 92, 255, .36), transparent 16%),
-    radial-gradient(circle at 82% 30%, rgba(255, 96, 196, .3), transparent 18%),
-    radial-gradient(circle at 50% 65%, rgba(95, 202, 255, .18), transparent 23%);
-  animation: shimmer 14s ease-in-out infinite alternate;
-  pointer-events: none;
-}
+.hero { min-height: 615px; position: relative; display: grid; grid-template-columns: .86fr 1.14fr; gap: 4vw; padding: 55px 4.2vw 45px; overflow: hidden; background: transparent; }
 .hero-copy { position: relative; z-index: 2; padding: 30px 0 20px 4.1vw; animation: rise-in .75s .08s both; }
 .eyebrow { margin: 0 0 25px; font-size: 9px; font-weight: 700; letter-spacing: .14em; }
 .eyebrow > span { margin-right: 12px; color: #7860e9; }
