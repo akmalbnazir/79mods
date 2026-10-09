@@ -82,6 +82,74 @@ document.addEventListener('DOMContentLoaded', () => {
     revealItems.forEach((element) => element.classList.add('is-visible'));
   }
 
+
+    const motionPreference = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  );
+  const pointerQuery = window.matchMedia(
+    '(hover: hover) and (pointer: fine)'
+  );
+  const interactiveSurfaces = document.querySelectorAll(
+    '.hero-visual, .category-card, .favorite-card'
+  );
+
+  if (!motionPreference.matches && pointerQuery.matches) {
+    for (const surface of interactiveSurfaces) {
+      surface.addEventListener('pointermove', (event) => {
+        const bounds = surface.getBoundingClientRect();
+        if (!bounds.width || !bounds.height) return;
+
+        const x = (event.clientX - bounds.left) / bounds.width;
+        const y = (event.clientY - bounds.top) / bounds.height;
+        const tiltAmount = surface.matches('.hero-visual') ? 5 : 3;
+
+        surface.style.setProperty('--pointer-x', `${x * 100}%`);
+        surface.style.setProperty('--pointer-y', `${y * 100}%`);
+        surface.style.setProperty(
+          '--tilt-x',
+          `${(x - 0.5) * tiltAmount}deg`
+        );
+        surface.style.setProperty(
+          '--tilt-y',
+          `${(0.5 - y) * tiltAmount}deg`
+        );
+        surface.classList.add('is-pointer-active');
+      });
+
+      surface.addEventListener('pointerleave', () => {
+        surface.style.removeProperty('--tilt-x');
+        surface.style.removeProperty('--tilt-y');
+        surface.classList.remove('is-pointer-active');
+      });
+    }
+
+    const hero = document.querySelector('.hero');
+    let scrollFrame = 0;
+
+    if (hero) {
+      window.addEventListener('scroll', () => {
+        if (scrollFrame) return;
+
+        scrollFrame = window.requestAnimationFrame(() => {
+          const heroBounds = hero.getBoundingClientRect();
+          const progress = Math.max(
+            -1,
+            Math.min(
+              1,
+              -heroBounds.top / Math.max(heroBounds.height, 1)
+            )
+          );
+
+          hero.style.setProperty(
+            '--scroll-shift',
+            `${progress * 18}px`
+          );
+          scrollFrame = 0;
+        });
+      }, { passive: true });
+    }
+  }
+
   for (const image of document.querySelectorAll('img')) {
     image.addEventListener('error', () => {
       image.closest('.category-card')?.classList.add('image-unavailable');
