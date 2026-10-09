@@ -5,8 +5,6 @@
     "hero": { "type": "hero" },
     "category_grid": { "type": "category-grid" },
     "favorites": { "type": "favorites-section" },
-    "fitment": { "type": "fitment-section" },
-    "closing": { "type": "closing-section" },
     "footer": { "type": "footer" }
   },
   "order": [
@@ -15,8 +13,6 @@
     "hero",
     "category_grid",
     "favorites",
-    "fitment",
-    "closing",
     "footer"
   ]
 }

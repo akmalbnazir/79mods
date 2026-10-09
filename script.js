@@ -66,6 +66,45 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
 
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const pointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+const interactiveSurfaces = document.querySelectorAll('.hero-visual, .category-card, .favorite-card');
+
+if (!motionPreference.matches && pointerQuery.matches) {
+  for (const surface of interactiveSurfaces) {
+    surface.addEventListener('pointermove', (event) => {
+      const bounds = surface.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width;
+      const y = (event.clientY - bounds.top) / bounds.height;
+      surface.style.setProperty('--pointer-x', `${x * 100}%`);
+      surface.style.setProperty('--pointer-y', `${y * 100}%`);
+      surface.style.setProperty('--tilt-x', `${(x - 0.5) * (surface.matches('.hero-visual') ? 5 : 3)}deg`);
+      surface.style.setProperty('--tilt-y', `${(0.5 - y) * (surface.matches('.hero-visual') ? 5 : 3)}deg`);
+      surface.classList.add('is-pointer-active');
+    });
+
+    surface.addEventListener('pointerleave', () => {
+      surface.style.removeProperty('--tilt-x');
+      surface.style.removeProperty('--tilt-y');
+      surface.classList.remove('is-pointer-active');
+    });
+  }
+
+  const hero = document.querySelector('.hero');
+  let scrollFrame = 0;
+  window.addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      const heroBounds = hero?.getBoundingClientRect();
+      if (heroBounds) {
+        const progress = Math.max(-1, Math.min(1, -heroBounds.top / Math.max(heroBounds.height, 1)));
+        hero.style.setProperty('--scroll-shift', `${progress * 18}px`);
+      }
+      scrollFrame = 0;
+    });
+  }, { passive: true });
+}
+
 for (const image of document.querySelectorAll('img')) {
   image.addEventListener('error', () => {
     image.closest('.category-card')?.classList.add('image-unavailable');
