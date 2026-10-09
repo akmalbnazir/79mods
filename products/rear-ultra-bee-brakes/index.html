@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>V3 Rear Ultra Bee Brake – 79mods</title>
-    <link rel="stylesheet" href="/assets/theme.css?v=7">
+    <link rel="stylesheet" href="/assets/theme.css?v=17">
     <script src="/assets/theme.js" defer></script>
+    <script src="/assets/collection-drawer.js" defer></script>
   </head>
   <body>
     <div class="announcement">
@@ -22,6 +23,10 @@
         <a href="/#about">Our thing</a>
       </nav>
       <div class="header-actions">
+        <button class="collections-toggle" type="button" aria-label="Open collections" aria-expanded="false" aria-controls="collection-drawer" title="Browse collections">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path><circle cx="7" cy="6" r="1"></circle><circle cx="7" cy="12" r="1"></circle><circle cx="7" cy="18" r="1"></circle></svg>
+          <span>Collections</span>
+        </button>
         <button class="search-toggle" type="button" aria-label="Focus search" title="Search parts">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.3 4.3"></path></svg>
           <span>Search</span>
@@ -33,6 +38,25 @@
         <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span></button>
       </div>
     </header>
+
+    <dialog class="collection-drawer" id="collection-drawer" aria-labelledby="collection-drawer-title">
+      <button class="collection-drawer-scrim" type="button" data-close-collection-drawer aria-label="Close collections"></button>
+      <aside class="collection-drawer-panel">
+        <div class="collection-drawer-heading">
+          <div><p class="eyebrow">BROWSE THE GARAGE</p><h2 id="collection-drawer-title">Collections</h2></div>
+          <button class="collection-drawer-close" type="button" data-close-collection-drawer aria-label="Close collections"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav class="collection-drawer-nav" aria-label="Collection categories">
+          <a href="/collections/all"><span class="collection-drawer-index">00</span><span class="collection-drawer-label">All parts</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="/collections/emoto-tires"><span class="collection-drawer-index">01</span><span class="collection-drawer-label">Brakes</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="/collections/emoto-wheels"><span class="collection-drawer-index">02</span><span class="collection-drawer-label">Wheels</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="/collections/plug-and-play-emoto-lights"><span class="collection-drawer-index">03</span><span class="collection-drawer-label">Lights</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="/collections/emoto-power-upgrades"><span class="collection-drawer-index">04</span><span class="collection-drawer-label">Power up</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="/collections/emoto-brakes"><span class="collection-drawer-index">05</span><span class="collection-drawer-label">Carbon fiber</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="/collections/direct-stem"><span class="collection-drawer-index">06</span><span class="collection-drawer-label">Stems + bars</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+        </nav>
+      </aside>
+    </dialog>
 
     <main class="product-template product-page-shell">
       <div class="product-gallery product-gallery-card">

@@ -7,6 +7,20 @@
     <p class="collection-intro">{{ collection.description | strip_html | default: 'Parts, upgrades, and essentials for the next ride. Find your setup and get back out there.' }}</p>
   </div>
 
+  <div class="collection-layout">
+    <aside class="collection-sidebar" aria-label="Browse collections">
+      <p class="eyebrow">COLLECTIONS</p>
+      <nav aria-label="Collection categories">
+        <a href="{{ routes.all_products_collection_url }}"{% if collection.handle == 'all' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">00</span> All parts</a>
+        <a href="{{ routes.collections_url }}/emoto-tires"{% if collection.handle == 'emoto-tires' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">01</span> Brakes</a>
+        <a href="{{ routes.collections_url }}/emoto-wheels"{% if collection.handle == 'emoto-wheels' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">02</span> Wheels</a>
+        <a href="{{ routes.collections_url }}/plug-and-play-emoto-lights"{% if collection.handle == 'plug-and-play-emoto-lights' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">03</span> Lights</a>
+        <a href="{{ routes.collections_url }}/emoto-power-upgrades"{% if collection.handle == 'emoto-power-upgrades' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">04</span> Power up</a>
+        <a href="{{ routes.collections_url }}/emoto-brakes"{% if collection.handle == 'emoto-brakes' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">05</span> Carbon fiber</a>
+        <a href="{{ routes.collections_url }}/direct-stem"{% if collection.handle == 'direct-stem' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">06</span> Stems + bars</a>
+      </nav>
+    </aside>
+    <div class="collection-results">
   {% paginate collection.products by 12 %}
   {% if collection.products.size > 0 %}
     <div class="collection-product-grid">
@@ -45,4 +59,6 @@
     </nav>
   {% endif %}
   {% endpaginate %}
+    </div>
+  </div>
 </section>

@@ -19,6 +19,25 @@
   </head>
   <body>
     {{ content_for_layout }}
+    <dialog class="collection-drawer" id="collection-drawer" aria-labelledby="collection-drawer-title">
+      <button class="collection-drawer-scrim" type="button" data-close-collection-drawer aria-label="Close collections"></button>
+      <aside class="collection-drawer-panel">
+        <div class="collection-drawer-heading">
+          <div><p class="eyebrow">BROWSE THE GARAGE</p><h2 id="collection-drawer-title">Collections</h2></div>
+          <button class="collection-drawer-close" type="button" data-close-collection-drawer aria-label="Close collections"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav class="collection-drawer-nav" aria-label="Collection categories">
+          <a href="{{ routes.all_products_collection_url }}"{% if collection.handle == 'all' %} aria-current="page"{% endif %}><span class="collection-drawer-index">00</span><span class="collection-drawer-label">All parts</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="{{ routes.collections_url }}/emoto-tires"{% if collection.handle == 'emoto-tires' %} aria-current="page"{% endif %}><span class="collection-drawer-index">01</span><span class="collection-drawer-label">Brakes</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="{{ routes.collections_url }}/emoto-wheels"{% if collection.handle == 'emoto-wheels' %} aria-current="page"{% endif %}><span class="collection-drawer-index">02</span><span class="collection-drawer-label">Wheels</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="{{ routes.collections_url }}/plug-and-play-emoto-lights"{% if collection.handle == 'plug-and-play-emoto-lights' %} aria-current="page"{% endif %}><span class="collection-drawer-index">03</span><span class="collection-drawer-label">Lights</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="{{ routes.collections_url }}/emoto-power-upgrades"{% if collection.handle == 'emoto-power-upgrades' %} aria-current="page"{% endif %}><span class="collection-drawer-index">04</span><span class="collection-drawer-label">Power up</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="{{ routes.collections_url }}/emoto-brakes"{% if collection.handle == 'emoto-brakes' %} aria-current="page"{% endif %}><span class="collection-drawer-index">05</span><span class="collection-drawer-label">Carbon fiber</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a href="{{ routes.collections_url }}/direct-stem"{% if collection.handle == 'direct-stem' %} aria-current="page"{% endif %}><span class="collection-drawer-index">06</span><span class="collection-drawer-label">Stems + bars</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+        </nav>
+      </aside>
+    </dialog>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    <script src="{{ 'collection-drawer.js' | asset_url }}" defer></script>
   </body>
 </html>
