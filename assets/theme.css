@@ -237,8 +237,8 @@ h1, h2, h3, p { margin-top: 0; }
 .footer-year { color: #8b8890; font-size: 8px; }
 .search-toast { position: fixed; right: 22px; bottom: 20px; z-index: 30; max-width: calc(100vw - 44px); padding: 12px 16px; color: white; background: var(--ink); font-size: 11px; opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
 .search-toast.is-visible { opacity: 1; transform: translateY(0); }
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.2,1); }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.reveal { opacity: 0; translate: 0 18px; transition: opacity .65s ease, translate .65s cubic-bezier(.2,.7,.2,1); }
+.reveal.is-visible { opacity: 1; translate: 0; }
 .category-card:nth-child(2) { transition-delay: .08s; }
 .category-card:nth-child(3) { transition-delay: .16s; }
 .category-card:nth-child(5) { transition-delay: .08s; }
@@ -375,7 +375,7 @@ h1, h2, h3, p { margin-top: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal { opacity: 1; translate: none; }
 }
 
 .collection-page {
@@ -410,39 +410,33 @@ h1, h2, h3, p { margin-top: 0; }
 .collection-product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 29px 18px;
+  gap: 18px;
 }
 .collection-product {
   min-width: 0;
   display: block;
 }
-.collection-product img {
-  width: 100%;
-  height: clamp(205px, 23vw, 310px);
-  object-fit: contain;
-  object-position: center;
-  mix-blend-mode: multiply;
-}
-.collection-product .info {
+.collection-pagination {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  padding: 13px 1px 11px;
-  border-bottom: 1px solid var(--line);
+  justify-content: center;
+  gap: 8px;
+  margin-top: 42px;
 }
-.collection-product .info h3 {
-  margin: 0;
-  font-family: var(--display);
-  font-size: 23px;
+.collection-pagination a,
+.collection-pagination span {
+  min-width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  font-size: 11px;
   font-weight: 700;
-  line-height: 1;
-  text-transform: uppercase;
 }
-.collection-product .info span {
-  flex: 0 0 auto;
-  color: var(--muted);
-  font-size: 10px;
+.collection-pagination a:hover,
+.collection-pagination [aria-current="page"] {
+  border-color: transparent;
+  color: white;
+  background: linear-gradient(110deg, #4b4ed0, #a43cae);
 }
 
 .product-template {
@@ -504,11 +498,8 @@ h1, h2, h3, p { margin-top: 0; }
   .collection-heading .eyebrow { margin-bottom: 18px; }
   .collection-page h1 { font-size: clamp(62px, 17vw, 90px); }
   .collection-intro { width: auto; margin-top: 16px; font-size: 10px; }
-  .collection-product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 11px; }
-  .collection-product img { height: clamp(155px, 48vw, 250px); }
-  .collection-product .info { display: block; padding-top: 10px; }
-  .collection-product .info h3 { margin-bottom: 5px; font-size: 20px; }
-  .collection-product .info span { font-size: 8px; }
+  .collection-product-grid { grid-template-columns: 1fr; gap: 24px; }
+  .collection-pagination { gap: 6px; margin-top: 30px; }
   .product-template { grid-template-columns: 1fr; gap: 20px; padding: 45px 5vw 70px; }
   .product-gallery img { height: 38vw; }
   .product-info { padding-top: 8px; }
@@ -560,7 +551,7 @@ h1, h2, h3, p { margin-top: 0; }
 .category-number, .favorite-index, .product-badges span { border-radius: var(--radius-pill); }
 .category-number, .favorite-index { padding-right: 9px; padding-left: 9px; }
 .search-toast { border-radius: var(--radius-control); }
-.collection-product img, .product-gallery img {
+  .product-gallery img {
   border-radius: var(--radius-card);
   background: linear-gradient(145deg, rgba(248,246,252,.95), rgba(223,229,255,.9));
 }

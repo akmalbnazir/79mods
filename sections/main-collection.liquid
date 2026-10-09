@@ -1,21 +1,49 @@
 <section class="collection-page">
-  <h1>{{ collection.title }}</h1>
+  <div class="collection-heading">
+    <div>
+      <p class="eyebrow"><span>02</span> THE FULL GARAGE</p>
+      <h1>{{ collection.title }}</h1>
+    </div>
+    <p class="collection-intro">{{ collection.description | strip_html | default: 'Parts, upgrades, and essentials for the next ride. Find your setup and get back out there.' }}</p>
+  </div>
 
+  {% paginate collection.products by 12 %}
   {% if collection.products.size > 0 %}
     <div class="collection-product-grid">
       {% for product in collection.products %}
-        <a class="collection-product" href="{{ product.url }}">
-          {% if product.featured_image %}
-            <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | escape }}" loading="lazy">
-          {% endif %}
-          <div class="info">
-            <h3>{{ product.title }}</h3>
-            <span>{{ product.price | money }}</span>
+        <a class="collection-product favorite-card reveal" href="{{ product.url }}">
+          <div class="favorite-image">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
+            {% endif %}
+            <span class="favorite-index">PART {{ forloop.index }}</span>
+            <span class="favorite-arrow" aria-hidden="true">↗</span>
           </div>
+          <div class="favorite-details"><div><h3>{{ product.title }}</h3><span>{{ product.type | default: 'Rider favorite' }}</span></div><strong>{{ product.price | money }}</strong></div>
+          <span class="favorite-cta">View product <span aria-hidden="true">↗</span></span>
         </a>
       {% endfor %}
     </div>
   {% else %}
     <p>Products coming soon.</p>
   {% endif %}
+
+  {% if paginate.pages > 1 %}
+    <nav class="collection-pagination" aria-label="Collection pages">
+      {% if paginate.previous %}
+        <a href="{{ paginate.previous.url }}" aria-label="Previous page">←</a>
+      {% endif %}
+      {% for part in paginate.parts %}
+        {% if part.is_link %}
+          <a href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+        {% else %}
+          <span{% if paginate.current_page == part.title %} aria-current="page"{% endif %}>{{ part.title }}</span>
+        {% endif %}
+      {% endfor %}
+      {% if paginate.next %}
+        <a href="{{ paginate.next.url }}" aria-label="Next page">→</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+  {% endpaginate %}
 </section>
