@@ -90,18 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
     '(hover: hover) and (pointer: fine)'
   );
   const interactiveSurfaces = document.querySelectorAll(
-    '.hero-visual, .category-card, .favorite-card'
+    '.hero-visual, .hero-image-wrap, .category-card, .favorite-card'
   );
 
   if (!motionPreference.matches && pointerQuery.matches) {
     for (const surface of interactiveSurfaces) {
+      let pointerBounds;
+
+      surface.addEventListener('pointerenter', () => {
+        pointerBounds = surface.getBoundingClientRect();
+      });
+
       surface.addEventListener('pointermove', (event) => {
-        const bounds = surface.getBoundingClientRect();
+        const bounds = pointerBounds || surface.getBoundingClientRect();
         if (!bounds.width || !bounds.height) return;
 
         const x = (event.clientX - bounds.left) / bounds.width;
         const y = (event.clientY - bounds.top) / bounds.height;
-        const tiltAmount = surface.matches('.hero-visual') ? 5 : 3;
+        const tiltAmount = surface.matches('.hero-visual, .hero-image-wrap') ? 5 : 3;
 
         surface.style.setProperty('--pointer-x', `${x * 100}%`);
         surface.style.setProperty('--pointer-y', `${y * 100}%`);
@@ -117,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       surface.addEventListener('pointerleave', () => {
+        pointerBounds = undefined;
         surface.style.removeProperty('--tilt-x');
         surface.style.removeProperty('--tilt-y');
         surface.classList.remove('is-pointer-active');

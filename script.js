@@ -68,22 +68,30 @@ document.querySelectorAll('.reveal').forEach((element) => observer.observe(eleme
 
 const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
 const pointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
-const interactiveSurfaces = document.querySelectorAll('.hero-visual, .category-card, .favorite-card');
+const interactiveSurfaces = document.querySelectorAll('.hero-visual, .hero-image-wrap, .category-card, .favorite-card');
 
 if (!motionPreference.matches && pointerQuery.matches) {
   for (const surface of interactiveSurfaces) {
+    let pointerBounds;
+
+    surface.addEventListener('pointerenter', () => {
+      pointerBounds = surface.getBoundingClientRect();
+    });
+
     surface.addEventListener('pointermove', (event) => {
-      const bounds = surface.getBoundingClientRect();
+      const bounds = pointerBounds || surface.getBoundingClientRect();
       const x = (event.clientX - bounds.left) / bounds.width;
       const y = (event.clientY - bounds.top) / bounds.height;
       surface.style.setProperty('--pointer-x', `${x * 100}%`);
       surface.style.setProperty('--pointer-y', `${y * 100}%`);
-      surface.style.setProperty('--tilt-x', `${(x - 0.5) * (surface.matches('.hero-visual') ? 5 : 3)}deg`);
-      surface.style.setProperty('--tilt-y', `${(0.5 - y) * (surface.matches('.hero-visual') ? 5 : 3)}deg`);
+      const tiltAmount = surface.matches('.hero-visual, .hero-image-wrap') ? 5 : 3;
+      surface.style.setProperty('--tilt-x', `${(x - 0.5) * tiltAmount}deg`);
+      surface.style.setProperty('--tilt-y', `${(0.5 - y) * tiltAmount}deg`);
       surface.classList.add('is-pointer-active');
     });
 
     surface.addEventListener('pointerleave', () => {
+      pointerBounds = undefined;
       surface.style.removeProperty('--tilt-x');
       surface.style.removeProperty('--tilt-y');
       surface.classList.remove('is-pointer-active');
