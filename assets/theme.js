@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '(hover: hover) and (pointer: fine)'
   );
   const interactiveSurfaces = document.querySelectorAll(
-    '.hero-visual, .hero-image-wrap, .category-card, .favorite-card, .collection-product'
+    '.hero-visual, .hero-image-wrap, .category-card, .favorite-card, .collection-product, .product-gallery-item'
   );
 
   if (!motionPreference.matches && pointerQuery.matches) {

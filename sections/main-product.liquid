@@ -1,11 +1,15 @@
 <section class="product-template product-page-shell">
   <div class="product-gallery product-gallery-card">
     {% if product.featured_image %}
-      <img class="product-main-image" src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.featured_image.alt | escape }}">
+      <figure class="product-gallery-item reveal">
+        <img class="product-main-image" src="{{ product.featured_image | image_url: width: 1200 }}" alt="{{ product.featured_image.alt | escape }}">
+      </figure>
     {% endif %}
 
     {% for image in product.images offset: 1 limit: 3 %}
-      <img src="{{ image | image_url: width: 1200 }}" alt="{{ image.alt | escape }}">
+      <figure class="product-gallery-item reveal">
+        <img src="{{ image | image_url: width: 1200 }}" alt="{{ image.alt | escape }}">
+      </figure>
     {% endfor %}
   </div>
 
