@@ -1,0 +1,23 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "content_for_index": [],
+    "blocks": {
+      "15522997382164843275": {
+        "type": "shopify://apps/fomo-social-proof-sales-popup/blocks/app-embed/ea8bddfc-cb72-4fa9-99fa-826f8cccf6a0",
+        "disabled": false,
+        "settings": {
+          "show_interactive_preview": true
+        }
+      }
+    }
+  }
+}
