@@ -1,0 +1,86 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "content_for_index": [],
+    "blocks": {
+      "6520862770880189807": {
+        "type": "shopify://apps/sales-pop-up/blocks/countdownproductgrid/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
+        "disabled": false,
+        "settings": {}
+      },
+      "15522997382164843275": {
+        "type": "shopify://apps/fomo-social-proof-sales-popup/blocks/app-embed/ea8bddfc-cb72-4fa9-99fa-826f8cccf6a0",
+        "disabled": true,
+        "settings": {
+          "show_interactive_preview": true
+        }
+      },
+      "15683396631634586217": {
+        "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
+        "disabled": false,
+        "settings": {
+          "greeting_message": "",
+          "show_featured_products": true,
+          "featured_products": [],
+          "background_color": "#FFFFFF",
+          "font_color": "#000000",
+          "agent_invert_activator_colors": true,
+          "button_color": "#000000",
+          "button_icon": "chat_bubble",
+          "button_text": "chat_with_us",
+          "button_horizontal_position": "bottom_right",
+          "button_vertical_position": "lowest",
+          "agent_inherit_fonts": true,
+          "agent_font": "system_ui_n4",
+          "agent_font_size": 14,
+          "agent_activator_font_size": 16,
+          "agent_border_radius": 16
+        }
+      },
+      "316487575649303945": {
+        "type": "shopify://apps/easify-options/blocks/app-embed-block/d2288b18-c1ba-42f5-b3b3-26c75c8820bf",
+        "disabled": true,
+        "settings": {
+          "path_loading_mode": "include",
+          "page_paths": ""
+        }
+      },
+      "6159598353363395418": {
+        "type": "shopify://apps/google-youtube/blocks/store_widget/14ec7bd0-ac77-49a9-9417-90752398bdff",
+        "disabled": true,
+        "settings": {
+          "widget_position": "LEFT_BOTTOM",
+          "side_margin": 36,
+          "bottom_margin": 36,
+          "mobile_side_margin": 16,
+          "mobile_bottom_margin": 46
+        }
+      },
+      "14575892982612462877": {
+        "type": "shopify://apps/sales-pop-up/blocks/salesnotifications/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
+        "disabled": false,
+        "settings": {}
+      },
+      "16173364648559130103": {
+        "type": "shopify://apps/sales-pop-up/blocks/salespop/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
+        "disabled": false,
+        "settings": {}
+      },
+      "13047258039897440615": {
+        "type": "shopify://apps/judge-me-reviews/blocks/cart_drawer_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {
+          "widget_type": "review-widget"
+        }
+      }
+    }
+  }
+}
