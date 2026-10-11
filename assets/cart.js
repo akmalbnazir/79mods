@@ -1,7 +1,12 @@
 const shopifyCart = document.documentElement.dataset.cartMode === 'shopify';
+const shopifyRoot = document.documentElement.dataset.cartRoot || window.Shopify?.routes?.root || '/';
 const localCartKey = '79mods-cart';
 const bagLink = document.querySelector('.bag-link');
 const cartDialog = document.createElement('dialog');
+
+function storefrontPath(path) {
+  return `${shopifyRoot.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+}
 
 cartDialog.className = 'cart-drawer';
 cartDialog.setAttribute('aria-labelledby', 'cart-drawer-title');
@@ -17,8 +22,8 @@ cartDialog.innerHTML = `
     <div class="cart-drawer-footer" hidden>
       <div class="cart-subtotal"><span>Subtotal</span><strong data-cart-subtotal></strong></div>
       <p class="cart-shipping-note">Shipping and taxes calculated at checkout.</p>
-      <a class="button button-dark cart-checkout" href="/checkout">Checkout <span aria-hidden="true">↗</span></a>
-      <a class="cart-view-link" href="/cart">View cart</a>
+      <a class="button button-dark cart-checkout" href="${shopifyCart ? storefrontPath('checkout') : '/checkout'}">Checkout <span aria-hidden="true">↗</span></a>
+      <a class="cart-view-link" href="${shopifyCart ? storefrontPath('cart') : '/cart'}">View cart</a>
     </div>
   </aside>`;
 document.body.append(cartDialog);
@@ -62,7 +67,7 @@ async function getCart() {
     };
   }
 
-  const response = await fetch('/cart.js', { headers: { Accept: 'application/json' } });
+  const response = await fetch(storefrontPath('cart.js'), { headers: { Accept: 'application/json' } });
   if (!response.ok) throw new Error('Could not load your shopping bag. Please try again.');
   return response.json();
 }
@@ -178,7 +183,7 @@ async function updateQuantity(item, quantity) {
   statusMessage.textContent = '';
   try {
     if (shopifyCart) {
-      const response = await fetch('/cart/change.js', {
+      const response = await fetch(storefrontPath('cart/change.js'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ id: item.key || item.id, quantity })
@@ -240,7 +245,7 @@ document.addEventListener('submit', async (event) => {
 
   try {
     if (shopifyCart) {
-      const response = await fetch('/cart/add.js', {
+      const response = await fetch(storefrontPath('cart/add.js'), {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: new FormData(form)
