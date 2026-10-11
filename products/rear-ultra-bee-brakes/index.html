@@ -6,6 +6,7 @@
     <title>V3 Rear Ultra Bee Brake – 79mods</title>
     <link rel="stylesheet" href="/assets/theme.css?v=18">
     <script src="/assets/theme.js" defer></script>
+    <script src="/assets/cart.js" defer></script>
     <script src="/assets/collection-drawer.js" defer></script>
   </head>
   <body>
@@ -88,7 +89,11 @@
         </div>
 
         <div class="product-buttons">
-          <button class="button button-dark" type="button">Add to cart</button>
+          <form class="product-form" data-cart-form data-product-id="rear-ultra-bee-brakes" data-product-title="V3 Rear Ultra Bee Brake" data-product-price="19999" data-product-image="https://79mods.com/cdn/shop/files/1B0FA8FE-AF68-4F01-82D6-60D89CE808A7_1.png?v=1785780266&amp;width=240" data-product-url="/products/rear-ultra-bee-brakes">
+            <label class="product-quantity-label" for="ProductQuantity">Qty</label>
+            <input class="product-quantity" id="ProductQuantity" type="number" name="quantity" value="1" min="1" step="1" aria-label="Quantity">
+            <button class="button button-dark" type="submit">Add to cart</button>
+          </form>
           <a class="button button-light product-secondary" href="/collections/all">See more parts</a>
         </div>
 

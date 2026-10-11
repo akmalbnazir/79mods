@@ -1,0 +1,43 @@
+<main class="cart-page">
+  <div class="cart-page-heading">
+    <p class="eyebrow"><span>79</span> READY FOR THE NEXT RIDE</p>
+    <h1>Your shopping bag</h1>
+  </div>
+
+  {% if cart.item_count > 0 %}
+    {% form 'cart', cart, class: 'cart-page-form' %}
+      <div class="cart-page-items">
+        {% for item in cart.items %}
+          <article class="cart-page-item">
+            {% if item.image %}
+              <a class="cart-page-image" href="{{ item.url }}">
+                <img src="{{ item.image | image_url: width: 320 }}" alt="{{ item.image.alt | default: item.product.title | escape }}" loading="lazy">
+              </a>
+            {% endif %}
+            <div class="cart-page-details">
+              <a class="cart-page-title" href="{{ item.url }}">{{ item.product.title }}</a>
+              {% unless item.variant.title == 'Default Title' %}<span class="cart-item-variant">{{ item.variant.title }}</span>{% endunless %}
+              <a class="cart-remove" href="{{ item.url_to_remove }}">Remove</a>
+            </div>
+            <label class="cart-page-quantity">Qty
+              <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" step="1" aria-label="Quantity for {{ item.product.title | escape }}">
+            </label>
+            <strong class="cart-page-price">{{ item.final_line_price | money }}</strong>
+          </article>
+        {% endfor %}
+      </div>
+
+      <div class="cart-page-summary">
+        <p>Shipping and taxes calculated at checkout.</p>
+        <div class="cart-subtotal"><span>Subtotal</span><strong>{{ cart.total_price | money }}</strong></div>
+        <div class="cart-page-actions">
+          <button class="button button-light" type="submit" name="update">Update bag</button>
+          <button class="button button-dark" type="submit" name="checkout">Checkout <span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+    {% endform %}
+  {% else %}
+    <p class="cart-page-empty">Your bag is empty.</p>
+    <a class="button button-dark" href="{{ routes.all_products_collection_url }}">Shop parts <span aria-hidden="true">↗</span></a>
+  {% endif %}
+</main>
