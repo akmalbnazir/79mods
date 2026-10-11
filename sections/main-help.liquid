@@ -1,0 +1,44 @@
+<main class="help-page">
+  <header class="help-heading">
+    <p class="eyebrow"><span>79</span> CUSTOMER ASSISTANCE</p>
+    <h1>Here for the ride.</h1>
+    <p>Real support for real riders. Get in touch or find an answer below.</p>
+  </header>
+
+  <section class="help-contact" aria-labelledby="help-contact-title">
+    <h2 class="visually-hidden" id="help-contact-title">Contact customer support</h2>
+    <div class="help-contact-item">
+      <p class="eyebrow">CALL OR TEXT</p>
+      <a class="help-contact-link" href="tel:+17178624095">+1 (717) 862-4095</a>
+      <a class="help-contact-action" href="sms:+17178624095">Text our team <span aria-hidden="true">↗</span></a>
+      <p class="help-contact-note">Monday-Friday, 9am-5pm ET</p>
+    </div>
+    <div class="help-contact-item">
+      <p class="eyebrow">EMAIL</p>
+      <a class="help-contact-link" href="mailto:79mods@gmail.com">79mods@gmail.com</a>
+      <p class="help-contact-note">Send us your order number and we’ll get back to you.</p>
+    </div>
+  </section>
+
+  <section class="help-faq" aria-labelledby="help-faq-title">
+    <div class="help-faq-heading">
+      <p class="eyebrow">QUICK ANSWERS</p>
+      <h2 id="help-faq-title">Frequently asked questions</h2>
+    </div>
+    <div class="help-faq-list">
+      <details>
+        <summary>What countries do you ship to?</summary>
+        <p>We currently ship to the United States and anywhere internationally. To enquire about shipping to a different destination, please <a href="mailto:79mods@gmail.com">contact us</a>.</p>
+      </details>
+      <details>
+        <summary>How long will it take to receive my order?</summary>
+        <p>Standard shipping normally takes 3-5 days. Next day shipping is available on all domestic orders (for an additional charge). International shipping times depend on the products and destination (estimated at checkout). Some products may also be on pre order, which may affect shipping times.</p>
+      </details>
+      <details>
+        <summary>What is your return and refund policy?</summary>
+        <p>Please contact us before sending an item back. We’ll confirm return eligibility and the applicable refund terms for your order.</p>
+        {% if shop.refund_policy != blank %}<a class="help-policy-link" href="{{ shop.refund_policy.url }}">Read our refund policy <span aria-hidden="true">↗</span></a>{% endif %}
+      </details>
+    </div>
+  </section>
+</main>
