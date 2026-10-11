@@ -63,6 +63,16 @@
           "mobile_side_margin": 16,
           "mobile_bottom_margin": 46
         }
+      },
+      "14575892982612462877": {
+        "type": "shopify://apps/sales-pop-up/blocks/salesnotifications/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
+        "disabled": false,
+        "settings": {}
+      },
+      "16173364648559130103": {
+        "type": "shopify://apps/sales-pop-up/blocks/salespop/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
+        "disabled": false,
+        "settings": {}
       }
     }
   }
