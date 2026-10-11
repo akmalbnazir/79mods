@@ -366,8 +366,9 @@ h1, h2, h3, p { margin-top: 0; }
 
 @media (max-width: 640px) {
   html { scroll-padding-top: 68px; }
-  .announcement { height: 32px; grid-template-columns: 1fr auto; padding: 0 5vw; }
-  .announcement a { display: none; }
+  .announcement { height: 32px; grid-template-columns: 1fr; padding: 0 5vw; }
+  .announcement > p, .announcement-index { display: none; }
+  .announcement a { display: block; justify-self: center; font-size: 9px; white-space: nowrap; }
   .site-header { height: 66px; grid-template-columns: 1fr auto; padding: 0 5vw; }
   .wordmark { font-size: 31px; }
   .wordmark img { height: 52px; max-width: 220px; }
