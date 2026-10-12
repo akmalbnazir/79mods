@@ -22,7 +22,7 @@ cartDialog.innerHTML = `
     <div class="cart-drawer-footer" hidden>
       <div class="cart-subtotal"><span>Subtotal</span><strong data-cart-subtotal></strong></div>
       <p class="cart-shipping-note">Shipping and taxes calculated at checkout.</p>
-      <a class="button button-dark cart-checkout" href="${shopifyCart ? storefrontPath('checkout') : '/checkout'}">Checkout <span aria-hidden="true">↗</span></a>
+      <a class="button button-dark cart-checkout" href="${shopifyCart ? storefrontPath('checkout') : '/checkout'}" target="${shopifyCart ? '_top' : '_self'}">Checkout <span aria-hidden="true">↗</span></a>
       <a class="cart-view-link" href="${shopifyCart ? storefrontPath('cart') : '/cart'}">View cart</a>
     </div>
   </aside>`;

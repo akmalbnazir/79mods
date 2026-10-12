@@ -32,7 +32,7 @@
         <div class="cart-subtotal"><span>Subtotal</span><strong>{{ cart.total_price | money }}</strong></div>
         <div class="cart-page-actions">
           <button class="button button-light" type="submit" name="update">Update bag</button>
-          <button class="button button-dark" type="submit" name="checkout">Checkout <span aria-hidden="true">↗</span></button>
+          <button class="button button-dark" type="submit" name="checkout" formtarget="_top">Checkout <span aria-hidden="true">↗</span></button>
         </div>
       </div>
     {% endform %}
