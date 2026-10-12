@@ -22,7 +22,9 @@ cartDialog.innerHTML = `
     <div class="cart-drawer-footer" hidden>
       <div class="cart-subtotal"><span>Subtotal</span><strong data-cart-subtotal></strong></div>
       <p class="cart-shipping-note">Shipping and taxes calculated at checkout.</p>
-      <a class="button button-dark cart-checkout" href="${shopifyCart ? storefrontPath('checkout') : '/checkout'}" target="${shopifyCart ? '_top' : '_self'}">Checkout <span aria-hidden="true">↗</span></a>
+      <form class="cart-checkout-form" action="${shopifyCart ? storefrontPath('cart') : '/cart'}" method="post">
+        <button class="button button-dark cart-checkout" type="submit" name="checkout" formtarget="_top">Checkout <span aria-hidden="true">↗</span></button>
+      </form>
       <a class="cart-view-link" href="${shopifyCart ? storefrontPath('cart') : '/cart'}">View cart</a>
     </div>
   </aside>`;
@@ -31,12 +33,12 @@ document.body.append(cartDialog);
 const itemsContainer = cartDialog.querySelector('.cart-drawer-items');
 const statusMessage = cartDialog.querySelector('.cart-drawer-status');
 const cartFooter = cartDialog.querySelector('.cart-drawer-footer');
-const checkoutLink = cartDialog.querySelector('.cart-checkout');
+const checkoutButton = cartDialog.querySelector('.cart-checkout');
 
 if (!shopifyCart) {
-  checkoutLink.textContent = 'Checkout unavailable in preview';
-  checkoutLink.removeAttribute('href');
-  checkoutLink.setAttribute('aria-disabled', 'true');
+  checkoutButton.textContent = 'Checkout unavailable in preview';
+  checkoutButton.disabled = true;
+  checkoutButton.setAttribute('aria-disabled', 'true');
 }
 
 function formatMoney(cents, currency = 'USD') {
