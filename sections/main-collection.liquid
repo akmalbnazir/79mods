@@ -19,9 +19,94 @@
         <a href="{{ routes.collections_url }}/emoto-brakes"{% if collection.handle == 'emoto-brakes' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">05</span> Carbon fiber</a>
         <a href="{{ routes.collections_url }}/direct-stem"{% if collection.handle == 'direct-stem' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">06</span> Stems + bars</a>
       </nav>
+
+      {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+      {%- if collection.filters.size > 0 -%}
+        <form class="collection-filters" id="CollectionFilters" action="{{ collection.url }}" method="get" data-collection-filters>
+          <p class="eyebrow">FILTER</p>
+          {%- if collection.sort_by != blank -%}
+            <input type="hidden" name="sort_by" value="{{ collection.sort_by }}">
+          {%- endif -%}
+          {%- for filter in collection.filters -%}
+            <details class="collection-filter"{% if filter.active_values.size > 0 or filter.min_value.value or filter.max_value.value %} open{% endif %}>
+              <summary>{{ filter.label }}</summary>
+              {%- case filter.type -%}
+                {%- when 'price_range' -%}
+                  <div class="collection-filter-price">
+                    <label>
+                      <span>From</span>
+                      <input type="number" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | remove: ',' }}{% endif %}" min="0" max="{{ filter.range_max | money_without_currency | remove: ',' }}" placeholder="0" inputmode="decimal">
+                    </label>
+                    <label>
+                      <span>To</span>
+                      <input type="number" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | remove: ',' }}{% endif %}" min="0" max="{{ filter.range_max | money_without_currency | remove: ',' }}" placeholder="{{ filter.range_max | money_without_currency | remove: ',' }}" inputmode="decimal">
+                    </label>
+                  </div>
+                {%- else -%}
+                  <ul>
+                    {%- for value in filter.values -%}
+                      <li>
+                        <label{% if value.count == 0 and value.active == false %} class="is-disabled"{% endif %}>
+                          <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                          <span>{{ value.label }} <small>({{ value.count }})</small></span>
+                        </label>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+              {%- endcase -%}
+            </details>
+          {%- endfor -%}
+          <button class="button button-dark collection-filter-apply" type="submit">Apply filters</button>
+        </form>
+      {%- endif -%}
     </aside>
     <div class="collection-results">
   {% paginate collection.products by 12 %}
+  <div class="collection-toolbar">
+    <p class="collection-count" role="status">{{ collection.products_count }} {% if collection.products_count == 1 %}product{% else %}products{% endif %}</p>
+    {%- if collection.sort_options.size > 0 -%}
+      <label class="collection-sort">
+        <span>Sort by</span>
+        <select name="sort_by" form="CollectionFilters-sort" data-collection-sort aria-label="Sort products">
+          {%- for option in collection.sort_options -%}
+            {%- if option.value == 'most-relevant' %}{% continue %}{% endif -%}
+            <option value="{{ option.value }}"{% if option.value == current_sort %} selected{% endif %}>{{ option.name }}</option>
+          {%- endfor -%}
+        </select>
+      </label>
+    {%- endif -%}
+  </div>
+
+  {%- assign has_active_filters = false -%}
+  {%- for filter in collection.filters -%}
+    {%- if filter.active_values.size > 0 or filter.min_value.value or filter.max_value.value -%}{%- assign has_active_filters = true -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if has_active_filters -%}
+    <div class="collection-active-filters">
+      {%- for filter in collection.filters -%}
+        {%- for value in filter.active_values -%}
+          <a href="{{ value.url_to_remove }}">{{ value.label }} <span aria-hidden="true">×</span><span class="visually-hidden">Remove filter</span></a>
+        {%- endfor -%}
+        {%- if filter.type == 'price_range' and filter.min_value.value or filter.type == 'price_range' and filter.max_value.value -%}
+          <a href="{{ filter.url_to_remove }}">{{ filter.min_value.value | default: 0 | money_without_trailing_zeros }} – {% if filter.max_value.value %}{{ filter.max_value.value | money_without_trailing_zeros }}{% else %}{{ filter.range_max | money_without_trailing_zeros }}{% endif %} <span aria-hidden="true">×</span><span class="visually-hidden">Remove filter</span></a>
+        {%- endif -%}
+      {%- endfor -%}
+      <a class="collection-clear-filters" href="{{ collection.url }}{% if collection.sort_by != blank %}?sort_by={{ collection.sort_by }}{% endif %}">Clear all</a>
+    </div>
+  {%- endif -%}
+
+  <form id="CollectionFilters-sort" action="{{ collection.url }}" method="get" hidden>
+    {%- for filter in collection.filters -%}
+      {%- for value in filter.active_values -%}
+        <input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">
+      {%- endfor -%}
+      {%- if filter.type == 'price_range' -%}
+        {%- if filter.min_value.value -%}<input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency | remove: ',' }}">{%- endif -%}
+        {%- if filter.max_value.value -%}<input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency | remove: ',' }}">{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </form>
+
   {% if collection.products.size > 0 %}
     <div class="collection-product-grid">
       {% for product in collection.products %}
@@ -38,7 +123,7 @@
       {% endfor %}
     </div>
   {% else %}
-    <p>Products coming soon.</p>
+    <p>{% if has_active_filters %}No products match these filters. <a href="{{ collection.url }}">Clear filters</a>{% else %}Products coming soon.{% endif %}</p>
   {% endif %}
 
   {% if paginate.pages > 1 %}
@@ -62,3 +147,29 @@
     </div>
   </div>
 </section>
+
+<script>
+  (() => {
+    const filters = document.querySelector('[data-collection-filters]');
+    const sort = document.querySelector('[data-collection-sort]');
+    const applyButton = filters?.querySelector('.collection-filter-apply');
+    if (applyButton) applyButton.hidden = true;
+
+    filters?.addEventListener('change', () => filters.requestSubmit());
+    sort?.addEventListener('change', () => {
+      if (filters) {
+        let hidden = filters.querySelector('input[name="sort_by"]');
+        if (!hidden) {
+          hidden = document.createElement('input');
+          hidden.type = 'hidden';
+          hidden.name = 'sort_by';
+          filters.append(hidden);
+        }
+        hidden.value = sort.value;
+        filters.requestSubmit();
+      } else {
+        sort.form.requestSubmit();
+      }
+    });
+  })();
+</script>

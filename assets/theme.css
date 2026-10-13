@@ -817,3 +817,47 @@ h1, h2, h3, p { margin-top: 0; }
   .category-number { padding-right: 7px; padding-left: 7px; }
   .primary-nav a { font-size: 26px; }
 }
+
+.product-compare-price { margin-left: 6px; color: var(--muted); font-size: 14px; font-weight: 500; }
+.product-options { display: grid; gap: 18px; margin-bottom: 24px; }
+.product-option { min-width: 0; margin: 0; padding: 0; border: 0; }
+.product-option legend { margin-bottom: 9px; padding: 0; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.product-option legend span { color: var(--ink); }
+.product-option-values { display: flex; flex-wrap: wrap; gap: 8px; }
+.product-option-value { position: relative; cursor: pointer; }
+.product-option-value input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.product-option-value span { display: block; min-width: 48px; padding: 11px 16px; border: 1px solid var(--line); border-radius: var(--radius-pill); background: rgba(255,255,255,.55); font-size: 11px; font-weight: 700; text-align: center; transition: border-color .15s, background .15s, color .15s; }
+.product-option-value:hover span { border-color: var(--ink); }
+.product-option-value input:checked + span { border-color: transparent; color: white; background: var(--grad); }
+.product-option-value input:focus-visible + span { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.collection-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.collection-count { margin: 0; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.collection-sort { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.collection-sort select { padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--radius-pill); color: var(--ink); background: rgba(255,255,255,.55); font: inherit; font-size: 11px; letter-spacing: 0; text-transform: none; cursor: pointer; }
+.collection-active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.collection-active-filters a { padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--radius-pill); background: rgba(255,255,255,.55); font-size: 10px; font-weight: 700; }
+.collection-active-filters a:hover { border-color: var(--ink); }
+.collection-active-filters .collection-clear-filters { border-color: transparent; background: none; color: var(--muted); text-decoration: underline; }
+.collection-filters { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
+.collection-filters .eyebrow { margin-bottom: 10px; }
+.collection-filter { border-bottom: 1px solid var(--line); }
+.collection-filter summary { padding: 12px 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+.collection-filter summary::-webkit-details-marker { display: none; }
+.collection-filter summary::after { content: '+'; }
+.collection-filter[open] summary::after { content: '–'; }
+.collection-filter ul { display: grid; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+.collection-filter label { display: flex; align-items: center; gap: 8px; font-size: 11px; cursor: pointer; }
+.collection-filter label.is-disabled { opacity: .4; cursor: not-allowed; }
+.collection-filter input[type="checkbox"] { accent-color: var(--violet); }
+.collection-filter small { color: var(--muted); }
+.collection-filter-price { display: flex; gap: 8px; margin-bottom: 14px; }
+.collection-filter-price label { flex: 1; flex-direction: column; align-items: stretch; gap: 4px; color: var(--muted); font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.collection-filter-price input { width: 100%; min-width: 0; padding: 9px 10px; border: 1px solid var(--line); border-radius: var(--radius-control); background: rgba(255,255,255,.55); color: var(--ink); font: inherit; font-size: 12px; }
+.collection-filter-apply { width: 100%; margin-top: 14px; }
+@media (max-width: 700px) {
+  .collection-toolbar { flex-wrap: wrap; }
+}
+
+.collection-filter-apply[hidden] { display: none; }

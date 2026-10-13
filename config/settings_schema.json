@@ -1,6 +1,10 @@
 [
   {
-    "name": "Theme settings",
-    "settings": []
+    "name": "theme_info",
+    "theme_name": "79mods",
+    "theme_version": "1.0.0",
+    "theme_author": "79mods",
+    "theme_support_url": "https://79mods.com",
+    "theme_documentation_url": "https://79mods.com"
   }
 ]

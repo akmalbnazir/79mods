@@ -16,7 +16,8 @@
   <div class="product-info product-info-card">
     <p class="eyebrow"><span>01</span> PARTS FOR THE WAY YOU RIDE</p>
     <h1>{{ product.title }}</h1>
-    <div class="product-price">{{ product.price | money }}</div>
+    {%- assign current_variant = product.selected_or_first_available_variant -%}
+    <div class="product-price" data-product-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %} <s class="product-compare-price">{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
     <div class="product-badges">
       <span>Free shipping over $150</span>
       <span>Rider support</span>
@@ -24,12 +25,31 @@
     </div>
     <div class="product-description">{{ product.description }}</div>
 
+    {%- unless product.has_only_default_variant -%}
+      <div class="product-options" data-product-options>
+        {%- for option in product.options_with_values -%}
+          <fieldset class="product-option" data-option-index="{{ forloop.index0 }}">
+            <legend>{{ option.name }}: <span data-option-selected>{{ option.selected_value }}</span></legend>
+            <div class="product-option-values">
+              {%- for value in option.values -%}
+                <label class="product-option-value">
+                  <input type="radio" name="option-{{ section.id }}-{{ option.position }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
+                  <span>{{ value }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endfor -%}
+      </div>
+      <script type="application/json" data-product-variants>{{ product.variants | json }}</script>
+    {%- endunless -%}
+
     <div class="product-buttons">
       {% form 'product', product, class: 'product-form', data-cart-form: 'true' %}
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
         <label class="product-quantity-label" for="ProductQuantity-{{ section.id }}">Qty</label>
         <input class="product-quantity" id="ProductQuantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" step="1" aria-label="Quantity">
-        <button type="submit" class="button button-dark">Add to cart</button>
+        <button type="submit" class="button button-dark" data-add-to-cart {% unless current_variant.available %}disabled{% endunless %}>{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}</button>
       {% endform %}
       <a class="button button-light product-secondary" href="{{ routes.all_products_collection_url }}">See more parts</a>
     </div>
@@ -41,3 +61,48 @@
     </div>
   </div>
 </section>
+
+<script>
+  (() => {
+    const section = document.currentScript.previousElementSibling;
+    const optionsRoot = section?.querySelector('[data-product-options]');
+    if (!optionsRoot) return;
+
+    const variants = JSON.parse(section.querySelector('[data-product-variants]').textContent);
+    const idInput = section.querySelector('[data-variant-id]');
+    const addButton = section.querySelector('[data-add-to-cart]');
+    const priceEl = section.querySelector('[data-product-price]');
+    const mainImage = section.querySelector('.product-main-image');
+    const money = (cents) => new Intl.NumberFormat(undefined, { style: 'currency', currency: {{ cart.currency.iso_code | json }} }).format(cents / 100);
+
+    function update() {
+      const selected = [...optionsRoot.querySelectorAll('.product-option')].map((fieldset) => {
+        const checked = fieldset.querySelector('input:checked');
+        fieldset.querySelector('[data-option-selected]').textContent = checked ? checked.value : '';
+        return checked?.value;
+      });
+      const variant = variants.find((item) => item.options.every((value, index) => value === selected[index]));
+
+      if (!variant) {
+        idInput.value = '';
+        addButton.disabled = true;
+        addButton.textContent = 'Unavailable';
+        return;
+      }
+
+      idInput.value = variant.id;
+      addButton.disabled = !variant.available;
+      addButton.textContent = variant.available ? 'Add to cart' : 'Sold out';
+      priceEl.innerHTML = money(variant.price) + (variant.compare_at_price > variant.price ? ` <s class="product-compare-price">${money(variant.compare_at_price)}</s>` : '');
+      if (variant.featured_image && mainImage) {
+        mainImage.src = variant.featured_image.src;
+        mainImage.alt = variant.featured_image.alt || '';
+      }
+      const url = new URL(window.location.href);
+      url.searchParams.set('variant', variant.id);
+      window.history.replaceState({}, '', url);
+    }
+
+    optionsRoot.addEventListener('change', update);
+  })();
+</script>
