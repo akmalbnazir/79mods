@@ -54,11 +54,6 @@
         "disabled": false,
         "settings": {}
       },
-      "16173364648559130103": {
-        "type": "shopify://apps/sales-pop-up/blocks/salespop/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
-        "disabled": false,
-        "settings": {}
-      },
       "13047258039897440615": {
         "type": "shopify://apps/judge-me-reviews/blocks/cart_drawer_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
         "disabled": false,
@@ -79,11 +74,6 @@
         "disabled": false,
         "settings": {}
       },
-      "13375938897875554821": {
-        "type": "shopify://apps/qikify-sales-pop-up/blocks/app-embed/688dd516-1cdc-4008-8329-23089a1c4e24",
-        "disabled": false,
-        "settings": {}
-      },
       "14152569897387207382": {
         "type": "shopify://apps/section-store/blocks/block-cart/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
         "disabled": false,
@@ -99,11 +89,6 @@
         "disabled": false,
         "settings": {}
       },
-      "8378267711759543428": {
-        "type": "shopify://apps/sales-pop-up/blocks/stickycart/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
-        "disabled": false,
-        "settings": {}
-      },
       "2187360915322861293": {
         "type": "shopify://apps/uploadly-file-upload/blocks/app-embed/d91e9a53-de3d-49df-b7a1-ac8a15b213e5",
         "disabled": false,
@@ -111,10 +96,25 @@
       },
       "15522997382164843275": {
         "type": "shopify://apps/fomo-social-proof-sales-popup/blocks/app-embed/ea8bddfc-cb72-4fa9-99fa-826f8cccf6a0",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "show_interactive_preview": true
         }
+      },
+      "13375938897875554821": {
+        "type": "shopify://apps/qikify-sales-pop-up/blocks/app-embed/688dd516-1cdc-4008-8329-23089a1c4e24",
+        "disabled": true,
+        "settings": {}
+      },
+      "16173364648559130103": {
+        "type": "shopify://apps/sales-pop-up/blocks/salespop/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
+        "disabled": false,
+        "settings": {}
+      },
+      "8378267711759543428": {
+        "type": "shopify://apps/sales-pop-up/blocks/stickycart/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
+        "disabled": false,
+        "settings": {}
       }
     }
   }
