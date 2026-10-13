@@ -16,13 +16,6 @@
         "disabled": false,
         "settings": {}
       },
-      "15522997382164843275": {
-        "type": "shopify://apps/fomo-social-proof-sales-popup/blocks/app-embed/ea8bddfc-cb72-4fa9-99fa-826f8cccf6a0",
-        "disabled": true,
-        "settings": {
-          "show_interactive_preview": true
-        }
-      },
       "15683396631634586217": {
         "type": "shopify://apps/inbox/blocks/chat/841fc607-4181-4ad1-842d-e24d7f8bad6b",
         "disabled": false,
@@ -115,6 +108,13 @@
         "type": "shopify://apps/uploadly-file-upload/blocks/app-embed/d91e9a53-de3d-49df-b7a1-ac8a15b213e5",
         "disabled": false,
         "settings": {}
+      },
+      "15522997382164843275": {
+        "type": "shopify://apps/fomo-social-proof-sales-popup/blocks/app-embed/ea8bddfc-cb72-4fa9-99fa-826f8cccf6a0",
+        "disabled": false,
+        "settings": {
+          "show_interactive_preview": true
+        }
       }
     }
   }
