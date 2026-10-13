@@ -110,6 +110,11 @@
         "type": "shopify://apps/sales-pop-up/blocks/stickycart/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
         "disabled": false,
         "settings": {}
+      },
+      "2187360915322861293": {
+        "type": "shopify://apps/uploadly-file-upload/blocks/app-embed/d91e9a53-de3d-49df-b7a1-ac8a15b213e5",
+        "disabled": false,
+        "settings": {}
       }
     }
   }
