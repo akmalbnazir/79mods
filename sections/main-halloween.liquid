@@ -1,0 +1,143 @@
+<main class="halloween-page">
+  <div class="halloween-fog" aria-hidden="true"></div>
+  <header class="halloween-hero">
+    <p class="halloween-eyebrow"><span aria-hidden="true">🎃</span> {{ section.settings.eyebrow }}</p>
+    <h1>{{ section.settings.heading }}</h1>
+    <p class="halloween-intro">{{ section.settings.intro }}</p>
+  </header>
+
+  {%- assign shown_bundles = 0 -%}
+  <div class="halloween-bundles">
+    {%- for block in section.blocks -%}
+      {%- assign discount = block.settings.discount_percent -%}
+      {%- assign buy_group = 'buy-' | append: block.id -%}
+      {%- assign get_group = 'get-' | append: block.id -%}
+
+      {%- capture buy_html -%}
+        {%- assign buy_count = 0 -%}
+        {%- for product in block.settings.buy_products -%}
+          {%- if product.available and product.published_at -%}
+            {%- assign buy_count = buy_count | plus: 1 -%}
+            {%- render 'halloween-product', product: product, group: buy_group -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+      {%- capture get_html -%}
+        {%- assign get_count = 0 -%}
+        {%- for product in block.settings.get_products -%}
+          {%- if product.available and product.published_at -%}
+            {%- assign get_count = get_count | plus: 1 -%}
+            {%- render 'halloween-product', product: product, discount: discount, group: get_group -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endcapture -%}
+
+      {%- if buy_count > 0 and get_count > 0 -%}
+        {%- assign shown_bundles = shown_bundles | plus: 1 -%}
+        <form class="halloween-bundle halloween-bundle-{{ forloop.index | modulo: 3 }}" action="{{ routes.cart_add_url }}" method="post" data-cart-form data-halloween-bundle data-discount="{{ discount }}" {{ block.shopify_attributes }}>
+          <div class="halloween-bundle-head">
+            <span class="halloween-badge">Bundle {{ shown_bundles }}</span>
+            <h2>{{ block.settings.title }}</h2>
+            {%- if block.settings.offer != blank -%}<p class="halloween-offer">{{ block.settings.offer }}</p>{%- endif -%}
+          </div>
+          <div class="halloween-bundle-body">
+            <div class="halloween-side" data-side="buy">
+              <h3><span>Buy</span> any one of these</h3>
+              <div class="halloween-products">{{ buy_html }}</div>
+            </div>
+            <div class="halloween-plus" aria-hidden="true">+</div>
+            <div class="halloween-side" data-side="get">
+              <h3><span>Get</span> any one {{ discount }}% off</h3>
+              <div class="halloween-products">{{ get_html }}</div>
+            </div>
+          </div>
+          <input type="hidden" name="items[0][id]" data-buy-id disabled>
+          <input type="hidden" name="items[0][quantity]" value="1">
+          <input type="hidden" name="items[1][id]" data-get-id disabled>
+          <input type="hidden" name="items[1][quantity]" value="1">
+          <div class="halloween-summary">
+            <p class="halloween-summary-text" data-summary role="status">Pick one to buy and one to get {{ discount }}% off.</p>
+            <button class="halloween-add" type="submit" disabled data-add>Add bundle to cart</button>
+          </div>
+          <p class="halloween-note">{{ discount }}% off the second item applies automatically at checkout when both are in your bag.</p>
+        </form>
+      {%- elsif request.design_mode -%}
+        <section class="halloween-bundle halloween-bundle-empty" {{ block.shopify_attributes }}>
+          <h2>{{ block.settings.title }}</h2>
+          <p>Hidden from visitors: both sides need at least one published, in-stock product. Check the products picked for this bundle.</p>
+        </section>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if shown_bundles == 0 -%}
+      <p class="halloween-empty">The bundles are hiding in the dark. Check back soon. 🦇</p>
+    {%- endif -%}
+  </div>
+</main>
+
+<script>
+  (() => {
+    const money = (cents) => new Intl.NumberFormat(undefined, { style: 'currency', currency: {{ cart.currency.iso_code | json }} }).format(cents / 100);
+
+    document.querySelectorAll('[data-halloween-bundle]').forEach((form) => {
+      const discount = Number(form.dataset.discount) || 0;
+      const buyId = form.querySelector('[data-buy-id]');
+      const getId = form.querySelector('[data-get-id]');
+      const summary = form.querySelector('[data-summary]');
+      const button = form.querySelector('[data-add]');
+
+      function selected(side) {
+        const card = form.querySelector(`.halloween-side[data-side="${side}"] [data-pick]:checked`)?.closest('[data-pick-card]');
+        const field = card?.querySelector('[data-variant]');
+        if (!field) return null;
+        const option = field.tagName === 'SELECT' ? field.selectedOptions[0] : field;
+        return { id: field.value, price: Number(option.dataset.price), title: option.dataset.title };
+      }
+
+      function update() {
+        form.querySelectorAll('[data-pick-card]').forEach((card) => card.classList.toggle('is-selected', card.querySelector('[data-pick]').checked));
+        const buy = selected('buy');
+        const get = selected('get');
+        buyId.disabled = !buy;
+        getId.disabled = !get;
+        if (buy) buyId.value = buy.id;
+        if (get) getId.value = get.id;
+        button.disabled = !(buy && get);
+        if (buy && get) {
+          const salePrice = Math.round(get.price * (100 - discount) / 100);
+          summary.innerHTML = `<strong>${buy.title}</strong> + <strong>${get.title}</strong><br>Total: <s>${money(buy.price + get.price)}</s> ${money(buy.price + salePrice)}`;
+        } else {
+          summary.textContent = `Pick one to buy and one to get ${discount}% off.`;
+        }
+      }
+
+      form.addEventListener('change', update);
+      update();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Halloween sale",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "SEASONAL · LIMITED TIME" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Halloween Sale" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Spooky season deals on the parts you actually ride. Pair them up and the savings apply at checkout." }
+  ],
+  "blocks": [
+    {
+      "type": "bundle",
+      "name": "Bundle",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Bundle title", "default": "Halloween Sale Bundle" },
+        { "type": "text", "id": "offer", "label": "Offer text" },
+        { "type": "range", "id": "discount_percent", "label": "Discount on the Get side (%)", "min": 5, "max": 90, "step": 5, "default": 20, "info": "Display only. The real discount comes from the Shopify Buy X get Y discount." },
+        { "type": "product_list", "id": "buy_products", "label": "Buy any one of these", "limit": 50 },
+        { "type": "product_list", "id": "get_products", "label": "Get any one of these discounted", "limit": 50 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Halloween sale" }]
+}
+{% endschema %}

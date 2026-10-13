@@ -4,7 +4,7 @@
     <a class="header-help" href="{{ pages['about-us'].url }}?view=help">Help</a>
   </div>
   <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
-    <a href="{{ routes.all_products_collection_url }}">Shop parts</a>
+    <a class="primary-nav-halloween" href="{{ routes.root_url }}pages/halloween-sale"{% if page.handle == 'halloween-sale' %} aria-current="page"{% endif %}><span aria-hidden="true">🎃</span> Halloween sale</a>
   </nav>
   <div class="header-actions">
     <button class="collections-toggle" type="button" aria-label="Open collections" aria-expanded="false" aria-controls="collection-drawer" title="Browse collections">

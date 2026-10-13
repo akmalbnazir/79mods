@@ -861,3 +861,90 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 .collection-filter-apply[hidden] { display: none; }
+
+/* Halloween sale */
+.primary-nav .primary-nav-halloween { padding: 9px 20px; border-radius: var(--radius-pill); color: #fff; background: linear-gradient(110deg, #ff7a18 0%, #e8410c 40%, #7b1fa2 100%); font-weight: 800; letter-spacing: .06em; box-shadow: 0 6px 18px rgba(232, 65, 12, .32); transition: transform .2s ease, box-shadow .2s ease; }
+.primary-nav .primary-nav-halloween:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(232, 65, 12, .45); }
+.primary-nav .primary-nav-halloween[aria-current="page"] { box-shadow: 0 0 0 2px #1a0b2e, 0 0 0 4px #ff7a18; }
+@media (max-width: 700px) {
+  .primary-nav .primary-nav-halloween { margin: 8px 0; border-bottom: 0; text-align: center; }
+}
+
+.halloween-page {
+  --h-orange: #ff7a18;
+  --h-orange-deep: #e8410c;
+  --h-purple: #7b1fa2;
+  --h-night: #130822;
+  --h-night-2: #2a0f45;
+  --h-green: #9dff4f;
+  position: relative;
+  overflow: hidden;
+  padding: 70px 5vw 100px;
+  color: #f6ecff;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(255, 122, 24, .35), transparent 32%),
+    radial-gradient(circle at 90% 12%, rgba(123, 31, 162, .55), transparent 38%),
+    radial-gradient(circle at 50% 100%, rgba(157, 255, 79, .12), transparent 40%),
+    linear-gradient(180deg, var(--h-night) 0%, var(--h-night-2) 55%, #0d0518 100%);
+}
+.halloween-fog { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 20% 80%, rgba(255,255,255,.07), transparent 45%), radial-gradient(ellipse at 80% 60%, rgba(255,255,255,.05), transparent 40%); animation: halloween-drift 18s ease-in-out infinite alternate; }
+@keyframes halloween-drift { to { transform: translate3d(3%, -2%, 0); } }
+.halloween-hero { position: relative; max-width: 860px; margin: 0 auto 64px; text-align: center; }
+.halloween-eyebrow { margin: 0 0 18px; color: var(--h-orange); font-size: 11px; font-weight: 800; letter-spacing: .2em; }
+.halloween-hero h1 { margin: 0 0 20px; font-family: var(--display); font-size: clamp(64px, 12vw, 148px); font-weight: 900; line-height: .86; text-transform: uppercase; background: linear-gradient(100deg, #ffd23f 0%, #ff7a18 35%, #e8410c 60%, #c13bff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 28px rgba(255, 122, 24, .35)); }
+.halloween-intro { max-width: 520px; margin: 0 auto; color: rgba(246, 236, 255, .78); font-size: 14px; line-height: 1.7; }
+
+.halloween-bundles { position: relative; max-width: 1200px; margin: 0 auto; display: grid; gap: 34px; }
+.halloween-bundle { padding: clamp(22px, 3.5vw, 40px); border: 1px solid rgba(255, 122, 24, .35); border-radius: var(--radius-panel); background: linear-gradient(150deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); box-shadow: 0 24px 60px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.08); backdrop-filter: blur(6px); }
+.halloween-bundle-1 { border-color: rgba(193, 59, 255, .45); }
+.halloween-bundle-2 { border-color: rgba(157, 255, 79, .35); }
+.halloween-bundle-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-bottom: 26px; }
+.halloween-badge { padding: 7px 14px; border-radius: var(--radius-pill); color: #1a0b2e; background: linear-gradient(100deg, #ffd23f, #ff7a18); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.halloween-bundle-1 .halloween-badge { background: linear-gradient(100deg, #e08bff, #8f3dff); }
+.halloween-bundle-2 .halloween-badge { background: linear-gradient(100deg, #d6ff7a, #5fd13a); }
+.halloween-bundle-head h2 { margin: 0; font-family: var(--display); font-size: clamp(30px, 4vw, 46px); font-weight: 800; line-height: 1; text-transform: uppercase; color: #fff; }
+.halloween-offer { flex-basis: 100%; margin: 0; color: #ffb066; font-size: 13px; font-weight: 600; }
+.halloween-bundle-body { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: start; gap: 22px; }
+.halloween-side h3 { margin: 0 0 14px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(246,236,255,.85); }
+.halloween-side h3 span { margin-right: 8px; padding: 4px 9px; border-radius: var(--radius-pill); color: #1a0b2e; background: var(--h-orange); font-size: 9px; font-weight: 800; }
+.halloween-side:last-child h3 span { background: var(--h-green); }
+.halloween-plus { align-self: center; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; color: #fff; background: linear-gradient(135deg, var(--h-orange-deep), var(--h-purple)); font-size: 26px; font-weight: 800; box-shadow: 0 0 26px rgba(232, 65, 12, .5); }
+.halloween-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+.halloween-product { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-card); background: rgba(10, 4, 20, .55); transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.halloween-product:hover { transform: translateY(-4px); border-color: var(--h-orange); box-shadow: 0 12px 28px rgba(255, 122, 24, .25); }
+.halloween-product-image { aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; border-radius: var(--radius-control); background: linear-gradient(145deg, #f6efff, #ffe9d6); }
+.halloween-product-image img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.halloween-product-title { font-size: 11px; font-weight: 700; line-height: 1.3; color: #fff; }
+.halloween-product-price { color: var(--h-orange); font-size: 11px; font-weight: 800; }
+.halloween-note { margin: 24px 0 0; color: rgba(246,236,255,.6); font-size: 11px; }
+.halloween-bundle-empty { color: rgba(246,236,255,.7); border-style: dashed; }
+.halloween-bundle-empty h2 { margin: 0 0 6px; font-size: 18px; }
+.halloween-empty { text-align: center; color: rgba(246,236,255,.75); }
+@media (max-width: 800px) {
+  .halloween-bundle-body { grid-template-columns: minmax(0, 1fr); }
+  .halloween-plus { justify-self: center; }
+  .halloween-page { padding: 48px 5vw 70px; }
+}
+@media (prefers-reduced-motion: reduce) { .halloween-fog { animation: none; } }
+
+.halloween-product-image { position: relative; }
+.halloween-product-tag { position: absolute; top: 8px; left: 8px; padding: 4px 9px; border-radius: var(--radius-pill); color: #1a0b2e; background: var(--h-green); font-size: 9px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.halloween-product-price s { margin-right: 4px; color: rgba(246,236,255,.5); font-weight: 500; }
+
+.halloween-product { position: relative; cursor: pointer; }
+.halloween-pick { position: absolute; opacity: 0; pointer-events: none; }
+.halloween-product.is-selected { border-color: var(--h-orange); background: rgba(255, 122, 24, .14); box-shadow: 0 0 0 2px var(--h-orange), 0 12px 28px rgba(255, 122, 24, .3); }
+.halloween-side[data-side="get"] .halloween-product.is-selected { border-color: var(--h-green); background: rgba(157, 255, 79, .12); box-shadow: 0 0 0 2px var(--h-green), 0 12px 28px rgba(157, 255, 79, .22); }
+.halloween-check { position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; display: none; place-items: center; border-radius: 50%; color: #1a0b2e; background: var(--h-orange); font-size: 14px; font-weight: 900; }
+.halloween-side[data-side="get"] .halloween-check { background: var(--h-green); }
+.halloween-product.is-selected .halloween-check { display: grid; }
+.halloween-variant { width: 100%; padding: 7px 8px; border: 1px solid rgba(255,255,255,.2); border-radius: var(--radius-control); color: #fff; background: rgba(255,255,255,.08); font: inherit; font-size: 10px; }
+.halloween-variant option { color: #1a0b2e; }
+.halloween-product-link { color: rgba(246,236,255,.6); font-size: 10px; text-decoration: underline; }
+.halloween-product-link:hover { color: #fff; }
+.halloween-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 26px; padding: 18px 22px; border: 1px dashed rgba(255, 122, 24, .5); border-radius: var(--radius-card); background: rgba(10, 4, 20, .5); }
+.halloween-summary-text { margin: 0; flex: 1 1 260px; color: rgba(246,236,255,.85); font-size: 12px; line-height: 1.6; }
+.halloween-summary-text s { color: rgba(246,236,255,.5); }
+.halloween-add { min-height: 49px; padding: 0 28px; border: 0; border-radius: var(--radius-pill); color: #fff; background: linear-gradient(110deg, #ff7a18 0%, #e8410c 45%, #7b1fa2 100%); font: inherit; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 22px rgba(232, 65, 12, .4); transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease; }
+.halloween-add:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(232, 65, 12, .55); }
+.halloween-add:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
