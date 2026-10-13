@@ -17,7 +17,7 @@
     {{ content_for_header }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
   </head>
-  <body>
+  <body{% if template.suffix == 'halloween' %} class="is-halloween"{% endif %}>
     {{ content_for_layout }}
     <dialog class="collection-drawer" id="collection-drawer" aria-labelledby="collection-drawer-title">
       <button class="collection-drawer-scrim" type="button" data-close-collection-drawer aria-label="Close collections"></button>

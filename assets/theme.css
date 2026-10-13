@@ -948,3 +948,26 @@ h1, h2, h3, p { margin-top: 0; }
 .halloween-add { min-height: 49px; padding: 0 28px; border: 0; border-radius: var(--radius-pill); color: #fff; background: linear-gradient(110deg, #ff7a18 0%, #e8410c 45%, #7b1fa2 100%); font: inherit; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 22px rgba(232, 65, 12, .4); transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease; }
 .halloween-add:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(232, 65, 12, .55); }
 .halloween-add:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+
+.is-halloween { background: #130822; }
+.is-halloween .announcement,
+.is-halloween .site-header,
+.is-halloween .site-footer {
+  color: #f6ecff;
+  border-color: rgba(255, 122, 24, .4);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(255, 122, 24, .4), transparent 45%),
+    radial-gradient(circle at 90% 20%, rgba(123, 31, 162, .6), transparent 50%),
+    linear-gradient(100deg, #2a0f45 0%, #130822 100%);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .35);
+}
+.is-halloween .site-header a,
+.is-halloween .site-header button,
+.is-halloween .site-footer,
+.is-halloween .site-footer a,
+.is-halloween .site-footer span,
+.is-halloween .site-footer span:not(.footer-year) { color: #f6ecff; }
+.is-halloween .primary-nav .primary-nav-halloween { color: #fff; }
+.is-halloween .site-footer { box-shadow: none; border-top: 1px solid rgba(255, 122, 24, .4); border-radius: 0; }
+.is-halloween .site-header .wordmark,
+.is-halloween .site-footer .wordmark { padding: 4px 12px; border-radius: 999px; background: rgba(255, 255, 255, .92); }
