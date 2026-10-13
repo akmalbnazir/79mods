@@ -969,5 +969,3 @@ h1, h2, h3, p { margin-top: 0; }
 .is-halloween .site-footer span:not(.footer-year) { color: #f6ecff; }
 .is-halloween .primary-nav .primary-nav-halloween { color: #fff; }
 .is-halloween .site-footer { box-shadow: none; border-top: 1px solid rgba(255, 122, 24, .4); border-radius: 0; }
-.is-halloween .site-header .wordmark,
-.is-halloween .site-footer .wordmark { padding: 4px 12px; border-radius: 999px; background: rgba(255, 255, 255, .92); }
