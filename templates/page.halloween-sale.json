@@ -1,0 +1,110 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "announcement_bar": {
+      "type": "announcement-bar",
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": {}
+    },
+    "main_halloween": {
+      "type": "main-halloween",
+      "blocks": {
+        "lights_brakes": {
+          "type": "bundle",
+          "settings": {
+            "title": "Halloween Sale Bundle: Lights + Brakes",
+            "offer": "Buy any light, get any brake 20% off",
+            "discount_percent": 20,
+            "buy_products": [
+              "purchase-1",
+              "baja-tailight-blinder",
+              "macfox-baja-headlight",
+              "talaria-xxx-baja-headlight",
+              "universal-baja-headlight"
+            ],
+            "get_products": [
+              "rear-ultra-bee-brakes",
+              "ultra-bee-brake-for-e-bikes-macfox-super73-ridstar-and-more",
+              "premium-tuttio-yozma-ultra-bee-brake-kit",
+              "yozma-in10-tuttio-heybike-strike-48v-ultra-bee-brakes-rear",
+              "79bike-falcon-pro-lite-gt-ultra-bee-foot-brake-kit",
+              "surron-eride-pro-ultra-bee-front-brake-kit",
+              "surron-lbx-ultra-bee-foot-brake-kit",
+              "talaria-xxx-ultra-bee-footbrake-kit",
+              "surron-ultra-bee-foot-brake-kit"
+            ]
+          }
+        },
+        "brakes_guards": {
+          "type": "bundle",
+          "settings": {
+            "title": "Halloween Sale Bundle: Brakes + Guards",
+            "offer": "Buy any brake, get any frame guard 20% off",
+            "discount_percent": 20,
+            "buy_products": [
+              "rear-ultra-bee-brakes",
+              "ultra-bee-brake-for-e-bikes-macfox-super73-ridstar-and-more",
+              "premium-tuttio-yozma-ultra-bee-brake-kit",
+              "yozma-in10-tuttio-heybike-strike-48v-ultra-bee-brakes-rear",
+              "79bike-falcon-pro-lite-gt-ultra-bee-foot-brake-kit",
+              "surron-eride-pro-ultra-bee-front-brake-kit",
+              "surron-lbx-ultra-bee-foot-brake-kit",
+              "talaria-xxx-ultra-bee-footbrake-kit",
+              "surron-ultra-bee-foot-brake-kit"
+            ],
+            "get_products": [
+              "79bike-frame-guards-pro-lite-gt",
+              "color-79bike-ventus-frame-guards-pro-lite-gt"
+            ]
+          }
+        },
+        "guards_wheels": {
+          "type": "bundle",
+          "settings": {
+            "title": "Halloween Sale Bundle: Frame Guards + Wheels",
+            "discount_percent": 20,
+            "buy_products": [
+              "79bike-frame-guards-pro-lite-gt",
+              "color-79bike-ventus-frame-guards-pro-lite-gt"
+            ],
+            "offer": "Buy any frame guard, get any wheelset 20% off",
+            "get_products": [
+              "surron-light-bee-x-e-ride-pro-supermoto-wheelset-thick-wide-chrome-silver-gloss-black",
+              "79bike-falcon-lite-16-19-wheelset-with-preinstalled-dirt-tires-customizable",
+              "12in-mini-moto-wheels",
+              "16-19-light-bee-eride2-0-1-0-lbx-wheelset-with-dirt-tires",
+              "16-19-dirt-wheelset-79bike-surron-eride-ventus"
+            ]
+          }
+        }
+      },
+      "block_order": [
+        "lights_brakes",
+        "brakes_guards",
+        "guards_wheels"
+      ],
+      "settings": {}
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {}
+    }
+  },
+  "order": [
+    "announcement_bar",
+    "header",
+    "main_halloween",
+    "footer"
+  ]
+}
