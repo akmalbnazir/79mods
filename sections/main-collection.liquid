@@ -18,6 +18,7 @@
         <a href="{{ routes.collections_url }}/emoto-power-upgrades"{% if collection.handle == 'emoto-power-upgrades' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">04</span> Power up</a>
         <a href="{{ routes.collections_url }}/emoto-brakes"{% if collection.handle == 'emoto-brakes' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">05</span> Carbon fiber</a>
         <a href="{{ routes.collections_url }}/direct-stem"{% if collection.handle == 'direct-stem' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">06</span> Stems + bars</a>
+        <a href="{{ routes.collections_url }}/emoto-pegs"{% if collection.handle == 'emoto-pegs' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">07</span> Pegs</a>
       </nav>
 
       {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
