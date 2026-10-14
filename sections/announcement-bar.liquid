@@ -1,5 +1,23 @@
 <div class="announcement">
   <p><span class="live-dot"></span> 79mods@gmail.com</p>
-  <a href="{{ routes.all_products_collection_url }}"><strong>ORDER BY 3PM ET, SAME DAY SHIPPING</strong><span aria-hidden="true">↗</span></a>
+  <a href="{{ routes.all_products_collection_url }}"><strong>ORDER BY 3PM ET, SAME DAY SHIPPING</strong><span class="announcement-countdown" data-cutoff-countdown aria-live="off" hidden></span><span aria-hidden="true">↗</span></a>
   <span class="announcement-index">Questions? Call +1 (717) - 862 - 4095</span>
 </div>
+<script>
+  (function () {
+    var el = document.querySelector('[data-cutoff-countdown]');
+    if (!el) return;
+    var fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hourCycle: 'h23', hour: 'numeric', minute: 'numeric', second: 'numeric' });
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+      var p = {};
+      fmt.formatToParts(new Date()).forEach(function (x) { p[x.type] = +x.value; });
+      var left = (15 * 3600) - (p.hour * 3600 + p.minute * 60 + p.second);
+      if (left <= 0) left += 86400;
+      el.textContent = pad(Math.floor(left / 3600)) + ':' + pad(Math.floor(left % 3600 / 60)) + ':' + pad(left % 60);
+      el.hidden = false;
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>

@@ -976,3 +976,7 @@ h1, h2, h3, p { margin-top: 0; }
 .bike-section { padding: 82px 8.3vw 94px; }
 .bike-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 @media (max-width: 640px) { .bike-section { padding-right: 6vw; padding-left: 6vw; } .bike-grid { grid-template-columns: 1fr; } }
+
+.announcement .announcement-countdown { margin-left: 10px; padding: 2px 8px; border-radius: 999px; color: #fff; background: rgba(255, 255, 255, .18); font-variant-numeric: tabular-nums; font-weight: 700; letter-spacing: .04em; }
+.announcement .announcement-countdown[hidden] { display: none; }
+.announcement a { white-space: nowrap; display: inline-flex; align-items: center; }
