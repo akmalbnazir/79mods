@@ -28,21 +28,10 @@
             "discount_percent": 20,
             "buy_products": [
               "purchase-1",
-              "baja-tailight-blinder",
-              "macfox-baja-headlight",
-              "talaria-xxx-baja-headlight",
-              "universal-baja-headlight"
+              "baja-tailight-blinder"
             ],
             "get_products": [
-              "rear-ultra-bee-brakes",
-              "ultra-bee-brake-for-e-bikes-macfox-super73-ridstar-and-more",
-              "premium-tuttio-yozma-ultra-bee-brake-kit",
-              "yozma-in10-tuttio-heybike-strike-48v-ultra-bee-brakes-rear",
-              "79bike-falcon-pro-lite-gt-ultra-bee-foot-brake-kit",
-              "surron-eride-pro-ultra-bee-front-brake-kit",
-              "surron-lbx-ultra-bee-foot-brake-kit",
-              "talaria-xxx-ultra-bee-footbrake-kit",
-              "surron-ultra-bee-foot-brake-kit"
+              "rear-ultra-bee-brakes"
             ]
           }
         },
@@ -80,10 +69,7 @@
             ],
             "offer": "Buy any frame guard, get any wheelset 20% off",
             "get_products": [
-              "surron-light-bee-x-e-ride-pro-supermoto-wheelset-thick-wide-chrome-silver-gloss-black",
-              "79bike-falcon-lite-16-19-wheelset-with-preinstalled-dirt-tires-customizable",
               "12in-mini-moto-wheels",
-              "16-19-light-bee-eride2-0-1-0-lbx-wheelset-with-dirt-tires",
               "16-19-dirt-wheelset-79bike-surron-eride-ventus"
             ]
           }
