@@ -972,3 +972,7 @@ h1, h2, h3, p { margin-top: 0; }
   .primary-nav .primary-nav-halloween { width: 100%; margin: 0; padding: 11px 16px; border-bottom: 0; font-size: 14px; text-align: center; }
   .menu-toggle { display: none; }
 }
+
+.bike-section { padding: 82px 8.3vw 94px; }
+.bike-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+@media (max-width: 640px) { .bike-section { padding-right: 6vw; padding-left: 6vw; } .bike-grid { grid-template-columns: 1fr; } }

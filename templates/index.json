@@ -25,8 +25,8 @@
       "type": "category-grid",
       "settings": {}
     },
-    "favorites": {
-      "type": "favorites-section",
+    "shop_by_bike": {
+      "type": "shop-by-bike",
       "settings": {}
     },
     "footer": {
@@ -39,7 +39,7 @@
     "header",
     "hero",
     "category_grid",
-    "favorites",
+    "shop_by_bike",
     "footer"
   ]
 }

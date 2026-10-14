@@ -1,7 +1,9 @@
+{%- assign bike_handles = 'surron-parts,79bike-parts,ventus-parts,e-ride-parts,talaria-parts' | split: ',' -%}
+{%- if bike_handles contains collection.handle -%}{%- assign is_bike_collection = true -%}{%- endif -%}
 <section class="collection-page">
   <div class="collection-heading">
     <div>
-      <p class="eyebrow"><span>02</span> THE FULL GARAGE</p>
+      <p class="eyebrow"><span>02</span> {% if is_bike_collection %}SHOP BY BIKE{% else %}THE FULL GARAGE{% endif %}</p>
       <h1>{{ collection.title }}</h1>
     </div>
     <p class="collection-intro">{{ collection.description | strip_html | default: 'Parts, upgrades, and essentials for the next ride. Find your setup and get back out there.' }}</p>
@@ -9,6 +11,16 @@
 
   <div class="collection-layout">
     <aside class="collection-sidebar" aria-label="Browse collections">
+{% if is_bike_collection %}
+      <p class="eyebrow">SHOP BY BIKE</p>
+      <nav aria-label="Bike collections">
+        {%- for handle in bike_handles -%}
+          {%- assign bike = collections[handle] -%}
+          <a href="{{ bike.url }}"{% if collection.handle == handle %} aria-current="page"{% endif %}><span class="collection-sidebar-index">{{ forloop.index | prepend: '0' }}</span> {{ bike.title }}</a>
+        {%- endfor -%}
+        <a href="{{ routes.all_products_collection_url }}"><span class="collection-sidebar-index">↩</span> Shop by part</a>
+      </nav>
+{% else %}
       <p class="eyebrow">COLLECTIONS</p>
       <nav aria-label="Collection categories">
         <a href="{{ routes.all_products_collection_url }}"{% if collection.handle == 'all' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">00</span> All parts</a>
@@ -20,6 +32,7 @@
         <a href="{{ routes.collections_url }}/direct-stem"{% if collection.handle == 'direct-stem' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">06</span> Stems + bars</a>
         <a href="{{ routes.collections_url }}/emoto-pegs"{% if collection.handle == 'emoto-pegs' %} aria-current="page"{% endif %}><span class="collection-sidebar-index">07</span> Pegs</a>
       </nav>
+{% endif %}
 
       {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
       {%- if collection.filters.size > 0 -%}
