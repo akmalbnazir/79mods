@@ -980,3 +980,10 @@ h1, h2, h3, p { margin-top: 0; }
 .announcement .announcement-countdown { margin-left: 10px; padding: 2px 8px; border-radius: 999px; color: #fff; background: rgba(255, 255, 255, .18); font-variant-numeric: tabular-nums; font-weight: 700; letter-spacing: .04em; }
 .announcement .announcement-countdown[hidden] { display: none; }
 .announcement a { white-space: nowrap; display: inline-flex; align-items: center; }
+
+.collection-product .favorite-image { height: auto; aspect-ratio: 1 / 1; }
+.collection-product .favorite-image img { object-fit: contain; }
+@media (max-width: 640px) {
+  .collection-product.favorite-card { grid-template-columns: 42% 1fr; }
+  .collection-product .favorite-image { height: auto; aspect-ratio: 1 / 1; }
+}
