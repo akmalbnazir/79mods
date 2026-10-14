@@ -1,4 +1,5 @@
 {%- assign bike_handles = 'surron-parts,79bike-parts,ventus-parts,e-ride-parts,talaria-parts' | split: ',' -%}
+{%- assign bike_files = 'bike-surron.png,bike-79bike.jpg,bike-ventus.jpg,bike-eride.jpg,bike-talaria.jpg' | split: ',' -%}
 <section class="bike-section" aria-labelledby="bike-title">
   <div class="favorites-heading reveal">
     <div>
@@ -11,12 +12,9 @@
   <div class="favorites-grid bike-grid">
     {%- for handle in bike_handles -%}
       {%- assign bike = collections[handle] -%}
-      {%- assign bike_image = bike.image | default: bike.products[forloop.index0].featured_image -%}
       <a class="favorite-card bike-card reveal" href="{{ bike.url }}">
         <div class="favorite-image">
-          {%- if bike_image -%}
-            <img src="{{ bike_image | image_url: width: 700 }}" alt="{{ bike.title | escape }}" loading="lazy">
-          {%- endif -%}
+          <img src="{{ bike_files[forloop.index0] | asset_url }}" alt="{{ bike.title | escape }}" loading="lazy">
           <span class="favorite-index">{{ forloop.index | prepend: '0' }} / BIKE</span>
           <span class="favorite-arrow" aria-hidden="true">↗</span>
         </div>
