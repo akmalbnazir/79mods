@@ -965,3 +965,10 @@ h1, h2, h3, p { margin-top: 0; }
 .is-halloween .site-footer span:not(.footer-year) { color: #f6ecff; }
 .is-halloween .primary-nav .primary-nav-halloween { color: #fff; }
 .is-halloween .site-footer { box-shadow: none; border-top: 1px solid rgba(255, 122, 24, .4); border-radius: 0; }
+
+@media (max-width: 640px) {
+  .site-header { height: auto; min-height: 66px; grid-template-rows: 66px auto; row-gap: 0; padding-bottom: 12px; }
+  .site-header > .primary-nav { position: static; display: flex; grid-column: 1 / -1; grid-row: 2; flex-direction: row; justify-content: center; padding: 0; border: 0; background: none; }
+  .primary-nav .primary-nav-halloween { width: 100%; margin: 0; padding: 11px 16px; border-bottom: 0; font-size: 14px; text-align: center; }
+  .menu-toggle { display: none; }
+}
