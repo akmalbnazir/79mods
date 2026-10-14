@@ -115,6 +115,14 @@
           "mobile_side_margin": 16,
           "mobile_bottom_margin": 46
         }
+      },
+      "3156526161536407824": {
+        "type": "shopify://apps/section-store/blocks/block-bundle-embed/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
+        "disabled": false,
+        "settings": {
+          "padding_vertical": 10,
+          "padding_horizontal": 0
+        }
       }
     }
   }
