@@ -2,6 +2,8 @@ const searchInput = document.querySelector('#category-search');
 const categoryCards = [...document.querySelectorAll('.category-card')];
 const emptyMessage = document.querySelector('#search-empty');
 const searchToggle = document.querySelector('.search-toggle');
+const siteSearch = document.querySelector('#site-search');
+const siteSearchInput = document.querySelector('#site-search-input');
 const menuToggle = document.querySelector('.menu-toggle');
 const primaryNav = document.querySelector('#primary-nav');
 const toast = document.querySelector('#search-toast');
@@ -22,9 +24,18 @@ function filterCategories(query) {
 
 searchInput.addEventListener('input', (event) => filterCategories(event.currentTarget.value));
 
-searchToggle.addEventListener('click', () => {
-  searchInput.focus();
-  document.querySelector('#shop').scrollIntoView({ behavior: 'smooth' });
+searchToggle?.addEventListener('click', () => {
+  if (siteSearch) {
+    if (!siteSearch.open) siteSearch.showModal();
+    siteSearchInput?.focus();
+  } else {
+    searchInput.focus();
+    document.querySelector('#shop').scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+siteSearch?.querySelector('[data-close-site-search]')?.addEventListener('click', () => {
+  siteSearch.close();
 });
 
 document.addEventListener('keydown', (event) => {

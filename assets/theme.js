@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoryCards = [...document.querySelectorAll('.category-card')];
   const emptyMessage = document.querySelector('#search-empty');
   const searchToggle = document.querySelector('.search-toggle');
+  const siteSearch = document.querySelector('#site-search');
+  const siteSearchInput = document.querySelector('#site-search-input');
   const menuToggle = document.querySelector('.menu-toggle');
   const primaryNav = document.querySelector('#primary-nav');
   const revealItems = document.querySelectorAll('.reveal');
@@ -27,14 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
       filterCategories(event.currentTarget.value);
     });
 
-    if (searchToggle) {
-      searchToggle.addEventListener('click', () => {
-        searchInput.focus();
-        const shopSection = document.querySelector('#shop');
-        if (shopSection) shopSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    }
-
     document.addEventListener('keydown', (event) => {
       if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')) {
         event.preventDefault();
@@ -46,6 +40,26 @@ document.addEventListener('DOMContentLoaded', () => {
         searchInput.value = '';
         filterCategories('');
         searchInput.blur();
+      }
+    });
+  }
+
+  if (searchToggle && siteSearch) {
+    searchToggle.addEventListener('click', () => {
+      if (!siteSearch.open) siteSearch.showModal();
+      siteSearchInput?.focus();
+    });
+
+    siteSearch.querySelector('[data-close-site-search]')?.addEventListener('click', () => {
+      siteSearch.close();
+    });
+  } else if (searchToggle) {
+    searchToggle.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.focus();
+        document.querySelector('#shop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.location.assign('/#shop');
       }
     });
   }

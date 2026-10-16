@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "announcement_bar": { "type": "announcement-bar", "settings": {} },
+    "header": { "type": "header", "settings": {} },
+    "main_search": { "type": "main-search", "settings": {} },
+    "footer": { "type": "footer", "settings": {} }
+  },
+  "order": ["announcement_bar", "header", "main_search", "footer"]
+}

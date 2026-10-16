@@ -11,7 +11,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path><circle cx="7" cy="6" r="1"></circle><circle cx="7" cy="12" r="1"></circle><circle cx="7" cy="18" r="1"></circle></svg>
       <span>Collections</span>
     </button>
-    <button class="search-toggle" type="button" aria-label="Focus search" title="Search parts">
+    <button class="search-toggle" type="button" aria-label="Open search" aria-controls="site-search" title="Search parts">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.3 4.3"></path></svg>
       <span>Search</span>
     </button>
@@ -22,3 +22,23 @@
     <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav"><span></span><span></span></button>
   </div>
 </header>
+
+<dialog class="site-search" id="site-search" aria-labelledby="site-search-title">
+  <div class="site-search-heading">
+    <div>
+      <p class="eyebrow">FIND YOUR NEXT UPGRADE</p>
+      <h2 id="site-search-title">Search parts</h2>
+    </div>
+    <button class="collection-drawer-close" type="button" data-close-site-search aria-label="Close search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+    </button>
+  </div>
+  <form class="site-search-form" action="{{ routes.search_url }}" method="get" role="search">
+    <label class="shop-search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.3 4.3"></path></svg>
+      <input id="site-search-input" type="search" name="q" placeholder="Search parts, bikes, and upgrades" autocomplete="off" aria-label="Search products" required>
+    </label>
+    <input type="hidden" name="type" value="product">
+    <button class="button button-dark" type="submit"><span>Search products</span><span aria-hidden="true">↗</span></button>
+  </form>
+</dialog>
