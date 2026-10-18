@@ -29,6 +29,10 @@
       "type": "shop-by-bike",
       "settings": {}
     },
+    "new_arrival_popup": {
+      "type": "new-arrival-popup",
+      "settings": {}
+    },
     "footer": {
       "type": "footer",
       "settings": {}
@@ -40,6 +44,7 @@
     "hero",
     "category_grid",
     "shop_by_bike",
+    "new_arrival_popup",
     "footer"
   ]
 }

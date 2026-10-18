@@ -1,0 +1,49 @@
+{%- assign promo = section.settings.product | default: all_products['super-motos-17in-2'] -%}
+{%- if promo != blank and promo.available -%}
+  <dialog class="arrival-popup" id="arrival-popup" aria-labelledby="arrival-popup-title" data-arrival-popup>
+    <div class="arrival-popup-panel">
+      <button class="arrival-popup-close" type="button" data-arrival-close aria-label="Close popup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <div class="arrival-popup-copy">
+        <p class="arrival-popup-eyebrow"><span class="live-dot"></span> NEW ARRIVAL</p>
+        <h2 id="arrival-popup-title">NEW ARRIVAL,<br>NOW IN STOCK.</h2>
+        <p class="arrival-popup-stock">
+          Only <strong>{{ section.settings.stock_left }}</strong> in stock left, buy soon
+        </p>
+        <p class="arrival-popup-guarantee">GUARANTEED NEXT DAY SHIPPING OR REFUND</p>
+        <a class="button button-dark arrival-popup-cta" href="{{ promo.url }}"><span>Shop {{ promo.title }}</span><span aria-hidden="true">↗</span></a>
+      </div>
+      <a class="arrival-popup-media" href="{{ promo.url }}" aria-label="View {{ promo.title | escape }}">
+        {%- if promo.featured_image -%}
+          <img src="{{ promo.featured_image | image_url: width: 900 }}" alt="{{ promo.featured_image.alt | default: promo.title | escape }}" width="900" height="{{ 900 | divided_by: promo.featured_image.aspect_ratio | round }}">
+        {%- endif -%}
+      </a>
+    </div>
+  </dialog>
+  <script>
+    (function () {
+      var popup = document.getElementById('arrival-popup');
+      if (!popup || typeof popup.showModal !== 'function') return;
+      var key = 'arrival-popup-seen';
+      try { if (sessionStorage.getItem(key)) return; } catch (e) {}
+      function close() {
+        popup.close();
+        try { sessionStorage.setItem(key, '1'); } catch (e) {}
+      }
+      popup.querySelector('[data-arrival-close]').addEventListener('click', close);
+      popup.addEventListener('click', function (event) { if (event.target === popup) close(); });
+      popup.addEventListener('cancel', function () { try { sessionStorage.setItem(key, '1'); } catch (e) {} });
+      popup.showModal();
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "New arrival popup",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Featured product", "info": "Defaults to super-motos-17in-2 if left empty." },
+    { "type": "number", "id": "stock_left", "label": "Units left to display", "default": 30 }
+  ],
+  "presets": [{ "name": "New arrival popup" }]
+}
+{% endschema %}
