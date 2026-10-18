@@ -16,6 +16,12 @@
   <div class="product-info product-info-card">
     <p class="eyebrow"><span>01</span> PARTS FOR THE WAY YOU RIDE</p>
     <h1>{{ product.title }}</h1>
+    {%- comment -%} PLACEHOLDER: fake rating, remove with assets/placeholder-ratings.js before publishing {%- endcomment -%}
+    <a class="product-rating" href="#product-reviews" data-placeholder-rating data-handle="{{ product.handle }}" hidden>
+      <span class="product-rating-stars" aria-hidden="true"></span>
+      <span class="product-rating-text"><strong data-rating-value></strong> (<span data-rating-count></span> reviews)</span>
+    </a>
+    <script src="{{ 'placeholder-ratings.js' | asset_url }}" defer></script>
     {%- assign current_variant = product.selected_or_first_available_variant -%}
     <div class="product-price" data-product-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %} <s class="product-compare-price">{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
     <div class="product-badges">

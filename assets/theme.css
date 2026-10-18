@@ -1069,3 +1069,11 @@ h1, h2, h3, p { margin-top: 0; }
   .arrival-popup { width: calc(100vw - 16px); border-radius: 20px; }
   .arrival-popup-cta { padding: 0 14px; }
 }
+
+.product-rating { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 14px; color: var(--ink); font-size: 13px; text-decoration: none; }
+.product-rating-stars { position: relative; display: inline-block; width: 5.4em; font-size: 18px; line-height: 1; letter-spacing: .08em; white-space: nowrap; }
+.product-rating-stars::before, .product-rating-stars::after { content: '★★★★★'; display: block; }
+.product-rating-stars::before { color: rgba(66, 35, 79, .18); }
+.product-rating-stars::after { position: absolute; inset: 0 auto 0 0; width: var(--rating); overflow: hidden; color: #f5a623; }
+.product-rating-text strong { font-weight: 700; }
+.product-rating[hidden] { display: none; }
