@@ -121,7 +121,7 @@
       },
       "14575892982612462877": {
         "type": "shopify://apps/sales-pop-up/blocks/salesnotifications/cdeb6f15-7a6b-4d2a-8158-55cae076aabd",
-        "disabled": true,
+        "disabled": false,
         "settings": {}
       }
     }
