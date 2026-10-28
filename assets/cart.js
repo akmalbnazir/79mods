@@ -499,6 +499,53 @@ async function connectAppCartDrawer() {
   syncAppCartShippingOffer();
 }
 
+const cartMutationPattern = /\/cart\/(add|change|update|clear)(\.js|\.json)?(\?|$)/;
+let shippingOfferRefreshTimer = null;
+
+function scheduleShippingOfferRefresh() {
+  window.clearTimeout(shippingOfferRefreshTimer);
+  shippingOfferRefreshTimer = window.setTimeout(async () => {
+    try {
+      const cart = await getCart();
+      window.currentCart = cart;
+      if (!cart.item_count) {
+        setShippingOfferView('Your free-shipping offer is available when your bag has items.', false);
+        return;
+      }
+      await ensureShippingOffer(cart);
+    } catch (error) {
+      console.error(error);
+    }
+  }, 150);
+}
+
+// Apps such as the Section Store drawer add items with their own requests, so watch every cart change.
+function watchCartMutations() {
+  if (!shopifyCart) return;
+  const isCartMutation = (method, url) => String(method || 'GET').toUpperCase() === 'POST' && cartMutationPattern.test(String(url || ''));
+
+  if (window.fetch) {
+    const nativeFetch = window.fetch;
+    window.fetch = function (input, init) {
+      const request = nativeFetch.apply(this, arguments);
+      const url = typeof input === 'string' ? input : input?.url;
+      if (isCartMutation(init?.method || input?.method, url)) {
+        request.then((response) => { if (response.ok) scheduleShippingOfferRefresh(); }, () => {});
+      }
+      return request;
+    };
+  }
+
+  const nativeOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function (method, url) {
+    if (isCartMutation(method, url)) {
+      this.addEventListener('load', () => { if (this.status >= 200 && this.status < 300) scheduleShippingOfferRefresh(); });
+    }
+    return nativeOpen.apply(this, arguments);
+  };
+}
+
+watchCartMutations();
 connectAppCartDrawer();
 
 if (bagLink) {
