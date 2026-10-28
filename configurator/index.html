@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>79MODS · 3D Configurator (prototype)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2">
+  <script type="importmap">
+    { "imports": { "three": "./vendor/three.module.js", "three/addons/": "./vendor/addons/" } }
+  </script>
+</head>
+<body>
+  <div class="stage" id="stage"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/">79MODS</a>
+    <span class="badge">Prototype · localhost only</span>
+  </header>
+
+  <aside class="panel" id="panel">
+    <section>
+      <h2>1 · Your bike</h2>
+      <div class="field-label">Brand</div>
+      <div class="chips" id="bike-chips"></div>
+      <div class="field-label">Model</div>
+      <div class="segmented" id="bike-models" aria-label="Model"></div>
+      <div class="swatches" id="bike-colors" aria-label="Frame color"></div>
+    </section>
+
+    <section>
+      <h2>2 · Add parts</h2>
+      <div class="tabs" id="slot-tabs" role="tablist"></div>
+      <div class="parts" id="parts"></div>
+    </section>
+  </aside>
+
+  <div class="viewbar">
+    <button data-view="reset">3/4</button>
+    <button data-view="side">Side</button>
+    <button data-view="front">Front</button>
+    <button data-view="rear">Rear</button>
+    <button id="spin" aria-pressed="false">Auto-rotate</button>
+  </div>
+
+  <footer class="summary" id="summary">
+    <div class="lines" id="lines"></div>
+    <div class="total"><span>Build total</span><b id="total">$0</b></div>
+    <button class="cta" id="add-cart" disabled>Add build to cart</button>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="loading" id="loading">Loading garage…</div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

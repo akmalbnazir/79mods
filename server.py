@@ -28,11 +28,22 @@ class ThemePreviewHandler(SimpleHTTPRequestHandler):
         if target.startswith('/cart') or target == '/collections' or target == '/products':
             self.path = '/index.html'
 
+    def _blocked(self):
+        # The 3D configurator prototype is only served to the local machine.
+        if urlparse(self.path).path.startswith('/configurator') and self.client_address[0] not in ('127.0.0.1', '::1'):
+            self.send_error(404)
+            return True
+        return False
+
     def do_GET(self):
+        if self._blocked():
+            return
         self._rewrite_path()
         return super().do_GET()
 
     def do_HEAD(self):
+        if self._blocked():
+            return
         self._rewrite_path()
         return super().do_HEAD()
 

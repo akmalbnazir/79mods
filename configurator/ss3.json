@@ -1,0 +1,529 @@
+{
+ "parts": [
+  {
+   "id": "frame",
+   "file": "Eride Pro SS.stl",
+   "ops": []
+  },
+  {
+   "id": "battery",
+   "file": "Battery - Battery (3).stl",
+   "ops": [
+    [
+     "t",
+     -7,
+     -8.5,
+     17
+    ]
+   ]
+  },
+  {
+   "id": "rotor",
+   "file": "Brake Rotor - Brake Disc (2).stl",
+   "ops": [
+    [
+     "t",
+     -13,
+     -13,
+     0
+    ],
+    [
+     "rx",
+     -90
+    ],
+    [
+     "t",
+     51.4,
+     4.5,
+     3.74
+    ]
+   ]
+  },
+  {
+   "id": "brakeL",
+   "file": "Cockpit - Brake LEFT (10).stl",
+   "ops": [
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     -54.9,
+     -36,
+     50.5
+    ]
+   ]
+  },
+  {
+   "id": "brakeR",
+   "file": "Cockpit - Brake RIGHT (10).stl",
+   "ops": [
+    [
+     "rx",
+     -90
+    ],
+    [
+     "t",
+     -54.9,
+     36,
+     70.5
+    ]
+   ]
+  },
+  {
+   "id": "grip",
+   "file": "Cockpit - Grip LEFT (13).stl",
+   "ops": [
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     -48.4,
+     -40,
+     63.0
+    ]
+   ]
+  },
+  {
+   "id": "bar",
+   "file": "Cockpit - Handlebar (16).stl",
+   "ops": [
+    [
+     "t",
+     -2.03,
+     -40,
+     66.9
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  },
+  {
+   "id": "throttle",
+   "file": "Cockpit - Throttle (2).stl",
+   "ops": [
+    [
+     "rx",
+     -90
+    ],
+    [
+     "t",
+     -48.9,
+     40,
+     70.5
+    ]
+   ]
+  },
+  {
+   "id": "hatch",
+   "file": "FULL SUSPENSION Frame - Battery Hatch (5).stl",
+   "ops": [
+    [
+     "rz",
+     90
+    ],
+    [
+     "t",
+     10,
+     3.2,
+     22
+    ]
+   ]
+  },
+  {
+   "id": "controller",
+   "file": "FULL SUSPENSION Frame - Controller (1).stl",
+   "ops": [
+    [
+     "t",
+     -24,
+     -9.75,
+     14
+    ]
+   ]
+  },
+  {
+   "id": "pegL",
+   "file": "FULL SUSPENSION Frame - Foot Peg LEFT (1).stl",
+   "ops": [
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     22,
+     -9.5,
+     22
+    ]
+   ]
+  },
+  {
+   "id": "pegR",
+   "file": "FULL SUSPENSION Frame - Foot Peg RIGHT (1).stl",
+   "ops": [
+    [
+     "rx",
+     -90
+    ],
+    [
+     "t",
+     22,
+     9.5,
+     22
+    ]
+   ]
+  },
+  {
+   "id": "motor",
+   "file": "FULL SUSPENSION Frame - Motor.stl",
+   "ops": [
+    [
+     "rz",
+     -90
+    ],
+    [
+     "t",
+     4,
+     10.2,
+     20
+    ]
+   ]
+  },
+  {
+   "id": "seat",
+   "file": "FULL SUSPENSION Frame - Seat (1).stl",
+   "ops": [
+    [
+     "rx",
+     37.30394827798343
+    ],
+    [
+     "rz",
+     -90
+    ],
+    [
+     "t",
+     -29,
+     10,
+     25
+    ]
+   ]
+  },
+  {
+   "id": "forkbody",
+   "file": "Fork - Fork Body (4).stl",
+   "ops": [
+    [
+     "t",
+     -4.5,
+     -14.45,
+     -3.5
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  },
+  {
+   "id": "capL",
+   "file": "Fork - Fork Cap LEFT (9).stl",
+   "ops": [
+    [
+     "t",
+     -3.3900000000000006,
+     -13.95,
+     55
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  },
+  {
+   "id": "capR",
+   "file": "Fork - Fork Cap RIGHT (9).stl",
+   "ops": [
+    [
+     "t",
+     -3.3900000000000006,
+     6.05,
+     55
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  },
+  {
+   "id": "stanchion",
+   "file": "Fork - Fork stanchion RIGHT (10).stl",
+   "ops": [
+    [
+     "t",
+     -2.3300000000000005,
+     -12.44,
+     -3.5
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  },
+  {
+   "id": "steerer",
+   "file": "Fork - Steerer tube (10).stl",
+   "ops": [
+    [
+     "t",
+     -3.6,
+     -13.565,
+     40
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  },
+  {
+   "id": "sprocket",
+   "file": "Gears - Rear Sprocket (1).stl",
+   "ops": [
+    [
+     "t",
+     -12.5,
+     -12.5,
+     0
+    ],
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     51.4,
+     -4.5,
+     3.74
+    ]
+   ]
+  },
+  {
+   "id": "wconn",
+   "file": "SUPERMOTO Rear wheel - Supermoto Wheel Connector (3).stl",
+   "ops": [
+    [
+     "t",
+     0,
+     -5.65,
+     0
+    ],
+    [
+     "t",
+     51.4,
+     -4,
+     3.74
+    ]
+   ]
+  },
+  {
+   "id": "stem",
+   "file": "Stem - Stem (18).stl",
+   "ops": [
+    [
+     "t",
+     -5.2,
+     -13.93,
+     66
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  },
+  {
+   "id": "wfront_a",
+   "file": "wheel_front_a.stl",
+   "ops": [
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ],
+   "node": "wheel_front",
+   "export": true
+  },
+  {
+   "id": "wrear_a",
+   "file": "wheel_rear_a.stl",
+   "ops": [
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     51.4,
+     0,
+     3.74
+    ]
+   ],
+   "node": "wheel_rear",
+   "export": true
+  },
+  {
+   "id": "wfront_b",
+   "file": "wheel_front_b.stl",
+   "ops": [
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ],
+   "node": "wheel_front",
+   "export": false
+  },
+  {
+   "id": "wrear_b",
+   "file": "wheel_rear_b.stl",
+   "ops": [
+    [
+     "rx",
+     90
+    ],
+    [
+     "t",
+     51.4,
+     0,
+     3.74
+    ]
+   ],
+   "node": "wheel_rear",
+   "export": false
+  },
+  {
+   "id": "stanchionL",
+   "file": "Fork - Fork stanchion RIGHT (10).stl",
+   "ops": [
+    [
+     "s",
+     1,
+     -1,
+     1
+    ],
+    [
+     "t",
+     -2.3300000000000005,
+     12.540000000000001,
+     -3.5
+    ],
+    [
+     "rz",
+     180
+    ],
+    [
+     "ry",
+     27
+    ],
+    [
+     "t",
+     -76,
+     0,
+     5.4
+    ]
+   ]
+  }
+ ]
+}
