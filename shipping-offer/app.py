@@ -24,6 +24,10 @@ ADMIN_TOKENS = {}
 PROXY_MAX_AGE_SECONDS = 300
 OFFER_SECONDS = 10 * 60
 IP_HOURLY_LIMIT = 20
+OFFER_COUNTRIES = ("US", "CA")
+# Shopify shipping codes select rates by price, so each cap sits above that
+# country's standard rate and below its cheapest express rate.
+DEFAULT_SHIPPING_CAPS = {"US": "10.00", "CA": "35.00"}
 GRAPHQL_MUTATION = """
 mutation CreateShippingOffer($input: DiscountCodeFreeShippingInput!) {
   discountCodeFreeShippingCreate(freeShippingCodeDiscount: $input) {
@@ -66,23 +70,26 @@ class Config:
         client_id,
         database_path,
         api_version="2026-10",
-        shipping_cap="none",
+        shipping_caps=None,
         daily_code_limit=100,
     ):
         if not re.fullmatch(r"[a-z0-9][a-z0-9-]*\.myshopify\.com", shop_domain):
             raise ConfigurationError("SHOPIFY_STORE_DOMAIN must be a *.myshopify.com domain.")
         if not re.fullmatch(r"\d{4}-\d{2}", api_version):
             raise ConfigurationError("SHOPIFY_API_VERSION must use YYYY-MM format.")
-        cap_value = str(shipping_cap or "").strip().lower()
-        if cap_value in ("", "none"):
-            cap = None
-        else:
+        caps = dict(DEFAULT_SHIPPING_CAPS)
+        caps.update(shipping_caps or {})
+        if set(caps) != set(OFFER_COUNTRIES):
+            raise ConfigurationError("Shipping caps must be configured for US and CA only.")
+        for country, value in caps.items():
+            name = f"SHIPPING_DISCOUNT_CAP_{country}"
             try:
-                cap = float(cap_value)
+                amount = float(str(value).strip())
             except ValueError as error:
-                raise ConfigurationError("SHIPPING_DISCOUNT_CAP must be a positive amount or 'none'.") from error
-            if cap <= 0:
-                raise ConfigurationError("SHIPPING_DISCOUNT_CAP must be a positive amount or 'none'.")
+                raise ConfigurationError(f"{name} must be a positive amount.") from error
+            if amount <= 0:
+                raise ConfigurationError(f"{name} must be a positive amount.")
+            caps[country] = f"{amount:.2f}"
         if daily_code_limit <= 0:
             raise ConfigurationError("DAILY_CODE_LIMIT must be a positive integer.")
         self.shop_domain = shop_domain
@@ -90,7 +97,7 @@ class Config:
         self.client_id = client_id
         self.database_path = database_path
         self.api_version = api_version
-        self.shipping_cap = None if cap is None else f"{cap:.2f}"
+        self.shipping_caps = caps
         self.daily_code_limit = daily_code_limit
 
     @classmethod
@@ -101,7 +108,10 @@ class Config:
             client_id=required_env("SHOPIFY_CLIENT_ID"),
             database_path=os.environ.get("DATABASE_PATH", "/data/offers.sqlite3"),
             api_version=os.environ.get("SHOPIFY_API_VERSION", "2026-10"),
-            shipping_cap=os.environ.get("SHIPPING_DISCOUNT_CAP", "none"),
+            shipping_caps={
+                country: os.environ.get(f"SHIPPING_DISCOUNT_CAP_{country}", default)
+                for country, default in DEFAULT_SHIPPING_CAPS.items()
+            },
             daily_code_limit=int(os.environ.get("DAILY_CODE_LIMIT", "100")),
         )
 
@@ -120,10 +130,14 @@ def _db_connect(config):
             created_at INTEGER NOT NULL,
             expires_at INTEGER NOT NULL,
             ip_hash TEXT NOT NULL,
-            discount_deleted INTEGER NOT NULL DEFAULT 0
+            discount_deleted INTEGER NOT NULL DEFAULT 0,
+            country TEXT NOT NULL DEFAULT 'US'
         )
         """
     )
+    columns = {row["name"] for row in connection.execute("PRAGMA table_info(offers)")}
+    if "country" not in columns:
+        connection.execute("ALTER TABLE offers ADD COLUMN country TEXT NOT NULL DEFAULT 'US'")
     connection.execute("CREATE INDEX IF NOT EXISTS offers_ip_created ON offers(ip_hash, created_at)")
     return connection
 
@@ -236,35 +250,35 @@ def _get_admin_access_token(config):
         return access_token
 
 
-def create_shipping_discount(config, expires_at):
-    if config.shipping_cap is not None:
-        currency_data = _shopify_graphql(config, SHOP_CURRENCY_QUERY, {})
-        currency = currency_data.get("shop", {}).get("currencyCode")
-        if currency != "USD":
-            LOG.error("Shipping offer requires a USD shop currency; Shopify returned %s", currency)
-            raise ShopifyAPIError("The shipping offer is configured for a USD store.")
+def create_shipping_discount(config, expires_at, country="US"):
+    if country not in OFFER_COUNTRIES:
+        raise ValueError("Unsupported shipping offer country.")
+    currency_data = _shopify_graphql(config, SHOP_CURRENCY_QUERY, {})
+    currency = currency_data.get("shop", {}).get("currencyCode")
+    if currency != "USD":
+        LOG.error("Shipping offer requires a USD shop currency; Shopify returned %s", currency)
+        raise ShopifyAPIError("The shipping offer is configured for a USD store.")
 
     now = datetime.now(timezone.utc)
     ends_at = datetime.fromtimestamp(expires_at, timezone.utc)
     code = f"RIDE{secrets.token_hex(6).upper()}"
     variables = {
         "input": {
-            "title": "10-minute cart shipping offer",
+            "title": f"10-minute free standard shipping ({country})",
             "code": code,
             "startsAt": now.isoformat(timespec="seconds"),
             "endsAt": ends_at.isoformat(timespec="seconds"),
             "usageLimit": 1,
             "appliesOncePerCustomer": True,
             "context": {"all": "ALL"},
-            "destination": {"countries": {"add": ["US", "CA"]}},
+            "destination": {"countries": {"add": [country]}},
+            "maximumShippingPrice": config.shipping_caps[country],
             "combinesWith": {
                 "productDiscounts": True,
                 "orderDiscounts": False,
             },
         }
     }
-    if config.shipping_cap is not None:
-        variables["input"]["maximumShippingPrice"] = config.shipping_cap
     data = _shopify_graphql(config, GRAPHQL_MUTATION, variables)
     payload = data.get("discountCodeFreeShippingCreate")
     if not payload:
@@ -280,23 +294,30 @@ def create_shipping_discount(config, expires_at):
     return code, node["id"]
 
 
-def get_or_create_offer(config, cart_token, client_ip, now=None, discount_creator=None):
+def get_or_create_offer(config, cart_token, client_ip, country="US", now=None, discount_creator=None):
+    if country not in OFFER_COUNTRIES:
+        raise ValueError("Unsupported shipping offer country.")
     current_time = int(time.time() if now is None else now)
     cart_hash = _hmac_hash(cart_token, config.app_secret)
     ip_hash = _hmac_hash(client_ip, config.app_secret)
     expiry = current_time + OFFER_SECONDS
-    creator = discount_creator or (lambda ends_at: create_shipping_discount(config, ends_at))
+    creator = discount_creator or (lambda ends_at, offer_country: create_shipping_discount(config, ends_at, offer_country))
 
     with _database(config) as db:
         db.execute("BEGIN IMMEDIATE")
         existing = db.execute(
-            "SELECT discount_code, expires_at FROM offers WHERE cart_hash = ?",
+            "SELECT discount_code, expires_at, country FROM offers WHERE cart_hash = ?",
             (cart_hash,),
         ).fetchone()
         if existing:
             if existing["expires_at"] <= current_time:
                 return {"expired": True, "expiresAt": existing["expires_at"]}
-            return {"code": existing["discount_code"], "expiresAt": existing["expires_at"]}
+            # The timer belongs to the cart, so its first country stays fixed for that cart.
+            return {
+                "code": existing["discount_code"],
+                "expiresAt": existing["expires_at"],
+                "country": existing["country"],
+            }
 
         recent = db.execute(
             "SELECT COUNT(*) AS count FROM offers WHERE ip_hash = ? AND created_at > ?",
@@ -311,15 +332,15 @@ def get_or_create_offer(config, cart_token, client_ip, now=None, discount_creato
         if today >= config.daily_code_limit:
             raise PermissionError("Today's free-shipping offers have all been claimed.")
 
-        code, discount_id = creator(expiry)
+        code, discount_id = creator(expiry, country)
         db.execute(
             """
-            INSERT INTO offers (cart_hash, discount_code, discount_id, created_at, expires_at, ip_hash)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO offers (cart_hash, discount_code, discount_id, created_at, expires_at, ip_hash, country)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
-            (cart_hash, code, discount_id, current_time, expiry, ip_hash),
+            (cart_hash, code, discount_id, current_time, expiry, ip_hash, country),
         )
-    return {"code": code, "expiresAt": expiry}
+    return {"code": code, "expiresAt": expiry, "country": country}
 
 
 def clean_expired_discounts(config, now=None):
@@ -401,11 +422,15 @@ class Handler(BaseHTTPRequestHandler):
         if len(cart_tokens) != 1 or not cart_tokens[0] or len(cart_tokens[0]) > 512:
             self._send_json(400, {"error": "A valid cart is required"})
             return
+        countries = params.get("country", ["US"])
+        if len(countries) != 1 or countries[0] not in OFFER_COUNTRIES:
+            self._send_json(400, {"error": "Free standard shipping is available for U.S. and Canada orders only"})
+            return
 
         forwarded_for = self.headers.get("X-Forwarded-For", "")
         client_ip = forwarded_for.split(",")[0].strip() or "unknown"
         try:
-            result = get_or_create_offer(self.config, cart_tokens[0], client_ip)
+            result = get_or_create_offer(self.config, cart_tokens[0], client_ip, countries[0])
         except PermissionError as error:
             self._send_json(429, {"error": str(error)})
             return

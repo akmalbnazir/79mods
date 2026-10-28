@@ -10,7 +10,7 @@ from unittest.mock import patch
 from urllib.parse import urlencode
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from app import Config, ShopifyAPIError, create_shipping_discount, get_or_create_offer, verify_proxy_signature
+from app import Config, ConfigurationError, ShopifyAPIError, create_shipping_discount, get_or_create_offer, verify_proxy_signature
 
 
 class ProxySignatureTests(unittest.TestCase):
@@ -67,7 +67,7 @@ class OfferPersistenceTests(unittest.TestCase):
     def tearDown(self):
         self.temp_dir.cleanup()
 
-    def test_creates_discount_with_approved_rules(self):
+    def test_creates_us_discount_limited_to_standard_rate(self):
         create_payload = {
             "discountCodeFreeShippingCreate": {
                 "codeDiscountNode": {"id": "gid://shopify/DiscountCodeNode/1"},
@@ -75,36 +75,47 @@ class OfferPersistenceTests(unittest.TestCase):
             }
         }
         expires_at = 1_800_000_600
-        with patch("app._shopify_graphql", return_value=create_payload) as graphql:
-            code, discount_id = create_shipping_discount(self.config, expires_at)
+        with patch("app._shopify_graphql", side_effect=[{"shop": {"currencyCode": "USD"}}, create_payload]) as graphql:
+            code, discount_id = create_shipping_discount(self.config, expires_at, "US")
 
-        graphql.assert_called_once()
+        self.assertEqual(graphql.call_count, 2)
         discount_input = graphql.call_args.args[2]["input"]
         self.assertRegex(code, r"^RIDE[A-F0-9]{12}$")
         self.assertEqual(discount_id, "gid://shopify/DiscountCodeNode/1")
         self.assertEqual(discount_input["context"], {"all": "ALL"})
-        self.assertEqual(discount_input["destination"], {"countries": {"add": ["US", "CA"]}})
-        self.assertNotIn("maximumShippingPrice", discount_input)
+        self.assertEqual(discount_input["destination"], {"countries": {"add": ["US"]}})
+        self.assertEqual(discount_input["maximumShippingPrice"], "10.00")
         self.assertEqual(discount_input["usageLimit"], 1)
         self.assertTrue(discount_input["appliesOncePerCustomer"])
         self.assertEqual(discount_input["combinesWith"]["productDiscounts"], True)
         self.assertEqual(discount_input["combinesWith"]["orderDiscounts"], False)
         self.assertEqual(discount_input["endsAt"], "2027-01-15T08:10:00+00:00")
 
-    def test_applies_optional_cap_in_usd(self):
-        self.config.shipping_cap = "15.00"
+    def test_creates_canada_discount_limited_to_standard_rate(self):
         create_payload = {
             "discountCodeFreeShippingCreate": {
-                "codeDiscountNode": {"id": "gid://shopify/DiscountCodeNode/1"},
+                "codeDiscountNode": {"id": "gid://shopify/DiscountCodeNode/2"},
                 "userErrors": [],
             }
         }
         with patch("app._shopify_graphql", side_effect=[{"shop": {"currencyCode": "USD"}}, create_payload]) as graphql:
-            create_shipping_discount(self.config, 1_800_000_600)
-        self.assertEqual(graphql.call_args_list[1].args[2]["input"]["maximumShippingPrice"], "15.00")
+            create_shipping_discount(self.config, 1_800_000_600, "CA")
+        discount_input = graphql.call_args.args[2]["input"]
+        self.assertEqual(discount_input["destination"], {"countries": {"add": ["CA"]}})
+        self.assertEqual(discount_input["maximumShippingPrice"], "35.00")
+
+    def test_rejects_missing_or_invalid_caps(self):
+        for caps in ({"US": "none"}, {"CA": "0"}, {"MX": "10"}):
+            with self.assertRaises(ConfigurationError):
+                Config(
+                    shop_domain="example.myshopify.com",
+                    app_secret="secret",
+                    client_id="client",
+                    database_path=":memory:",
+                    shipping_caps=caps,
+                )
 
     def test_refuses_shipping_cap_when_store_currency_is_not_usd(self):
-        self.config.shipping_cap = "15.00"
         with patch("app._shopify_graphql", return_value={"shop": {"currencyCode": "CAD"}}) as graphql:
             with self.assertRaises(ShopifyAPIError):
                 create_shipping_discount(self.config, 1_800_000_600)
@@ -113,29 +124,33 @@ class OfferPersistenceTests(unittest.TestCase):
     def test_reuses_offer_for_cart_and_expires_it(self):
         created = []
 
-        def create_discount(expires_at):
-            created.append(expires_at)
+        def create_discount(expires_at, country):
+            created.append((expires_at, country))
             return "RIDE123", "gid://shopify/DiscountCodeNode/1"
 
         first = get_or_create_offer(
-            self.config, "cart-123", "127.0.0.1", now=1000, discount_creator=create_discount
+            self.config, "cart-123", "127.0.0.1", "CA", now=1000, discount_creator=create_discount
         )
         repeated = get_or_create_offer(
-            self.config, "cart-123", "127.0.0.1", now=1100, discount_creator=create_discount
+            self.config, "cart-123", "127.0.0.1", "US", now=1100, discount_creator=create_discount
         )
         expired = get_or_create_offer(
             self.config, "cart-123", "127.0.0.1", now=1600, discount_creator=create_discount
         )
 
-        self.assertEqual(first, {"code": "RIDE123", "expiresAt": 1600})
+        self.assertEqual(first, {"code": "RIDE123", "expiresAt": 1600, "country": "CA"})
         self.assertEqual(repeated, first)
         self.assertEqual(expired, {"expired": True, "expiresAt": 1600})
-        self.assertEqual(len(created), 1)
+        self.assertEqual(created, [(1600, "CA")])
+
+    def test_rejects_unsupported_country(self):
+        with self.assertRaises(ValueError):
+            get_or_create_offer(self.config, "cart-mx", "127.0.0.1", "MX", discount_creator=lambda *_: None)
 
     def test_limits_new_offers_per_ip(self):
         created = []
 
-        def create_discount(expires_at):
+        def create_discount(expires_at, country):
             created.append(expires_at)
             return f"RIDE{len(created)}", f"gid://shopify/DiscountCodeNode/{len(created)}"
 
@@ -160,7 +175,7 @@ class OfferPersistenceTests(unittest.TestCase):
     def test_limits_new_offers_per_eastern_calendar_day(self):
         created = []
 
-        def create_discount(expires_at):
+        def create_discount(expires_at, country):
             created.append(expires_at)
             return f"RIDE{len(created)}", f"gid://shopify/DiscountCodeNode/{len(created)}"
 
@@ -185,7 +200,7 @@ class OfferPersistenceTests(unittest.TestCase):
     def test_concurrent_requests_for_cart_create_one_discount(self):
         created = []
 
-        def create_discount(expires_at):
+        def create_discount(expires_at, country):
             time.sleep(0.02)
             created.append(expires_at)
             return "RIDEONCE", "gid://shopify/DiscountCodeNode/once"

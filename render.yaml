@@ -15,8 +15,10 @@ services:
         value: pnfpfp-66.myshopify.com
       - key: SHOPIFY_API_VERSION
         value: 2026-10
-      - key: SHIPPING_DISCOUNT_CAP
-        value: "none"
+      - key: SHIPPING_DISCOUNT_CAP_US
+        value: "10.00"
+      - key: SHIPPING_DISCOUNT_CAP_CA
+        value: "35.00"
       - key: DAILY_CODE_LIMIT
         value: "100"
       - key: DATABASE_PATH

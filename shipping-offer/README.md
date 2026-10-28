@@ -1,11 +1,20 @@
 # Timed free-shipping offer
 
 The service creates one unique Shopify free-shipping code per cart. Codes expire
-10 minutes after the cart first requests an offer, can be redeemed once, apply
-to US and Canadian destinations, and make shipping free at any price. Set
-`SHIPPING_DISCOUNT_CAP` to an amount such as `15.00` to cap eligible rates
-instead. The app enables combination with product discounts and issues
-at most 100 unique codes per calendar day in Eastern Time.
+10 minutes after the cart first requests an offer, can be redeemed once, and
+make standard shipping free for US or Canadian destinations. The storefront
+sends the shopper's detected country (`US` or `CA`), and each code is limited to
+that country and its rate cap:
+
+| Country | Standard rate | Cheapest express rate | Cap variable | Default |
+| --- | --- | --- | --- | --- |
+| US | Ground US$8.30 | Express US$24.00 | `SHIPPING_DISCOUNT_CAP_US` | `10.00` |
+| CA | Standard International US$30.00 | Express International US$45.00 | `SHIPPING_DISCOUNT_CAP_CA` | `35.00` |
+
+Each cap must stay at or above that country's standard rate and below its
+cheapest express rate. Update the caps whenever shipping rates change. The app
+enables combination with product discounts and issues at most 100 unique codes
+per calendar day in Eastern Time.
 
 The cart retains the same timer when the page is refreshed or the cart drawer is
 reopened. The backend stores only a keyed hash of the Shopify cart token and
@@ -31,17 +40,18 @@ client IP, plus the generated discount code and Shopify discount ID.
    discounts; this service only enables product discounts on the shipping code.
    Otherwise checkout reports that the code "couldn't be used with your
    existing discounts."
-5. If you set a cap, confirm that the store's base currency is USD. The service
-   refuses to create a capped offer if it detects another base currency.
+5. Confirm that the store's base currency is USD. The service refuses to create
+   an offer if it detects another base currency, so the caps are always in USD.
 6. Deploy this service with the persistent disk configured in `render.yaml`,
    then test a US and Canadian checkout, an expired offer, and the Halloween
    discount combination before advertising it.
 
 The Halloween discounts must also allow shipping discounts
 in Shopify Admin for both promotions to stack. Shopify's native free-shipping
-discount targets rates by price, not by a shipping-service name. Without a cap,
-every US and Canada rate offered at checkout is free during the timer, including
-expedited service if one is offered.
+discount targets rates by price, not by a shipping-service name, which is why
+each country uses a cap between its standard and express rates. A cart keeps
+the country used for its first offer; if detection is wrong, the code does not
+apply at checkout and standard rates are charged instead.
 
 The Render `starter` service and persistent disk can incur monthly charges.
 Review Render's current pricing and approve the service before deployment.
