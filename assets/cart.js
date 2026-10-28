@@ -30,6 +30,11 @@ cartDialog.innerHTML = `
   </aside>`;
 document.body.append(cartDialog);
 
+const halloweenPromotion = document.querySelector('#cart-halloween-promotion');
+if (halloweenPromotion) {
+  cartDialog.querySelector('.cart-drawer-items').before(halloweenPromotion.content.cloneNode(true));
+}
+
 const itemsContainer = cartDialog.querySelector('.cart-drawer-items');
 const statusMessage = cartDialog.querySelector('.cart-drawer-status');
 const cartFooter = cartDialog.querySelector('.cart-drawer-footer');

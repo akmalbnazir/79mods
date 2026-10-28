@@ -1,5 +1,6 @@
 {%- assign bike_handles = '79bike-parts,surron-parts,ventus-parts,e-ride-parts,talaria-parts' | split: ',' -%}
 {%- if bike_handles contains collection.handle -%}{%- assign is_bike_collection = true -%}{%- endif -%}
+{% render 'halloween-promotion' %}
 <section class="collection-page">
   <div class="collection-heading">
     <div>

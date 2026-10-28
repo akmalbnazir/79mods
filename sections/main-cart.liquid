@@ -4,6 +4,8 @@
     <h1>Your shopping bag</h1>
   </div>
 
+  {% render 'halloween-promotion' %}
+
   {% if cart.item_count > 0 %}
     {% form 'cart', cart, class: 'cart-page-form' %}
       <div class="cart-page-items">

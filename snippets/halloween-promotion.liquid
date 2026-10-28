@@ -1,0 +1,19 @@
+{%- assign sale_ends = '2026-10-31T23:59:00-04:00' | date: '%s' | plus: 0 -%}
+{%- assign sale_now = 'now' | date: '%s' | plus: 0 -%}
+{%- if sale_now < sale_ends -%}
+  {%- if placement == 'announcement' -%}
+    <a class="announcement-halloween" href="{{ routes.root_url }}pages/halloween-sale?view=halloween" data-sale-promotion data-sale-ends="{{ sale_ends }}">
+      <strong>HALLOWEEN BUNDLES: SECOND ELIGIBLE ITEM 20% OFF</strong><span aria-hidden="true">↗</span>
+    </a>
+  {%- else -%}
+    <aside class="halloween-promotion" aria-label="Halloween bundle sale" data-sale-promotion data-sale-ends="{{ sale_ends }}">
+      <div>
+        <p class="halloween-promotion-label">HALLOWEEN BUNDLE SALE</p>
+        <h2>Pair your upgrades. Save 20% on the second eligible item.</h2>
+        <p>Lights + brakes. Brakes + frame guards. Frame guards + wheelsets.</p>
+        <p class="halloween-promotion-terms">Selected combinations only. Ends Oct 31, 2026 at 11:59 PM ET. Bundle discount applies automatically at checkout.</p>
+      </div>
+      <a class="button button-dark" href="{{ routes.root_url }}pages/halloween-sale?view=halloween">Shop Halloween bundles <span aria-hidden="true">↗</span></a>
+    </aside>
+  {%- endif -%}
+{%- endif -%}
