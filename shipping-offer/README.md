@@ -49,6 +49,15 @@ If configuring the service manually, set Dockerfile Path to
 `./shipping-offer/Dockerfile` and Docker Build Context Directory to
 `./shipping-offer`.
 
+## Troubleshooting
+
+The `/health` endpoint checks service availability, not Shopify discount creation.
+A request to the storefront's `/apps/shipping-offer/offer` without a cart token
+should return `400` with `A valid cart is required`; this confirms proxy routing
+and signature validation. If actual offer requests fail, inspect Render's
+runtime logs for Shopify authentication or GraphQL errors before changing the
+proxy settings.
+
 ## Local checks
 
 Run the unit tests from the repository root with:

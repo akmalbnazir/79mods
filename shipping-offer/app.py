@@ -250,8 +250,8 @@ def create_shipping_discount(config, expires_at):
             "endsAt": ends_at.isoformat(timespec="seconds"),
             "usageLimit": 1,
             "appliesOncePerCustomer": True,
-            "context": {"all": True},
-            "destination": {"countries": ["US", "CA"]},
+            "context": {"all": "ALL"},
+            "destination": {"countries": {"add": ["US", "CA"]}},
             "maximumShippingPrice": config.shipping_cap,
             "combinesWith": {
                 "productDiscounts": True,

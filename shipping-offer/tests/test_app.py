@@ -82,7 +82,8 @@ class OfferPersistenceTests(unittest.TestCase):
         discount_input = mutation_call.args[2]["input"]
         self.assertRegex(code, r"^RIDE[A-F0-9]{12}$")
         self.assertEqual(discount_id, "gid://shopify/DiscountCodeNode/1")
-        self.assertEqual(discount_input["destination"], {"countries": ["US", "CA"]})
+        self.assertEqual(discount_input["context"], {"all": "ALL"})
+        self.assertEqual(discount_input["destination"], {"countries": {"add": ["US", "CA"]}})
         self.assertEqual(discount_input["maximumShippingPrice"], "15.00")
         self.assertEqual(discount_input["usageLimit"], 1)
         self.assertTrue(discount_input["appliesOncePerCustomer"])
