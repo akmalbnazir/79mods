@@ -31,6 +31,7 @@
 
       <div class="cart-page-summary">
         <p>Shipping and taxes calculated at checkout.</p>
+        {% render 'shipping-offer' %}
         <div class="cart-subtotal"><span>Subtotal</span><strong>{{ cart.total_price | money }}</strong></div>
         <div class="cart-page-actions">
           <button class="button button-light" type="submit" name="update">Update bag</button>

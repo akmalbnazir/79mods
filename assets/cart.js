@@ -22,6 +22,12 @@ cartDialog.innerHTML = `
     <div class="cart-drawer-footer" hidden>
       <div class="cart-subtotal"><span>Subtotal</span><strong data-cart-subtotal></strong></div>
       <p class="cart-shipping-note">Shipping and taxes calculated at checkout.</p>
+      <div class="cart-shipping-offer" data-shipping-offer hidden>
+        <p data-shipping-offer-status role="status" aria-live="polite"></p>
+        <p class="cart-shipping-offer-timer" data-shipping-offer-timer hidden>
+          Checkout in <strong data-shipping-offer-countdown>10:00</strong> to keep standard shipping free.
+        </p>
+      </div>
       <form class="cart-checkout-form" action="${shopifyCart ? storefrontPath('cart') : '/cart'}" method="post">
         <button class="button button-dark cart-checkout" type="submit" name="checkout" formtarget="_top">Checkout <span aria-hidden="true">↗</span></button>
       </form>
@@ -39,6 +45,32 @@ const itemsContainer = cartDialog.querySelector('.cart-drawer-items');
 const statusMessage = cartDialog.querySelector('.cart-drawer-status');
 const cartFooter = cartDialog.querySelector('.cart-drawer-footer');
 const checkoutButton = cartDialog.querySelector('.cart-checkout');
+const shippingOfferState = { cartToken: null, status: 'idle', code: null, expiresAt: 0, request: null };
+let shippingOfferTimer = null;
+let bypassShippingSubmit = false;
+let appCartRoot = null;
+let appCartWasOpen = false;
+let lastShippingOfferView = null;
+const shippingOfferMarkup = `
+  <p data-shipping-offer-status role="status" aria-live="polite"></p>
+  <p class="cart-shipping-offer-timer" data-shipping-offer-timer hidden>
+    Checkout in <strong data-shipping-offer-countdown>10:00</strong> to keep standard shipping free.
+  </p>`;
+// The Section Store cart drawer renders inside its own shadow root, so theme.css does not reach it.
+const appCartOfferStyles = `
+  .cart-shipping-offer { margin: 0 0 12px; padding: 12px 14px; border: 1px solid rgba(104, 69, 220, .28); border-radius: 8px; color: #18171b; background: rgba(104, 69, 220, .08); font-size: 13px; line-height: 1.5; text-align: left; }
+  .cart-shipping-offer[hidden], .cart-shipping-offer [hidden] { display: none; }
+  .cart-shipping-offer p { margin: 0; }
+  .cart-shipping-offer-timer { margin-top: 5px !important; }
+  .cart-shipping-offer strong { font-variant-numeric: tabular-nums; }`;
+
+function shippingOfferScopes() {
+  return appCartRoot ? [document, appCartRoot] : [document];
+}
+
+function shippingOfferElements(selector) {
+  return shippingOfferScopes().flatMap((scope) => [...scope.querySelectorAll(selector)]);
+}
 
 if (!shopifyCart) {
   checkoutButton.textContent = 'Checkout unavailable in preview';
@@ -106,11 +138,13 @@ function updateBagCount(count) {
 function renderCart(cart) {
   itemsContainer.replaceChildren();
   const items = cart.items || [];
+  window.currentCart = cart;
   window.currentCartItems = items;
   updateBagCount(cart.item_count || 0);
   cartDialog.querySelector('[data-cart-heading-count]').textContent = cart.item_count ? `(${cart.item_count})` : '';
   cartFooter.hidden = items.length === 0;
   cartDialog.querySelector('[data-cart-subtotal]').textContent = formatMoney(cart.total_price || 0, cart.currency || 'USD');
+  if (!items.length) setShippingOfferView('Your free-shipping offer is available when your bag has items.', false);
 
   if (!items.length) {
     const empty = document.createElement('p');
@@ -172,18 +206,125 @@ function renderCart(cart) {
   }
 }
 
+function setShippingOfferView(message, showTimer) {
+  lastShippingOfferView = { message, showTimer };
+  shippingOfferElements('[data-shipping-offer]').forEach((offer) => {
+    offer.hidden = false;
+    offer.querySelector('[data-shipping-offer-status]').textContent = message;
+    offer.querySelector('[data-shipping-offer-timer]').hidden = !showTimer;
+  });
+}
+
+function updateShippingOfferCountdown() {
+  const remaining = Math.ceil(shippingOfferState.expiresAt - Date.now() / 1000);
+  if (remaining <= 0) {
+    shippingOfferState.status = 'expired';
+    shippingOfferState.code = null;
+    if (shippingOfferTimer) window.clearInterval(shippingOfferTimer);
+    shippingOfferTimer = null;
+    setShippingOfferView('Your free-shipping offer expired. You can still check out at standard rates.', false);
+    return;
+  }
+  const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
+  const seconds = String(remaining % 60).padStart(2, '0');
+  shippingOfferElements('[data-shipping-offer-countdown]').forEach((timer) => {
+    timer.textContent = `${minutes}:${seconds}`;
+  });
+}
+
+const SHIPPING_OFFER_COUNTRIES = { US: 'the U.S.', CA: 'Canada' };
+let shippingOfferCountryRequest = null;
+
+function detectShippingOfferCountry() {
+  shippingOfferCountryRequest ||= fetch(storefrontPath('browsing_context_suggestions.json?country[enabled]=true'), {
+    headers: { Accept: 'application/json' }
+  })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((result) => result?.detected_values?.country?.handle)
+    .catch(() => null)
+    .then((country) => String(country || window.Shopify?.country || 'US').toUpperCase());
+  return shippingOfferCountryRequest;
+}
+
+async function ensureShippingOffer(cart) {
+  if (!shopifyCart || !cart?.item_count || !cart.token) return;
+  if (shippingOfferState.cartToken === cart.token) {
+    if (shippingOfferState.status === 'loading') return shippingOfferState.request;
+    if (shippingOfferState.status === 'active') updateShippingOfferCountdown();
+    if (shippingOfferState.status !== 'error') return;
+  }
+
+  if (shippingOfferTimer) window.clearInterval(shippingOfferTimer);
+  Object.assign(shippingOfferState, {
+    cartToken: cart.token,
+    status: 'loading',
+    code: null,
+    expiresAt: 0,
+    request: null
+  });
+  setShippingOfferView('Starting your 10-minute free standard shipping offer.', false);
+
+  const endpoint = storefrontPath('apps/shipping-offer/offer');
+  shippingOfferState.request = (async () => {
+    try {
+      const country = await detectShippingOfferCountry();
+      if (!SHIPPING_OFFER_COUNTRIES[country]) {
+        shippingOfferState.status = 'unavailable';
+        setShippingOfferView('Free standard shipping is available for U.S. and Canada orders.', false);
+        return;
+      }
+      const url = `${endpoint}?cart_token=${encodeURIComponent(cart.token)}&country=${country}`;
+      const response = await fetch(url, { headers: { Accept: 'application/json' } });
+      const result = await response.json();
+      if (response.status === 410) {
+        shippingOfferState.status = 'expired';
+        setShippingOfferView('Your free-shipping offer expired. You can still check out at standard rates.', false);
+        return;
+      }
+      if (response.status === 429) {
+        shippingOfferState.status = 'error';
+        setShippingOfferView(`${result.error || 'Free-shipping offers are temporarily limited.'} You can still check out normally.`, false);
+        return;
+      }
+      if (!response.ok || !result.code || !Number.isFinite(Number(result.expiresAt))) {
+        throw new Error(result.error || 'Could not start your free-shipping offer.');
+      }
+      shippingOfferState.status = 'active';
+      shippingOfferState.code = result.code;
+      shippingOfferState.expiresAt = Number(result.expiresAt);
+      const destination = SHIPPING_OFFER_COUNTRIES[result.country] || SHIPPING_OFFER_COUNTRIES[country];
+      setShippingOfferView(`Free standard shipping to ${destination} is unlocked. Checkout soon:`, true);
+      updateShippingOfferCountdown();
+      if (shippingOfferState.status === 'active') {
+        shippingOfferTimer = window.setInterval(updateShippingOfferCountdown, 1000);
+      }
+    } catch (error) {
+      shippingOfferState.status = 'error';
+      setShippingOfferView('We couldn’t start the free-shipping offer. You can still check out normally.', false);
+      console.error(error);
+    }
+  })();
+  return shippingOfferState.request;
+}
+
 async function refreshCart() {
   try {
-    renderCart(await getCart());
+    const cart = await getCart();
+    renderCart(cart);
+    if (shopifyCart && /\/cart\/?$/.test(location.pathname)) await ensureShippingOffer(cart);
     statusMessage.textContent = '';
   } catch (error) {
     statusMessage.textContent = error.message;
+    if (shopifyCart && /\/cart\/?$/.test(location.pathname)) {
+      setShippingOfferView('We couldn’t load the timed shipping offer. You can still check out normally.', false);
+    }
   }
 }
 
 async function openCart() {
   await refreshCart();
   if (!cartDialog.open) cartDialog.showModal();
+  await ensureShippingOffer(window.currentCart);
 }
 
 async function updateQuantity(item, quantity) {
@@ -231,6 +372,134 @@ cartDialog.addEventListener('click', (event) => {
 cartDialog.addEventListener('close', () => {
   if (location.pathname === '/cart') history.replaceState(null, '', '/');
 });
+
+document.addEventListener('submit', async (event) => {
+  const form = event.target.closest('.cart-checkout-form, .cart-page-form');
+  if (!shopifyCart || !form || event.submitter?.name !== 'checkout') return;
+  const submitter = event.submitter;
+  if (bypassShippingSubmit) {
+    bypassShippingSubmit = false;
+    return;
+  }
+
+  if (shippingOfferState.status === 'idle' && window.currentCart?.item_count) {
+    event.preventDefault();
+    await ensureShippingOffer(window.currentCart);
+    if (shippingOfferState.status !== 'active') {
+      bypassShippingSubmit = true;
+      form.requestSubmit(submitter);
+      return;
+    }
+  }
+
+  if (shippingOfferState.status === 'loading') {
+    event.preventDefault();
+    await shippingOfferState.request;
+    if (shippingOfferState.status !== 'active') {
+      bypassShippingSubmit = true;
+      form.requestSubmit(submitter);
+      return;
+    }
+  }
+  if (shippingOfferState.status !== 'active' || !shippingOfferState.code) return;
+  event.preventDefault();
+  event.preventDefault();
+  if (form.matches('.cart-page-form')) {
+    const updates = new FormData(form).getAll('updates[]').map((quantity) => Number(quantity));
+    if (updates.length) {
+      try {
+        const response = await fetch(storefrontPath('cart/update.js'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ updates })
+        });
+        if (!response.ok) throw new Error('Could not update cart before checkout.');
+      } catch {
+        setShippingOfferView('We couldn’t apply the timed offer, so checkout will continue without it.', false);
+        bypassShippingSubmit = true;
+        form.requestSubmit(submitter);
+        return;
+      }
+    }
+  }
+  const discountPath = `discount/${encodeURIComponent(shippingOfferState.code)}?redirect=${encodeURIComponent('/checkout')}`;
+  window.location.assign(storefrontPath(discountPath));
+});
+
+function syncAppCartShippingOffer() {
+  if (!appCartRoot) return;
+  const drawer = appCartRoot.querySelector('.cart-drawer');
+  const footer = appCartRoot.querySelector('.cart-footer');
+  const checkoutLink = footer?.querySelector('.cart-checkout-button');
+  if (footer && checkoutLink && !footer.querySelector('[data-shipping-offer]')) {
+    const offer = document.createElement('div');
+    offer.className = 'cart-shipping-offer';
+    offer.dataset.shippingOffer = '';
+    offer.hidden = true;
+    offer.innerHTML = shippingOfferMarkup;
+    checkoutLink.before(offer);
+    if (lastShippingOfferView) {
+      setShippingOfferView(lastShippingOfferView.message, lastShippingOfferView.showTimer);
+      if (shippingOfferState.status === 'active') updateShippingOfferCountdown();
+    }
+  }
+
+  const isOpen = drawer?.getAttribute('aria-hidden') === 'false';
+  if (isOpen && !appCartWasOpen) {
+    getCart().then(ensureShippingOffer).catch((error) => console.error(error));
+  }
+  appCartWasOpen = isOpen;
+}
+
+async function connectAppCartDrawer() {
+  if (!shopifyCart || !window.customElements) return;
+  await customElements.whenDefined('section-store--cart-block');
+  const host = document.querySelector('section-store--cart-block');
+  if (!host?.shadowRoot || appCartRoot) return;
+  appCartRoot = host.shadowRoot;
+
+  const style = document.createElement('style');
+  style.dataset.shippingOfferStyles = '';
+  style.textContent = appCartOfferStyles;
+  appCartRoot.append(style);
+
+  let scheduled = false;
+  new MutationObserver(() => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      syncAppCartShippingOffer();
+    });
+  }).observe(appCartRoot, { childList: true, subtree: true, attributes: true, attributeFilter: ['aria-hidden'] });
+
+  // Capture on the shadow root so this runs before the drawer app's own checkout handler.
+  appCartRoot.addEventListener('click', async (event) => {
+    const link = event.target.closest?.('.cart-checkout-link');
+    if (!link || !['idle', 'loading', 'active'].includes(shippingOfferState.status)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (shippingOfferState.status === 'idle') {
+      try {
+        await ensureShippingOffer(await getCart());
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (shippingOfferState.status === 'loading') {
+      await shippingOfferState.request;
+    }
+    if (shippingOfferState.status === 'active' && shippingOfferState.code) {
+      const discountPath = `discount/${encodeURIComponent(shippingOfferState.code)}?redirect=${encodeURIComponent('/checkout')}`;
+      window.location.assign(storefrontPath(discountPath));
+      return;
+    }
+    window.location.assign(link.href);
+  }, true);
+
+  syncAppCartShippingOffer();
+}
+
+connectAppCartDrawer();
 
 if (bagLink) {
   bagLink.addEventListener('click', (event) => {
