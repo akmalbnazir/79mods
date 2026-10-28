@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: 79mods-shipping-offer
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./shipping-offer/Dockerfile
+    healthCheckPath: /health
+    disk:
+      name: shipping-offers
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: SHOPIFY_STORE_DOMAIN
+        value: pnfpfp-66.myshopify.com
+      - key: SHOPIFY_API_VERSION
+        value: 2026-10
+      - key: SHIPPING_DISCOUNT_CAP
+        value: "15.00"
+      - key: DAILY_CODE_LIMIT
+        value: "100"
+      - key: DATABASE_PATH
+        value: /data/offers.sqlite3
+      - key: SHOPIFY_CLIENT_ID
+        sync: false
+      - key: SHOPIFY_API_SECRET
+        sync: false
