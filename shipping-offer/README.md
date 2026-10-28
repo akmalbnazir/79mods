@@ -43,6 +43,12 @@ if it is priced within the cap.
 The Render `starter` service and persistent disk can incur monthly charges.
 Review Render's current pricing and approve the service before deployment.
 
+The Blueprint uses `shipping-offer` as the Docker build context so the
+Dockerfile's `COPY app.py .` instruction resolves to this service's source file.
+If configuring the service manually, set Dockerfile Path to
+`./shipping-offer/Dockerfile` and Docker Build Context Directory to
+`./shipping-offer`.
+
 ## Local checks
 
 Run the unit tests from the repository root with:

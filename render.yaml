@@ -4,6 +4,7 @@ services:
     runtime: docker
     plan: starter
     dockerfilePath: ./shipping-offer/Dockerfile
+    dockerContext: ./shipping-offer
     healthCheckPath: /health
     disk:
       name: shipping-offers
