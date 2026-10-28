@@ -75,23 +75,36 @@ class OfferPersistenceTests(unittest.TestCase):
             }
         }
         expires_at = 1_800_000_600
-        with patch("app._shopify_graphql", side_effect=[{"shop": {"currencyCode": "USD"}}, create_payload]) as graphql:
+        with patch("app._shopify_graphql", return_value=create_payload) as graphql:
             code, discount_id = create_shipping_discount(self.config, expires_at)
 
-        mutation_call = graphql.call_args_list[1]
-        discount_input = mutation_call.args[2]["input"]
+        graphql.assert_called_once()
+        discount_input = graphql.call_args.args[2]["input"]
         self.assertRegex(code, r"^RIDE[A-F0-9]{12}$")
         self.assertEqual(discount_id, "gid://shopify/DiscountCodeNode/1")
         self.assertEqual(discount_input["context"], {"all": "ALL"})
         self.assertEqual(discount_input["destination"], {"countries": {"add": ["US", "CA"]}})
-        self.assertEqual(discount_input["maximumShippingPrice"], "15.00")
+        self.assertNotIn("maximumShippingPrice", discount_input)
         self.assertEqual(discount_input["usageLimit"], 1)
         self.assertTrue(discount_input["appliesOncePerCustomer"])
         self.assertEqual(discount_input["combinesWith"]["productDiscounts"], True)
         self.assertEqual(discount_input["combinesWith"]["orderDiscounts"], False)
         self.assertEqual(discount_input["endsAt"], "2027-01-15T08:10:00+00:00")
 
+    def test_applies_optional_cap_in_usd(self):
+        self.config.shipping_cap = "15.00"
+        create_payload = {
+            "discountCodeFreeShippingCreate": {
+                "codeDiscountNode": {"id": "gid://shopify/DiscountCodeNode/1"},
+                "userErrors": [],
+            }
+        }
+        with patch("app._shopify_graphql", side_effect=[{"shop": {"currencyCode": "USD"}}, create_payload]) as graphql:
+            create_shipping_discount(self.config, 1_800_000_600)
+        self.assertEqual(graphql.call_args_list[1].args[2]["input"]["maximumShippingPrice"], "15.00")
+
     def test_refuses_shipping_cap_when_store_currency_is_not_usd(self):
+        self.config.shipping_cap = "15.00"
         with patch("app._shopify_graphql", return_value={"shop": {"currencyCode": "CAD"}}) as graphql:
             with self.assertRaises(ShopifyAPIError):
                 create_shipping_discount(self.config, 1_800_000_600)

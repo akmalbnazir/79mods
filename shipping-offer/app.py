@@ -66,19 +66,23 @@ class Config:
         client_id,
         database_path,
         api_version="2026-10",
-        shipping_cap="15.00",
+        shipping_cap="none",
         daily_code_limit=100,
     ):
         if not re.fullmatch(r"[a-z0-9][a-z0-9-]*\.myshopify\.com", shop_domain):
             raise ConfigurationError("SHOPIFY_STORE_DOMAIN must be a *.myshopify.com domain.")
         if not re.fullmatch(r"\d{4}-\d{2}", api_version):
             raise ConfigurationError("SHOPIFY_API_VERSION must use YYYY-MM format.")
-        try:
-            cap = float(shipping_cap)
-        except ValueError as error:
-            raise ConfigurationError("SHIPPING_DISCOUNT_CAP must be a positive amount.") from error
-        if cap <= 0:
-            raise ConfigurationError("SHIPPING_DISCOUNT_CAP must be a positive amount.")
+        cap_value = str(shipping_cap or "").strip().lower()
+        if cap_value in ("", "none"):
+            cap = None
+        else:
+            try:
+                cap = float(cap_value)
+            except ValueError as error:
+                raise ConfigurationError("SHIPPING_DISCOUNT_CAP must be a positive amount or 'none'.") from error
+            if cap <= 0:
+                raise ConfigurationError("SHIPPING_DISCOUNT_CAP must be a positive amount or 'none'.")
         if daily_code_limit <= 0:
             raise ConfigurationError("DAILY_CODE_LIMIT must be a positive integer.")
         self.shop_domain = shop_domain
@@ -86,7 +90,7 @@ class Config:
         self.client_id = client_id
         self.database_path = database_path
         self.api_version = api_version
-        self.shipping_cap = f"{cap:.2f}"
+        self.shipping_cap = None if cap is None else f"{cap:.2f}"
         self.daily_code_limit = daily_code_limit
 
     @classmethod
@@ -97,7 +101,7 @@ class Config:
             client_id=required_env("SHOPIFY_CLIENT_ID"),
             database_path=os.environ.get("DATABASE_PATH", "/data/offers.sqlite3"),
             api_version=os.environ.get("SHOPIFY_API_VERSION", "2026-10"),
-            shipping_cap=os.environ.get("SHIPPING_DISCOUNT_CAP", "15.00"),
+            shipping_cap=os.environ.get("SHIPPING_DISCOUNT_CAP", "none"),
             daily_code_limit=int(os.environ.get("DAILY_CODE_LIMIT", "100")),
         )
 
@@ -233,11 +237,12 @@ def _get_admin_access_token(config):
 
 
 def create_shipping_discount(config, expires_at):
-    currency_data = _shopify_graphql(config, SHOP_CURRENCY_QUERY, {})
-    currency = currency_data.get("shop", {}).get("currencyCode")
-    if currency != "USD":
-        LOG.error("Shipping offer requires a USD shop currency; Shopify returned %s", currency)
-        raise ShopifyAPIError("The shipping offer is configured for a USD store.")
+    if config.shipping_cap is not None:
+        currency_data = _shopify_graphql(config, SHOP_CURRENCY_QUERY, {})
+        currency = currency_data.get("shop", {}).get("currencyCode")
+        if currency != "USD":
+            LOG.error("Shipping offer requires a USD shop currency; Shopify returned %s", currency)
+            raise ShopifyAPIError("The shipping offer is configured for a USD store.")
 
     now = datetime.now(timezone.utc)
     ends_at = datetime.fromtimestamp(expires_at, timezone.utc)
@@ -252,13 +257,14 @@ def create_shipping_discount(config, expires_at):
             "appliesOncePerCustomer": True,
             "context": {"all": "ALL"},
             "destination": {"countries": {"add": ["US", "CA"]}},
-            "maximumShippingPrice": config.shipping_cap,
             "combinesWith": {
                 "productDiscounts": True,
                 "orderDiscounts": False,
             },
         }
     }
+    if config.shipping_cap is not None:
+        variables["input"]["maximumShippingPrice"] = config.shipping_cap
     data = _shopify_graphql(config, GRAPHQL_MUTATION, variables)
     payload = data.get("discountCodeFreeShippingCreate")
     if not payload:

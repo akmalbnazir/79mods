@@ -16,7 +16,7 @@ services:
       - key: SHOPIFY_API_VERSION
         value: 2026-10
       - key: SHIPPING_DISCOUNT_CAP
-        value: "15.00"
+        value: "none"
       - key: DAILY_CODE_LIMIT
         value: "100"
       - key: DATABASE_PATH

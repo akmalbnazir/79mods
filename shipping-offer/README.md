@@ -2,8 +2,9 @@
 
 The service creates one unique Shopify free-shipping code per cart. Codes expire
 10 minutes after the cart first requests an offer, can be redeemed once, apply
-to US and Canadian destinations, and cover eligible shipping rates priced at
-US$15 or less. The app enables combination with product discounts and issues
+to US and Canadian destinations, and make shipping free at any price. Set
+`SHIPPING_DISCOUNT_CAP` to an amount such as `15.00` to cap eligible rates
+instead. The app enables combination with product discounts and issues
 at most 100 unique codes per calendar day in Eastern Time.
 
 The cart retains the same timer when the page is refreshed or the cart drawer is
@@ -24,21 +25,23 @@ client IP, plus the generated discount code and Shopify discount ID.
    environment variables. The service uses them to verify app-proxy requests
    and obtain short-lived Admin API access tokens. Never put either value in
    this repository or storefront JavaScript.
-4. Configure the Halloween Buy X Get Y discounts in Shopify Admin to combine
-   with shipping discounts too. Combinations must be permitted by both
+4. Configure every Halloween discount in Shopify Admin, including the
+   automatic `HALLOWEEN` discount and the Buy X Get Y discounts, to combine
+   with shipping discounts. Combinations must be permitted by both
    discounts; this service only enables product discounts on the shipping code.
-5. Confirm that the store's base currency is USD. The service refuses to create
-   an offer if it detects another base currency, so the 15.00 cap always means
-   US$15.
+   Otherwise checkout reports that the code "couldn't be used with your
+   existing discounts."
+5. If you set a cap, confirm that the store's base currency is USD. The service
+   refuses to create a capped offer if it detects another base currency.
 6. Deploy this service with the persistent disk configured in `render.yaml`,
    then test a US and Canadian checkout, an expired offer, and the Halloween
    discount combination before advertising it.
 
-The existing Halloween Buy X Get Y discounts must also allow shipping discounts
+The Halloween discounts must also allow shipping discounts
 in Shopify Admin for both promotions to stack. Shopify's native free-shipping
-discount targets eligible rates by price, not by a shipping-service name. Any
-eligible rate costing US$15 or less could qualify, including expedited service
-if it is priced within the cap.
+discount targets rates by price, not by a shipping-service name. Without a cap,
+every US and Canada rate offered at checkout is free during the timer, including
+expedited service if one is offered.
 
 The Render `starter` service and persistent disk can incur monthly charges.
 Review Render's current pricing and approve the service before deployment.
