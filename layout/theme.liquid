@@ -37,10 +37,11 @@
           <a href="{{ routes.collections_url }}/emoto-frame-guards"{% if collection.handle == 'emoto-frame-guards' %} aria-current="page"{% endif %}><span class="collection-drawer-index">07</span><span class="collection-drawer-label">Frame guards</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
           <a href="{{ routes.collections_url }}/emoto-pegs"{% if collection.handle == 'emoto-pegs' %} aria-current="page"{% endif %}><span class="collection-drawer-index">08</span><span class="collection-drawer-label">Pegs</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
           <a href="https://79mods.goaffpro.com"><span class="collection-drawer-index">↗</span><span class="collection-drawer-label">Get Sponsored (MAKE MONEY!)</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
+          <a class="drawer-build" href="{{ pages['configurator'].url | default: pages['about-us'].url }}?view=configurator"><span class="collection-drawer-index">3D</span><span class="collection-drawer-label">Build your bike</span><span class="collection-drawer-arrow" aria-hidden="true">↗</span></a>
         </nav>
       </aside>
     </dialog>
-    <template id="cart-halloween-promotion">{% render 'halloween-promotion' %}</template>
+    <template id="cart-store-promotion">{% render 'thanksgiving-promotion', placement: 'cart' %}{% render 'configurator-link', class: 'cart-build-link' %}</template>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
     <script src="{{ 'halloween-promotion.js' | asset_url }}" defer></script>

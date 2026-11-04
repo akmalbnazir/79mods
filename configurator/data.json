@@ -11,6 +11,20 @@
    "headY": 0.96,
    "colors": [],
    "glb": "models/lbx.glb",
+   "wheelPreview": {
+    "front": {
+     "center": [0.59260457, 0.31751974, 0.0011],
+     "rimRadius": 0.258,
+     "width": 0.096,
+     "tireHalfWidth": 0.054
+    },
+    "rear": {
+     "center": [-0.58881274, 0.31751974, 0.0034],
+     "rimRadius": 0.249,
+     "width": 0.084,
+     "tireHalfWidth": 0.05
+    }
+   },
    "slots": [
     "rims",
     "brakes"
@@ -27,6 +41,20 @@
    "headY": 0.96,
    "colors": [],
    "glb": "models/ultrabee.glb",
+   "wheelPreview": {
+    "front": {
+     "center": [0.6817353, 0.33400722, -0.0017],
+     "rimRadius": 0.279,
+     "width": 0.086,
+     "tireHalfWidth": 0.052
+    },
+    "rear": {
+     "center": [-0.6589095, 0.33400722, -0.0016],
+     "rimRadius": 0.263,
+     "width": 0.116,
+     "tireHalfWidth": 0.065
+    }
+   },
    "slots": [
     "rims"
    ]
@@ -42,7 +70,26 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-gt.glb",
-   "slots": []
+    "splitWheelRegions": true,
+    "wheelPreview": {
+     "front": {
+    "center": [0.5794486, 0.28320615, -0.0005],
+    "rimRadius": 0.218,
+    "width": 0.048,
+      "tireHalfWidth": 0.032,
+    "outerRadius": 0.286
+     },
+     "rear": {
+    "center": [-0.57561588, 0.28608074, -0.0004],
+    "rimRadius": 0.206,
+    "width": 0.066,
+      "tireHalfWidth": 0.051,
+    "outerRadius": 0.289
+     }
+    },
+   "slots": [
+    "rims"
+   ]
   },
   {
    "id": "79bike-pro",
@@ -55,7 +102,26 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-pro.glb",
-   "slots": []
+    "splitWheelRegions": true,
+    "wheelPreview": {
+     "front": {
+      "center": [0.61264133, 0.2867912, 0.0006],
+      "rimRadius": 0.222,
+      "width": 0.052,
+      "tireHalfWidth": 0.042,
+      "outerRadius": 0.294
+     },
+     "rear": {
+      "center": [-0.61304136, 0.28605931, 0.0003],
+      "rimRadius": 0.222,
+      "width": 0.052,
+      "tireHalfWidth": 0.042,
+      "outerRadius": 0.293
+     }
+    },
+   "slots": [
+    "rims"
+   ]
   },
   {
    "id": "79bike-lite",
@@ -63,31 +129,32 @@
    "brandName": "79Bike Falcon",
    "name": "Lite",
    "wheelbase": 1.22,
-   "wheelR": 0.33,
+   "wheelR": 0.25,
    "seatY": 0.8,
    "headY": 0.98,
-   "colors": [
-    "#3979ef",
-    "#a43de0",
-    "#1c1c1f",
-    "#e8e8ea"
-   ]
-  },
-  {
-   "id": "ventus-v1",
-   "brand": "ventus",
-   "brandName": "Ventus",
-   "name": "V1+",
-   "wheelbase": 1.28,
-   "wheelR": 0.32,
-   "seatY": 0.82,
-   "headY": 1.0,
-   "colors": [
-    "#e8e8ea",
-    "#1c1c1f",
-    "#d62839",
-    "#3979ef"
-   ]
+   "colors": [],
+   "glb": "models/falcon-lite.glb",
+    "splitWheelRegions": true,
+    "wheelPreview": {
+     "front": {
+      "center": [0.5794486, 0.28320615, -0.0005],
+      "rimRadius": 0.218,
+      "width": 0.048,
+      "tireHalfWidth": 0.032,
+      "outerRadius": 0.286
+     },
+     "rear": {
+      "center": [-0.57561588, 0.28608074, -0.0004],
+      "rimRadius": 0.206,
+      "width": 0.066,
+      "tireHalfWidth": 0.051,
+      "outerRadius": 0.289
+     }
+    },
+   "slots": [
+    "rims"
+   ],
+   "modelNote": "Lite preview: slimmer GT body and handlebars, with unchanged wheels. Not a factory-accurate Lite model."
   },
   {
    "id": "eride-s",
@@ -95,14 +162,14 @@
    "brandName": "E Ride Pro",
    "name": "S",
    "wheelbase": 1.25,
-   "wheelR": 0.33,
+   "wheelR": 0.276,
    "seatY": 0.81,
    "headY": 0.99,
-   "colors": [
-    "#d62839",
-    "#1c1c1f",
-    "#e8e8ea",
-    "#a43de0"
+   "colors": [],
+   "glb": "models/eride-s.glb?v=wheel-split-1",
+   "stockRimRadius": 0.205,
+   "slots": [
+    "rims"
    ]
   },
   {
@@ -111,15 +178,16 @@
    "brandName": "E Ride Pro",
    "name": "SS",
    "wheelbase": 1.25,
-   "wheelR": 0.33,
+   "wheelR": 0.3,
    "seatY": 0.81,
    "headY": 0.99,
-   "colors": [
-    "#d62839",
-    "#1c1c1f",
-    "#e8e8ea",
-    "#a43de0"
-   ]
+   "colors": [],
+   "glb": "models/eride-ss.glb?v=complete-wheels",
+   "stockRimRadius": 0.205,
+   "slots": [
+    "rims"
+   ],
+   "modelNote": "SS kit preview: estimated assembly from supplied print parts. No separate battery mesh was supplied."
   },
   {
    "id": "eride-30",
@@ -131,7 +199,8 @@
    "seatY": 0.81,
    "headY": 0.99,
    "colors": [],
-   "glb": "models/eride-ss3.glb",
+   "glb": "models/eride-ss3.glb?v=corrected-assembly-2",
+   "modelNote": "3.0 kit preview: corrected estimated assembly from supplied print parts, not factory CAD or a fitment reference.",
    "slots": [
     "rims",
     "brakes"
@@ -143,31 +212,28 @@
    "brandName": "E Ride Pro",
    "name": "SR",
    "wheelbase": 1.25,
-   "wheelR": 0.33,
+   "wheelR": 0.3213,
    "seatY": 0.81,
    "headY": 0.99,
-   "colors": [
-    "#d62839",
-    "#1c1c1f",
-    "#e8e8ea",
-    "#a43de0"
-   ]
+   "colors": [],
+   "glb": "models/eride-sr.glb?v=sr-preview-2",
+   "preserveMaterials": true,
+   "slots": [],
+   "modelNote": "SR visual approximation based on the SS kit: 19/18 knobby wheels, wider rear tire, estimated battery enclosure and front accessories. Not factory SR geometry or a fitment reference."
   },
   {
    "id": "talaria-xxx",
    "brand": "talaria",
    "brandName": "Talaria",
    "name": "XXX",
-   "wheelbase": 1.2,
-   "wheelR": 0.32,
+   "wheelbase": 1.25,
+   "wheelR": 0.2642,
    "seatY": 0.79,
    "headY": 0.97,
-   "colors": [
-    "#2f9e44",
-    "#1c1c1f",
-    "#ff7a18",
-    "#e8e8ea"
-   ]
+   "colors": [],
+  "glb": "models/talaria-xxx.glb?v=mudguard-aligned-2",
+   "slots": [],
+   "modelNote": "XXX kit preview: estimated assembly from the supplied print parts, with paired supermoto wheel halves. Not a factory CAD model or fitment reference."
   },
   {
    "id": "talaria-mx4",
@@ -189,16 +255,14 @@
    "brand": "talaria",
    "brandName": "Talaria",
    "name": "MX5",
-   "wheelbase": 1.2,
-   "wheelR": 0.32,
+   "wheelbase": 1.25,
+   "wheelR": 0.306,
    "seatY": 0.79,
    "headY": 0.97,
-   "colors": [
-    "#2f9e44",
-    "#1c1c1f",
-    "#ff7a18",
-    "#e8e8ea"
-   ]
+   "colors": [],
+   "glb": "models/talaria-mx5.glb?v=assembled-1",
+   "slots": [],
+   "modelNote": "MX5 kit preview: estimated assembly from supplied print parts, with the kit's street-style wheels and untextured dark finish. Not factory CAD or a fitment reference."
   }
  ],
  "slots": [
@@ -233,212 +297,54 @@
  ],
  "parts": [
   {
-   "id": "seat-comfort",
-   "slot": "seat",
-   "variant": "comfort",
-   "name": "Comfort Touring Seat",
-   "price": 89,
-   "fits": [
-    "79bike",
-    "ventus",
-    "eride",
-    "talaria"
-   ],
-   "colors": [
-    "#222226",
-    "#6751ed",
-    "#8a5a2b"
-   ]
-  },
-  {
-   "id": "seat-race",
-   "slot": "seat",
-   "variant": "race",
-   "name": "Race Slim Seat",
-   "price": 69,
-   "fits": [
-    "79bike",
-    "talaria"
-   ],
-   "colors": [
-    "#222226",
-    "#ff7a18",
-    "#3979ef"
-   ]
-  },
-  {
-   "id": "bars-hirise",
-   "slot": "bars",
-   "variant": "hirise",
-   "name": "Hi-Rise Handlebars",
-   "price": 79,
-   "fits": [
-    "79bike",
-    "eride",
-    "talaria"
-   ],
-   "colors": [
-    "#222226",
-    "#ff7a18",
-    "#a43de0",
-    "#d9d9de"
-   ]
-  },
-  {
-   "id": "bars-flat",
-   "slot": "bars",
-   "variant": "flat",
-   "name": "Flat Race Bars",
-   "price": 65,
-   "fits": [
-    "79bike",
-    "ventus",
-    "eride",
-    "talaria"
-   ],
-   "colors": [
-    "#222226",
-    "#3979ef",
-    "#d9d9de"
-   ]
-  },
-  {
-   "id": "tires-knobby",
-   "slot": "tires",
-   "variant": "knobby",
-   "name": "Trail Knobby Tires",
-   "price": 129,
-   "fits": [
-    "79bike",
-    "ventus",
-    "eride",
-    "talaria"
-   ],
-   "colors": []
-  },
-  {
-   "id": "tires-street",
-   "slot": "tires",
-   "variant": "street",
-   "name": "Street Slick Tires",
-   "price": 119,
-   "fits": [
-    "79bike",
-    "ventus",
-    "eride",
-    "talaria"
-   ],
-   "colors": []
-  },
-  {
-   "id": "rims-forged",
-   "slot": "rims",
-   "variant": "forged",
-   "name": "Forged Alloy Rims",
-   "price": 349,
-   "fits": [
-    "79bike",
-    "ventus",
-    "talaria"
-   ],
-   "colors": [
-    "#d4af37",
-    "#d9d9de",
-    "#222226",
-    "#d62839"
-   ]
-  },
-  {
-   "id": "brakes-ultra",
-   "slot": "brakes",
-   "variant": "ultra",
-   "name": "Ultra Bee Big Rotor Brakes",
-   "price": 159,
-   "fits": [
-    "ventus",
-    "talaria"
-   ],
-   "colors": [
-    "#d4af37",
-    "#d62839",
-    "#3979ef"
-   ]
-  },
-  {
-   "id": "light-led",
-   "slot": "light",
-   "variant": "led",
-   "name": "LED Ring Headlight",
-   "price": 99,
-   "fits": [
-    "79bike",
-    "ventus",
-    "eride",
-    "talaria"
-   ],
-   "colors": [
-    "#ffffff",
-    "#7fd0ff"
-   ]
-  },
-  {
-   "id": "guard-skid",
-   "slot": "guard",
-   "variant": "skid",
-   "name": "Aluminum Skid Plate",
-   "price": 74,
-   "fits": [
-    "eride",
-    "talaria"
-   ],
-   "colors": [
-    "#d9d9de",
-    "#222226",
-    "#ff7a18"
-   ]
-  },
-  {
    "id": "super-motos-17in-2",
+  "fitOptions": {
+   "lbx": "Surron LBX/LBS",
+   "79bike-gt": "79bike (Falcon Pro/GT/Lite)",
+   "79bike-pro": "79bike (Falcon Pro/GT/Lite)",
+   "79bike-lite": "79bike (Falcon Pro/GT/Lite)",
+   "eride-s": "Eride S/SS",
+   "eride-ss": "Eride S/SS"
+  },
    "slot": "rims",
    "variant": "supermoto17",
-   "name": "17in Super Moto Wheelset",
-   "price": 429.99,
-   "fits": [
-    "lbx"
-   ],
-   "colors": [
-    "#d9d9de",
-    "#222226"
-   ]
-  },
-  {
-   "id": "rear-ultra-bee-brakes",
-   "slot": "brakes",
-   "variant": "v3rear",
-   "name": "V3 Rear Ultra Bee Brake (Full Kit)",
-   "price": 199.99,
+   "name": "Complete 17in Emoto Super Moto Wheelset (Chrome/Black)",
+   "price": 399,
+   "previewNote": "Rim-only preview: keeps the stock tires and wheel dimensions, not an exact 17-inch wheel/tire conversion.",
+   "url": "https://79mods.com/products/super-motos-17in-2?variant=49567225053412",
    "fits": [
     "lbx",
-    "talaria-mx4"
+    "79bike-gt",
+    "79bike-pro",
+    "79bike-lite",
+    "eride-s",
+    "eride-ss"
    ],
-   "colors": [
-    "#222226",
-    "#d9d9de"
-   ]
+   "previewFits": [
+    "lbx",
+    "79bike-gt",
+    "79bike-pro",
+    "79bike-lite",
+    "eride-s",
+    "eride-ss"
+   ],
+   "colors": []
   },
   {
    "id": "ultra-bee-supermoto-wheelset-17in",
    "slot": "rims",
    "variant": "supermoto17",
-   "name": "Ultra Bee 17in Super Moto Wheelset",
+   "name": "Ultra Bee Supermoto Wheelset (17in) Chrome/Black",
    "price": 589.99,
+   "previewNote": "Rim-only preview: keeps the stock tires and wheel dimensions, not an exact 17-inch wheel/tire conversion.",
+   "url": "https://79mods.com/products/ultra-bee-supermoto-wheelset-17in",
    "fits": [
     "ultrabee"
    ],
-   "colors": [
-    "#d9d9de",
-    "#222226"
-   ]
+   "previewFits": [
+    "ultrabee"
+   ],
+   "colors": []
   }
  ]
 }

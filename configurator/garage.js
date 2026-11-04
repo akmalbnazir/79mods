@@ -74,7 +74,7 @@ export function buildGarage(scene, renderer) {
   const shelf = new THREE.Group();
   shelf.position.set(S - 0.4, 0, 0.5);
   for (const z of [-1.5, 1.5]) add(shelf, new THREE.BoxGeometry(0.6, 2.4, 0.06), m('#2b2b30'), 0, 1.2, z);
-  const colors = ['#6751ed', '#3979ef', '#a43de0', '#ff7a18', '#e8e8ea'];
+  const colors = ['#ffe071', '#3979ef', '#147b70', '#cf2948', '#e8e8ea'];
   for (let r = 0; r < 4; r++) {
     add(shelf, new THREE.BoxGeometry(0.6, 0.04, 3), m('#44444c', 0.6, 0.4), 0, 0.3 + r * 0.7, 0);
     for (let i = 0; i < 5; i++) add(shelf, new THREE.BoxGeometry(0.4, 0.3, 0.45), m(colors[(r + i) % colors.length], 0.7), 0, 0.5 + r * 0.7, -1.2 + i * 0.6);
@@ -107,7 +107,7 @@ export function buildGarage(scene, renderer) {
     s.shadow.normalBias = 0.04;
     scene.add(s, s.target);
   }
-  const rim = new THREE.PointLight('#6751ed', 10, 9, 1.6);
+  const rim = new THREE.PointLight('#147b70', 10, 9, 1.6);
   rim.position.set(-3, 2.2, -3);
   scene.add(rim);
 

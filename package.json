@@ -1,0 +1,14 @@
+{
+  "name": "79mods-theme",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build:configurator": "node configurator/tools/build_theme.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "parse5": "^7.2.1"
+  }
+}

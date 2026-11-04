@@ -1,6 +1,9 @@
 """Convert assembled 79Bike Falcon STLs to cleaned, decimated configurator GLBs.
 
-Usage: python build_falcon.py [gt|pro ...]   (defaults to all models)
+Usage: python build_falcon.py [gt|pro|lite ...]   (defaults to all models)
+
+Lite is a visual approximation derived from the optimized GT, not a factory
+model. It narrows the upper body and bars without changing the wheel region.
 
 Output axes: +X forward, +Y up, +Z across, metres, ground at Y=0, origin midway
 between the axles. Every source-to-output axis mapping must be a proper rotation
@@ -98,6 +101,35 @@ def build(name):
     )
 
 
+def build_lite():
+    source = os.path.join(MODELS, "falcon-gt.glb")
+    scene = trimesh.load(source, force="scene", process=False)
+    if set(scene.geometry) != {"frame"}:
+        raise ValueError("Lite requires the single-mesh Falcon GT model")
+    mesh = scene.geometry["frame"]
+    vertices = mesh.vertices.copy()
+    height = vertices[:, 1]
+
+    # Leave everything below the wheel crowns untouched; blend the narrowing
+    # into the body, with a second gentle transition at handlebar height.
+    body = np.clip((height - 0.53) / 0.14, 0, 1)
+    body = body * body * (3 - 2 * body)
+    bars = np.clip((height - 0.84) / 0.10, 0, 1)
+    bars = bars * bars * (3 - 2 * bars)
+    vertices[:, 2] *= 1 - 0.18 * body - 0.07 * bars
+    mesh.vertices = vertices
+    output = os.path.join(MODELS, "falcon-lite.glb")
+    scene.export(output)
+    print(
+        f"lite: GT-derived visual preview; {len(mesh.faces):,} triangles; "
+        f"{os.path.getsize(output) / 1e6:.1f} MB; "
+        f"bounds {np.round(mesh.bounds, 3).tolist()}"
+    )
+
+
 if __name__ == "__main__":
-    for bike in sys.argv[1:] or BIKES:
-        build(bike)
+    for bike in sys.argv[1:] or [*BIKES, "lite"]:
+        if bike == "lite":
+            build_lite()
+        else:
+            build(bike)

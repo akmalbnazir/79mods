@@ -181,14 +181,57 @@ export function buildWheel(R, tire, rim, rimColor) {
       g.add(m);
     }
   }
-  const rimR = R - tr * 2 + 0.012;
-  const rimMat = mat(rim === 'forged' ? rimColor || '#d4af37' : '#b8b8c0', { metal: 0.95, rough: 0.22 });
-  const rimMesh = new THREE.Mesh(new THREE.TorusGeometry(rimR, 0.014, 12, 56), rimMat);
-  rimMesh.scale.z = 2.6;
-  g.add(rimMesh);
+  g.add(buildRim(R - tr * 2 + 0.012, rim, rimColor));
+  return shadowed(g);
+}
+
+export function buildRim(rimR, rim, rimColor, width = 0.07) {
+  const g = new THREE.Group();
+  const supermoto = rim === 'supermoto17';
+  const rimTubeRadius = 0.014;
+  const rimMat = mat(
+    rim === 'forged' ? rimColor || '#d4af37' : supermoto ? rimColor || '#d7d7dc' : '#d7d7dc',
+    { metal: 0.95, rough: supermoto ? 0.18 : 0.22 }
+  );
+  if (supermoto) {
+    const edge = width / 2;
+    const outer = rimR + rimTubeRadius;
+    const profile = [
+      [outer - 0.012, -edge], [outer - 0.004, -edge - 0.002],
+      [outer + 0.003, -edge], [outer + 0.004, -edge + 0.004],
+      [outer, -edge + 0.009], [outer - 0.009, -edge + 0.013],
+      [outer - 0.014, -edge + 0.019], [outer - 0.014, edge - 0.019],
+      [outer - 0.009, edge - 0.013], [outer, edge - 0.009],
+      [outer + 0.004, edge - 0.004], [outer + 0.003, edge],
+      [outer - 0.004, edge + 0.002], [outer - 0.012, edge],
+      [outer - 0.018, edge - 0.014], [outer - 0.018, -edge + 0.014],
+      [outer - 0.012, -edge]
+    ].map(([r, z]) => new THREE.Vector2(r, z));
+    const barrel = new THREE.Mesh(new THREE.LatheGeometry(profile, 128), rimMat);
+    barrel.rotation.x = Math.PI / 2;
+    g.add(barrel);
+  } else {
+    const rimMesh = new THREE.Mesh(new THREE.TorusGeometry(rimR, rimTubeRadius, 12, 56), rimMat);
+    rimMesh.scale.z = 2.6;
+    g.add(rimMesh);
+  }
   const hub = cyl(0.04, 0.14, silver());
   g.add(hub);
-  if (rim === 'forged') {
+  if (supermoto) {
+    const spokeMat = mat(rimColor || '#d7d7dc', { metal: 0.9, rough: 0.2 });
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 18; i++) {
+        const rimAngle = ((i + (side > 0 ? 0.5 : 0)) / 18) * Math.PI * 2;
+        const hubAngle = rimAngle + (i % 2 ? 1 : -1) * 0.48;
+        const from = V(Math.cos(hubAngle) * 0.035, Math.sin(hubAngle) * 0.035, side * 0.045);
+        const to = V(Math.cos(rimAngle) * rimR, Math.sin(rimAngle) * rimR, side * (width / 2 - 0.018));
+        g.add(tube(from, to, 0.0016, spokeMat, 6));
+        const nippleStart = to.clone().setX(Math.cos(rimAngle) * (rimR - 0.006)).setY(Math.sin(rimAngle) * (rimR - 0.006));
+        const nippleEnd = to.clone().setX(Math.cos(rimAngle) * (rimR + 0.004)).setY(Math.sin(rimAngle) * (rimR + 0.004));
+        g.add(tube(nippleStart, nippleEnd, 0.0028, spokeMat, 6));
+      }
+    }
+  } else if (rim === 'forged') {
     for (let i = 0; i < 6; i++) {
       const a = (i / 6) * Math.PI * 2;
       const s = tube(V(0, 0), V(Math.cos(a) * rimR, Math.sin(a) * rimR), 0.017, rimMat, 10);

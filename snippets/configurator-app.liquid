@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>79MODS - Bike Configurator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ 'configurator-style.css' | asset_url }}">
+  
+</head>
+<body>
+  <div class="stage" id="stage" role="img" aria-label="3D bike preview" aria-busy="true"></div>
+
+  <a class="back-home" href="{{ routes.root_url }}" target="_top">Back to home</a>
+
+  <aside class="panel" id="panel">
+    <section>
+      <h2>1 · Your bike</h2>
+      <div class="field-label">Brand</div>
+      <div class="chips" id="bike-chips"></div>
+      <div class="field-label">Model</div>
+      <div class="segmented" id="bike-models" aria-label="Model"></div>
+      <p class="muted" id="model-note" hidden=""></p>
+      <div class="swatches" id="bike-colors" aria-label="Frame color"></div>
+    </section>
+
+    <section>
+      <h2>2 · Add parts</h2>
+      <div class="tabs" id="slot-tabs" role="tablist"></div>
+      <div class="parts" id="parts"></div>
+    </section>
+  </aside>
+
+  <div class="viewbar">
+    <button data-view="reset">3/4</button>
+    <button data-view="side">Side</button>
+    <button data-view="front">Front</button>
+    <button data-view="rear">Rear</button>
+    <button id="spin" aria-pressed="false">Auto-rotate</button>
+  </div>
+
+  <aside class="summary" id="summary" aria-label="Build summary">
+    <div class="lines" id="lines"></div>
+    <div class="total"><span>Build total</span><b id="total">$0</b></div>
+    <p class="summary-sale">Thanksgiving: 5% off automatically applied at checkout. No code needed.</p>
+    <button class="cta" id="add-cart" disabled="">Add build to cart</button>
+    <a class="view-cart" id="view-cart" href="{{ routes.cart_url }}" target="_top" hidden="">View shopping bag</a>
+  </aside>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="loading" id="loading">Loading garage…</div>
+
+  <script>window.configuratorSettings = {
+  cartMode: 'shopify',
+  currency: window.parent.Shopify?.currency?.active || {{ shop.currency | json }},
+  storefrontRoot: {{ routes.root_url | json }},
+  dataUrl: {{ 'configurator-data.json' | asset_url | json }},
+  models: {
+    "models/lbx.glb": {{ 'configurator-lbx.glb' | asset_url | json }},
+    "models/ultrabee.glb": {{ 'configurator-ultrabee.glb' | asset_url | json }},
+    "models/falcon-gt.glb": {{ 'configurator-falcon-gt.glb' | asset_url | json }},
+    "models/falcon-pro.glb": {{ 'configurator-falcon-pro.glb' | asset_url | json }},
+    "models/falcon-lite.glb": {{ 'configurator-falcon-lite.glb' | asset_url | json }},
+    "models/eride-s.glb": {{ 'configurator-eride-s.glb' | asset_url | json }},
+    "models/eride-ss.glb": {{ 'configurator-eride-ss.glb' | asset_url | json }},
+    "models/eride-ss3.glb": {{ 'configurator-eride-ss3.glb' | asset_url | json }},
+    "models/eride-sr.glb": {{ 'configurator-eride-sr.glb' | asset_url | json }},
+    "models/talaria-xxx.glb": {{ 'configurator-talaria-xxx.glb' | asset_url | json }},
+    "models/mx4.glb": {{ 'configurator-mx4.glb' | asset_url | json }},
+    "models/talaria-mx5.glb": {{ 'configurator-talaria-mx5.glb' | asset_url | json }}
+  }
+};</script><script type="module" src="{{ 'configurator-app.js' | asset_url }}"></script>
+
+
+</body></html>

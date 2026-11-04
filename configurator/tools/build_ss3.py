@@ -46,11 +46,30 @@ def to_glb_coordinates(vertices):
     return converted
 
 
+def complete_wheel(half):
+    """Mirror the detailed print half, preserving the preview's tire width."""
+    half = half.copy()
+    center = half.bounds.mean(axis=0)
+    half.apply_translation([-center[0], -center[1], -half.bounds[0, 2]])
+    # Remove the flat mating cap before joining the two detailed outer sides.
+    mating = np.all(np.abs(half.triangles[:, :, 2]) < 1e-5, axis=1)
+    half.update_faces(~mating)
+    half.apply_scale([1, 1, 0.5])
+    opposite = half.copy()
+    opposite.apply_transform(np.diag([1, 1, -1, 1]))
+    wheel = trimesh.util.concatenate([half, opposite])
+    wheel.merge_vertices()
+    wheel.remove_unreferenced_vertices()
+    return wheel
+
+
 def load_part(part):
     source = os.path.join(HERE, "models", "ss3-source", part["file"])
     if not os.path.isfile(source):
         raise FileNotFoundError(f"Missing source STL for {part['id']}: {source}")
     mesh = trimesh.load(source, force="mesh", process=False)
+    if part.get("node") in ("wheel_front", "wheel_rear"):
+        mesh = complete_wheel(mesh)
     mesh.apply_transform(op_matrix(part.get("ops", [])))
     return mesh
 

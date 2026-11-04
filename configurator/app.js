@@ -1,14 +1,25 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/OrbitControls.js';
 import { buildGarage } from './garage.js';
-import { createBike, disposeBike } from './bike.js';
-import { createGlbBike } from './bike_glb.js';
+import { createBike, disposeBike } from './bike.js?v=release-finishes-31';
+import { createGlbBike } from './bike_glb.js?v=release-finishes-31';
 
 const $ = (id) => document.getElementById(id);
-const money = (n) => `$${n.toLocaleString()}`;
 
-const data = await (await fetch('./data.json')).json();
+const settings = window.configuratorSettings || {};
+const currency = settings.currency || window.Shopify?.currency?.active || 'USD';
+const money = (amount) => new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount);
+const storefrontRoot = settings.storefrontRoot || window.Shopify?.routes?.root || '/';
+const storefrontPath = (path) => `${storefrontRoot.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+const data = await (await fetch(settings.dataUrl || './data.json', { cache: 'no-store' })).json();
+for (const spec of data.bikes) {
+  if (spec.glb && settings.models) spec.glb = settings.models[spec.glb.split('?')[0]] || spec.glb;
+}
 const partById = Object.fromEntries(data.parts.map((p) => [p.id, p]));
+let addingToCart = false;
+let catalogLoading = true;
+let bikeLoading = true;
+const catalog = new Map();
 
 const state = {
   bikeId: data.bikes[0].id,
@@ -57,6 +68,7 @@ function resize() {
   const w = innerWidth, h = innerHeight;
   renderer.setSize(w, h);
   camera.aspect = w / h;
+  camera.zoom = innerWidth < 900 ? Math.min(1, camera.aspect / 0.8) * 0.85 : 1;
   // On narrow screens shift the bike up so the bottom panel doesn't cover it.
   camera.setViewOffset(w, h, 0, innerWidth < 900 ? h * 0.12 : 0, w, h);
   camera.updateProjectionMatrix();
@@ -94,20 +106,42 @@ renderer.setAnimationLoop((now) => {
 const currentBike = () => data.bikes.find((b) => b.id === state.bikeId);
 const fullName = () => `${currentBike().brandName} ${currentBike().name}`;
 const fits = (part) => part.fits.includes(state.bikeId) || part.fits.includes(currentBike().brand);
+const canPreview = (part) => !part.previewFits || part.previewFits.includes(state.bikeId);
 
 const bikeSlots = () => data.slots.filter((s) => !currentBike().slots || currentBike().slots.includes(s.id));
+const modelParts = () => data.parts.filter((part) => fits(part) && canPreview(part) && bikeSlots().some((slot) => slot.id === part.slot));
+const variantsFor = (part, product = catalog.get(part.id)?.product) => (product?.variants || []).filter((variant) => !part.fitOptions || variant.option1 === part.fitOptions[state.bikeId]);
+const selectedVariant = (part, pick = state.picks[part.slot]) => {
+  const variants = variantsFor(part);
+  return variants.find((variant) => String(variant.id) === String(pick?.variantId)) || variants.find((variant) => variant.available) || variants[0];
+};
+const partPrice = (part) => selectedVariant(part) ? selectedVariant(part).price / 100 : part.price;
+const variantColor = (variant) => /black/i.test(variant?.option2 || variant?.title || '') ? '#18181b' : '#d7d7dc';
+const variantLabel = (part, variant) => {
+  if (!part.fitOptions) return variant.title;
+  const finish = /black/i.test(variant.option2) ? 'Black' : /chrome/i.test(variant.option2) ? 'Chrome' : variant.option2;
+  return [finish, variant.option3].filter(Boolean).join(' / ');
+};
 state.tab = bikeSlots()[0]?.id || '';
 
 async function buildBike() {
   const spec = currentBike();
-  const next = spec.glb ? await createGlbBike(spec) : createBike(spec, state.frameColor);
-  if (spec !== currentBike()) return;
-  if (bike) { scene.remove(bike.root); disposeBike(bike); }
-  bike = next;
-  scene.add(bike.root);
-  for (const [slot, pick] of Object.entries(state.picks)) {
-    const part = partById[pick.partId];
-    bike.setSlot(slot, part.variant, pick.color);
+  bikeLoading = true;
+  stage.setAttribute('aria-busy', 'true');
+  refresh();
+  try {
+    const next = spec.glb ? await createGlbBike(spec) : createBike(spec, state.frameColor);
+    if (spec !== currentBike()) { disposeBike(next); return; }
+    if (bike) { scene.remove(bike.root); disposeBike(bike); }
+    bike = next;
+    scene.add(bike.root);
+    for (const [slot, pick] of Object.entries(state.picks)) {
+      const part = partById[pick.partId];
+      bike.setSlot(slot, part.variant, pick.color);
+    }
+    bikeLoading = false;
+  } finally {
+    if (spec === currentBike()) stage.setAttribute('aria-busy', 'false');
   }
 }
 
@@ -130,6 +164,8 @@ function renderBikeUI() {
   };
   const brands = [...new Map(data.bikes.map((b) => [b.brand, b.brandName]))];
   const cur = currentBike();
+  $('model-note').textContent = cur.modelNote || '';
+  $('model-note').hidden = !cur.modelNote;
   bikeChips.replaceChildren(...brands.map(([id, name]) => chip(name, id === cur.brand, () => {
     selectBike(data.bikes.find((b) => b.brand === id).id);
   })));
@@ -151,7 +187,9 @@ function swatch(color, on, onClick) {
 }
 
 function renderTabs() {
-  $('slot-tabs').replaceChildren(...bikeSlots().map((s) => {
+  const slots = bikeSlots().filter((slot) => modelParts().some((part) => part.slot === slot.id));
+  if (!slots.some((slot) => slot.id === state.tab)) state.tab = slots[0]?.id || '';
+  $('slot-tabs').replaceChildren(...slots.map((s) => {
     const el = document.createElement('button');
     el.textContent = s.name;
     el.className = s.id === state.tab ? 'on' : '';
@@ -162,15 +200,19 @@ function renderTabs() {
 }
 
 function renderParts() {
-  if (!bikeSlots().length) {
+  if (!modelParts().length) {
     const empty = document.createElement('div');
-    empty.className = 'muted';
-    empty.textContent = 'No compatible parts are configured for this bike yet.';
+    empty.className = 'coming-soon';
+    const title = document.createElement('h3');
+    title.textContent = 'Coming soon';
+    const message = document.createElement('p');
+    message.textContent = 'We\'re adding parts slowly. More options for this model are on the way.';
+    empty.append(title, message);
     $('parts').replaceChildren(empty);
     return;
   }
 
-  const slotParts = data.parts.filter((p) => p.slot === state.tab).sort((a, b) => fits(b) - fits(a));
+  const slotParts = modelParts().filter((part) => part.slot === state.tab);
   const pick = state.picks[state.tab];
   const cards = [];
 
@@ -180,19 +222,73 @@ function renderParts() {
   const stockRow = document.createElement('div');
   stockRow.className = 'row';
   const stockBtn = button(pick ? 'Use stock' : 'Selected', 'btn ghost', () => { delete state.picks[state.tab]; applySlot(state.tab); refresh(); });
-  stockBtn.disabled = !pick;
+  stockBtn.disabled = !pick || addingToCart || bikeLoading;
   stockRow.append(stockBtn);
   stock.append(stockRow);
   cards.push(stock);
 
   for (const part of slotParts) {
     const ok = fits(part);
+    const previewable = canPreview(part);
+    const entry = catalog.get(part.id);
+    const variant = selectedVariant(part);
+    const available = !!variant?.available && !catalogLoading && !entry?.error;
     const on = pick && pick.partId === part.id;
     const el = document.createElement('div');
-    el.className = `part${on ? ' on' : ''}${ok ? '' : ' disabled'}`;
-    el.innerHTML = `<header><b></b><span class="price">${money(part.price)}</span></header><small></small>`;
+    el.className = `part${on ? ' on' : ''}${ok && previewable ? '' : ' disabled'}`;
+    el.innerHTML = `<header><b></b><span class="price">${money(partPrice(part))}</span></header><small></small>`;
     el.querySelector('b').textContent = part.name;
-    el.querySelector('small').textContent = ok ? `Fits ${fullName()}` : `Doesn't fit ${fullName()}`;
+    el.querySelector('small').textContent = !ok
+      ? `Doesn't fit ${fullName()}`
+      : previewable
+        ? `Fits ${fullName()}${part.previewNote ? `. ${part.previewNote}` : ''}`
+        : `Fits ${fullName()}, but 3D preview isn't available for this model`;
+    if (catalogLoading || entry?.error || !available) {
+      const status = document.createElement('p');
+      status.className = 'part-status';
+      status.textContent = catalogLoading ? 'Checking availability...' : entry?.error ? 'Could not load options. Please try again.' : 'Sold out';
+      el.append(status);
+      if (entry?.error) el.append(button('Retry', 'btn ghost', () => loadCatalog(), catalogLoading));
+    }
+    const variants = variantsFor(part);
+    if (variants.length) {
+      const label = document.createElement('label');
+      label.className = 'variant-field';
+      label.append('Wheelset option');
+      const select = document.createElement('select');
+      select.setAttribute('aria-label', `${part.name} option`);
+      select.disabled = addingToCart || bikeLoading;
+      for (const option of variants) {
+        const node = document.createElement('option');
+        node.value = option.id;
+        node.textContent = variantLabel(part, option);
+        if (!option.available) node.textContent += ' - Sold out';
+        node.disabled = !option.available;
+        node.selected = option.id === variant?.id;
+        select.append(node);
+      }
+      select.onchange = () => {
+        const next = variants.find((option) => String(option.id) === select.value);
+        if (next?.available) choose(part, part.colors[0] || null, next.id);
+      };
+      label.append(select);
+      el.append(label);
+    }
+    if (part.url) {
+      const link = document.createElement('a');
+      const productUrl = new URL(part.url, location.href);
+      if (variant) productUrl.searchParams.set('variant', variant.id);
+      link.href = productUrl.href;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = 'View product details';
+      link.style.display = 'inline-block';
+      link.style.marginTop = '6px';
+      link.style.color = 'var(--ink)';
+      link.style.fontWeight = '700';
+      link.style.textDecoration = 'none';
+      el.querySelector('small').after(link);
+    }
     const row = document.createElement('div');
     row.className = 'row';
     const sw = document.createElement('div');
@@ -203,7 +299,7 @@ function renderParts() {
     }
     row.append(sw, button(on ? 'Remove' : 'Add', on ? 'btn ghost' : 'btn', () => {
       if (on) { delete state.picks[part.slot]; applySlot(part.slot); refresh(); } else choose(part, pick && pick.partId === part.id ? pick.color : part.colors[0] || null);
-    }, !ok));
+    }, !ok || !previewable || !available || addingToCart || bikeLoading));
     el.append(row);
     cards.push(el);
   }
@@ -219,29 +315,34 @@ function button(label, cls, onClick, disabled = false) {
   return el;
 }
 
-function choose(part, color) {
-  state.picks[part.slot] = { partId: part.id, color };
+function choose(part, color, variantId = selectedVariant(part)?.id) {
+  if (!bike || bikeLoading || addingToCart || !variantId) return;
+  const variant = variantsFor(part).find((variant) => variant.id === variantId);
+  state.picks[part.slot] = { partId: part.id, color: color || variantColor(variant), variantId };
   applySlot(part.slot);
   refresh();
 }
 
 function renderSummary() {
   const picks = Object.values(state.picks).map((p) => partById[p.partId]);
-  const total = picks.reduce((sum, p) => sum + p.price, 0);
+  const total = picks.reduce((sum, part) => sum + partPrice(part), 0);
   const lines = $('lines');
   lines.replaceChildren();
-  if (!picks.length) lines.innerHTML = '<div class="empty">Pick parts to build your setup.</div>';
+  if (!picks.length) lines.innerHTML = `<div class="empty">${modelParts().length ? 'Pick parts to build your setup.' : 'Coming soon. We\'re adding parts slowly.'}</div>`;
   for (const p of picks) {
     const row = document.createElement('div');
     const name = document.createElement('span');
     name.textContent = p.name;
     const price = document.createElement('b');
-    price.textContent = money(p.price);
+    price.textContent = money(partPrice(p));
     row.append(name, price);
     lines.append(row);
   }
   $('total').textContent = money(total);
-  $('add-cart').disabled = !picks.length;
+  $('add-cart').disabled = !picks.length || addingToCart || bikeLoading || catalogLoading
+    || picks.some((part) => !selectedVariant(part)?.available || catalog.get(part.id)?.error);
+  if (!addingToCart) $('add-cart').textContent = modelParts().length ? 'Add build to cart' : 'Coming soon';
+  document.querySelectorAll('#bike-chips button, #bike-models button').forEach((button) => { button.disabled = addingToCart; });
 }
 
 function refresh() {
@@ -251,20 +352,35 @@ function refresh() {
 }
 
 async function selectBike(id) {
-  if (id === state.bikeId) return;
+  if (id === state.bikeId || addingToCart) return;
+  const previousVariants = Object.fromEntries(Object.entries(state.picks).map(([slot, pick]) => [slot, selectedVariant(partById[pick.partId], pick)]));
   state.bikeId = id;
   state.frameColor = currentBike().colors[0];
   const removed = [];
   for (const [slot, pick] of Object.entries(state.picks)) {
-    if (!bikeSlots().some((s) => s.id === slot) || !fits(partById[pick.partId])) {
+    if (!bikeSlots().some((s) => s.id === slot) || !fits(partById[pick.partId]) || !canPreview(partById[pick.partId])) {
       removed.push(partById[pick.partId].name);
       delete state.picks[slot];
+    } else {
+      const previous = previousVariants[slot];
+      const variant = variantsFor(partById[pick.partId]).find((variant) => variant.available && variant.option2 === previous?.option2 && variant.option3 === previous?.option3)
+        || selectedVariant(partById[pick.partId]);
+      if (variant) { pick.variantId = variant.id; pick.color = variantColor(variant); }
     }
   }
   if (!bikeSlots().some((s) => s.id === state.tab)) state.tab = bikeSlots()[0]?.id || '';
-  await buildBike();
-  pops.push({ obj: bike.root, t: 0 });
   renderBikeUI();
+  refresh();
+  try {
+    await buildBike();
+    if (id !== state.bikeId) return;
+    pops.push({ obj: bike.root, t: 0 });
+  } catch {
+    if (id !== state.bikeId) return;
+    if (bike) { scene.remove(bike.root); disposeBike(bike); bike = null; }
+    toast('Could not load this bike. Choose another model and try again.');
+  }
+  bikeLoading = !bike;
   refresh();
   if (removed.length) toast(`Removed from build for ${fullName()}: ${removed.join(', ')}`);
 }
@@ -278,15 +394,52 @@ function toast(msg) {
   toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-// Prototype stub. On Shopify this would POST { items } to /cart/add.js.
-function addToCart(items) {
-  console.info('[configurator] add to cart', items);
-  toast(`Prototype: ${items.length} part${items.length > 1 ? 's' : ''} would be added to the cart`);
-}
-
-$('add-cart').onclick = () => {
+$('add-cart').onclick = async () => {
+  if (addingToCart || bikeLoading || catalogLoading || !Object.keys(state.picks).length) return;
   const bikeName = fullName();
-  addToCart(Object.values(state.picks).map((p) => ({ handle: p.partId, quantity: 1, properties: { Bike: bikeName, Finish: p.color || '' } })));
+  const picks = Object.values(state.picks).map((pick) => ({ ...pick }));
+  addingToCart = true;
+  $('add-cart').textContent = 'Adding build...';
+  $('add-cart').setAttribute('aria-busy', 'true');
+  refresh();
+  try {
+    const items = await Promise.all(picks.map(async (pick) => {
+      const part = partById[pick.partId];
+      const response = await fetch(storefrontPath(`products/${part.id}.js`), { headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error(`Could not load ${part.name}. Please try again.`);
+      const product = await response.json();
+      const requestedId = pick.variantId || new URL(part.url, location.href).searchParams.get('variant');
+      const variant = requestedId
+        ? variantsFor(part, product).find((variant) => String(variant.id) === String(requestedId))
+        : product.variants.length === 1 ? product.variants[0] : null;
+      if (!variant) throw new Error(`Choose an option for ${part.name} before adding it.`);
+      if (!variant.available) throw new Error(`${part.name} is sold out. Your build has been kept.`);
+      const properties = { Bike: bikeName };
+      if (variant.title !== 'Default Title') properties['Wheelset option'] = variant.title;
+      return { id: variant.id, quantity: 1, properties };
+    }));
+    const response = await fetch(storefrontPath('cart/add.js'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ items })
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.description || result.message || 'Could not add your build. Please try again.');
+    toast('Build added to your shopping bag.');
+    const cartLink = $('view-cart');
+    if (cartLink) {
+      cartLink.href = storefrontPath('cart');
+      cartLink.hidden = false;
+    }
+    window.parent.dispatchEvent(new CustomEvent('cart:updated', { detail: result }));
+  } catch (error) {
+    toast(error.message || 'Could not add your build. Please try again.');
+  } finally {
+    addingToCart = false;
+    $('add-cart').textContent = 'Add build to cart';
+    $('add-cart').removeAttribute('aria-busy');
+    refresh();
+  }
 };
 
 document.querySelectorAll('[data-view]').forEach((b) => { b.onclick = () => flyTo(b.dataset.view); });
@@ -296,7 +449,29 @@ $('spin').onclick = (e) => {
 };
 controls.addEventListener('start', () => { tween = null; });
 
-await buildBike();
+async function loadCatalog() {
+  if (!catalogLoading) { catalogLoading = true; refresh(); }
+  await Promise.all(data.parts.map(async (part) => {
+    try {
+      const response = await fetch(storefrontPath(`products/${part.id}.js`), { headers: { Accept: 'application/json' } });
+      if (!response.ok) throw new Error('Catalog unavailable');
+      const product = await response.json();
+      if (!Array.isArray(product.variants)) throw new Error('Invalid product options');
+      catalog.set(part.id, { product });
+    } catch (error) {
+      catalog.set(part.id, { error: error.message });
+    }
+  }));
+  catalogLoading = false;
+  refresh();
+}
+
+try {
+  await buildBike();
+} catch {
+  toast('Could not load this bike. Choose another model and try again.');
+}
 renderBikeUI();
 refresh();
 $('loading').classList.add('done');
+await loadCatalog();

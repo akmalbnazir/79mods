@@ -1,0 +1,15 @@
+{%- capture configurator_document -%}{% render 'configurator-app' %}{%- endcapture -%}
+<section class="configurator-page" aria-labelledby="configurator-title">
+  <h1 class="visually-hidden" id="configurator-title">Build your bike</h1>
+  <iframe id="configurator-frame-{{ section.id }}" class="configurator-frame" title="79mods bike configurator" srcdoc="{{ configurator_document | escape }}" allow="fullscreen"></iframe>
+</section>
+{% style %}
+  .configurator-page { width: 100%; }
+  .configurator-frame { display: block; width: 100%; height: 100vh; height: 100dvh; border: 0; }
+{% endstyle %}
+{% schema %}
+{
+  "name": "Bike configurator",
+  "settings": []
+}
+{% endschema %}

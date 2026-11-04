@@ -8,6 +8,9 @@
   --line: rgba(66, 35, 79, .18);
   --blue: #3979ef;
   --violet: #a43de0;
+  --cranberry: #cf2948;
+  --gold: #ffe071;
+  --teal: #147b70;
   --grad: linear-gradient(112deg, #357cf0 0%, #6751ed 52%, #a73bdc 100%);
   --display: 'Barlow Condensed', Impact, sans-serif;
   --body: 'DM Sans', sans-serif;
@@ -912,6 +915,49 @@ h1, h2, h3, p { margin-top: 0; }
   .halloween-promotion { flex-direction: column; align-items: stretch; margin: 18px 5vw; padding: 20px; gap: 18px; }
 }
 
+.primary-nav .primary-nav-configurator { padding: 9px 18px; border-radius: 8px; color: #fff; background: var(--cranberry); font-weight: 800; box-shadow: 0 4px 0 #8f1830; }
+.primary-nav .primary-nav-configurator:hover { color: #fff; background: #b5213d; }
+.primary-nav .primary-nav-configurator[aria-current="page"] { outline: 2px solid var(--teal); outline-offset: 4px; }
+.button-configurator { color: #fff; background: var(--cranberry); border-color: var(--cranberry); box-shadow: 0 4px 0 #8f1830; }
+.button-configurator:hover { color: #fff; background: #b5213d; }
+.announcement .announcement-thanksgiving { justify-self: start; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; color: #fff; }
+.announcement-thanksgiving strong { color: var(--gold); }
+.announcement-thanksgiving span { margin-left: 0 !important; color: #fff !important; }
+.thanksgiving-promotion { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 0; padding: 24px 4.2vw; color: #fff; background: #9e1f3c; border-bottom: 5px solid #ffc844; }
+.thanksgiving-promotion-label { margin: 0 0 6px; color: var(--gold); font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+.thanksgiving-promotion h2 { margin: 0; font-family: var(--display); font-size: 30px; line-height: 1.1; }
+.thanksgiving-promotion h2 span { color: var(--gold); }
+.thanksgiving-promotion-copy > p:last-child { margin: 8px 0 0; font-size: 12px; line-height: 1.5; }
+.thanksgiving-promotion-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.thanksgiving-promotion-actions .button { min-height: 42px; padding: 12px 18px; font-size: 11px; }
+.thanksgiving-shop { color: #222; background: var(--gold); }
+.thanksgiving-promotion .button-configurator { background: var(--teal); border-color: var(--teal); box-shadow: 0 4px 0 #0b4f47; }
+.checkout-sale-note { display: grid; gap: 5px; margin: 12px 0; padding: 12px 0; border-top: 2px solid var(--cranberry); border-bottom: 1px solid var(--line); }
+.checkout-sale-note strong { color: #b5213d; font-size: 13px; }
+.checkout-sale-note span { color: var(--muted); font-size: 12px; line-height: 1.5; }
+.footer-sale { display: grid; gap: 5px; color: var(--teal); font-size: 11px; line-height: 1.5; }
+.footer-sale strong { color: #b5213d; }
+.site-footer { flex-wrap: wrap; gap: 20px; }
+.site-footer .button-configurator { padding: 12px 18px; font-size: 11px; }
+.collection-drawer-nav .drawer-build { margin-top: 12px; color: #fff; background: var(--teal); border-radius: 6px; padding: 14px; }
+.cart-build-link { width: 100%; justify-content: center; margin-bottom: 16px; padding: 12px; font-size: 11px; }
+.collection-build-link { margin: 16px 0; }
+.collection-build-link .button { width: 100%; justify-content: center; padding: 12px; font-size: 11px; }
+.closing-aside .button-configurator { margin-top: 14px; }
+.shop-footer { flex-wrap: wrap; gap: 20px; }
+.shop-footer .button-configurator { padding: 12px 18px; font-size: 11px; }
+@media (max-width: 1000px) {
+  .announcement .announcement-thanksgiving span { display: none; }
+}
+@media (max-width: 640px) {
+  .announcement { height: auto; min-height: 46px; grid-template-columns: 1fr; gap: 4px; padding-top: 6px; padding-bottom: 6px; }
+  .announcement .announcement-thanksgiving { justify-self: center; justify-content: center; font-size: 9px; }
+  .announcement .announcement-thanksgiving span { display: inline; }
+  .thanksgiving-promotion { flex-direction: column; align-items: flex-start; gap: 16px; padding: 22px 5vw; }
+  .thanksgiving-promotion h2 { font-size: 27px; }
+  .thanksgiving-promotion-actions { width: 100%; }
+  .thanksgiving-promotion-actions .button { flex: 1 1 130px; justify-content: center; text-align: center; }
+}
 .primary-nav .primary-nav-halloween { padding: 9px 20px; border-radius: var(--radius-pill); color: #fff; background: linear-gradient(110deg, #ff7a18 0%, #e8410c 40%, #7b1fa2 100%); font-weight: 800; letter-spacing: .06em; box-shadow: 0 6px 18px rgba(232, 65, 12, .32); transition: transform .2s ease, box-shadow .2s ease; }
 .primary-nav .primary-nav-halloween:hover { color: #fff; transform: translateY(-2px); box-shadow: 0 10px 24px rgba(232, 65, 12, .45); }
 .primary-nav .primary-nav-halloween[aria-current="page"] { box-shadow: 0 0 0 2px #1a0b2e, 0 0 0 4px #ff7a18; }

@@ -1,3 +1,8 @@
+{%- assign halloween_ends = '2026-10-31T23:59:00-04:00' | date: '%s' | plus: 0 -%}
+{%- assign promotion_now = 'now' | date: '%s' | plus: 0 -%}
+{%- if promotion_now >= halloween_ends -%}
+  {% render 'thanksgiving-promotion' %}
+{%- else -%}
 <main class="halloween-page">
   <div class="halloween-fog" aria-hidden="true"></div>
   <header class="halloween-hero">
@@ -116,6 +121,7 @@
     });
   })();
 </script>
+{%- endif -%}
 
 {% schema %}
 {

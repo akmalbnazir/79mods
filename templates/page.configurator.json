@@ -1,0 +1,6 @@
+{
+  "sections": {
+    "configurator": { "type": "main-configurator" }
+  },
+  "order": ["configurator"]
+}

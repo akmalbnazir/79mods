@@ -36,9 +36,9 @@ cartDialog.innerHTML = `
   </aside>`;
 document.body.append(cartDialog);
 
-const halloweenPromotion = document.querySelector('#cart-halloween-promotion');
-if (halloweenPromotion) {
-  cartDialog.querySelector('.cart-drawer-items').before(halloweenPromotion.content.cloneNode(true));
+const storePromotion = document.querySelector('#cart-store-promotion, #cart-halloween-promotion');
+if (storePromotion) {
+  cartDialog.querySelector('.cart-drawer-items').before(storePromotion.content.cloneNode(true));
 }
 
 const itemsContainer = cartDialog.querySelector('.cart-drawer-items');
@@ -63,6 +63,11 @@ const appCartOfferStyles = `
   .cart-shipping-offer p { margin: 0; }
   .cart-shipping-offer-timer { margin-top: 5px !important; }
   .cart-shipping-offer strong { font-variant-numeric: tabular-nums; }`;
+const appCartPromotionStyles = `
+  .thanksgiving-cart-promotion { padding: 12px 0; border-top: 2px solid #cf2948; }
+  .thanksgiving-cart-promotion .checkout-sale-note { display: grid; gap: 5px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; }
+  .thanksgiving-cart-promotion .checkout-sale-note strong { color: #b5213d; }
+  .thanksgiving-cart-promotion .button-configurator { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 6px; color: #fff; background: #147b70; font-size: 12px; font-weight: 700; text-decoration: none; }`;
 
 function shippingOfferScopes() {
   return appCartRoot ? [document, appCartRoot] : [document];
@@ -431,6 +436,13 @@ function syncAppCartShippingOffer() {
   const drawer = appCartRoot.querySelector('.cart-drawer');
   const footer = appCartRoot.querySelector('.cart-footer');
   const checkoutLink = footer?.querySelector('.cart-checkout-button');
+  if (footer && checkoutLink && storePromotion && !footer.querySelector('[data-thanksgiving-promotion]')) {
+    const promotion = document.createElement('div');
+    promotion.className = 'thanksgiving-cart-promotion';
+    promotion.dataset.thanksgivingPromotion = '';
+    promotion.append(storePromotion.content.cloneNode(true));
+    checkoutLink.before(promotion);
+  }
   if (footer && checkoutLink && !footer.querySelector('[data-shipping-offer]')) {
     const offer = document.createElement('div');
     offer.className = 'cart-shipping-offer';
@@ -460,7 +472,7 @@ async function connectAppCartDrawer() {
 
   const style = document.createElement('style');
   style.dataset.shippingOfferStyles = '';
-  style.textContent = appCartOfferStyles;
+  style.textContent = appCartOfferStyles + appCartPromotionStyles;
   appCartRoot.append(style);
 
   let scheduled = false;
@@ -606,6 +618,7 @@ document.addEventListener('submit', async (event) => {
 
 if (shopifyCart) {
   window.currentCartItems = [];
+  window.addEventListener('cart:updated', () => refreshCart());
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) refreshCart();
   });

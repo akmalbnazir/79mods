@@ -25,6 +25,7 @@
     <script src="{{ 'placeholder-ratings.js' | asset_url }}" defer></script>
     {%- assign current_variant = product.selected_or_first_available_variant -%}
     <div class="product-price" data-product-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %} <s class="product-compare-price">{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
+    {% render 'thanksgiving-promotion', placement: 'cart' %}
     <div class="product-badges">
       <span>Free shipping over $150</span>
       <span>Rider support</span>
@@ -59,6 +60,7 @@
         <button type="submit" class="button button-dark" data-add-to-cart {% unless current_variant.available %}disabled{% endunless %}>{% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}</button>
       {% endform %}
       <a class="button button-light product-secondary" href="{{ routes.all_products_collection_url }}">See more parts</a>
+      {% render 'configurator-link' %}
     </div>
 
     <div class="product-meta">

@@ -38,6 +38,7 @@
 {% endif %}
 
       {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+      <div class="collection-build-link">{% render 'configurator-link' %}</div>
       {%- if collection.filters.size > 0 -%}
         <form class="collection-filters" id="CollectionFilters" action="{{ collection.url }}" method="get" data-collection-filters>
           <p class="eyebrow">FILTER</p>
