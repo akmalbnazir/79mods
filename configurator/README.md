@@ -10,7 +10,7 @@ The configurator runs in a same-origin iframe to keep its full-screen styling se
 
 The `page.configurator` template can be assigned to a Shopify page with handle `configurator`. Until that page exists, the header uses the existing About Us page with `?view=configurator`, which renders the same template. Preview this on a development theme before publishing. Creating static files does not create Shopify page records.
 
-Thanksgiving messaging announces 5% off automatically at checkout; theme code does not create that discount. Before publishing, verify the automatic 5% discount in Shopify Admin and its combination rules with existing shipping offers. Displayed product and build prices remain unchanged until checkout.
+Thanksgiving messaging announces 15% off automatically at checkout; theme code does not create that discount. Before publishing, verify the automatic 15% discount in Shopify Admin and its combination rules with existing shipping offers. Displayed product and build prices remain unchanged until checkout.
 
 ## Model Limits
 
