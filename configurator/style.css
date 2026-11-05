@@ -1,7 +1,7 @@
 :root {
-  --paper: #f7f7f2; --ink: #202521; --muted: #676d67; --line: rgba(32,37,33,.18);
-  --grad: #d5fa58;
-  --cranberry: #202521; --gold: #d5fa58; --teal: #267968;
+  --paper: #f7faf8; --ink: #1c3029; --muted: #63736b; --line: rgba(28,48,41,.18);
+  --grad: #f4cf78;
+  --cranberry: #bb2f45; --gold: #f4cf78; --teal: #24694e;
   --display: 'Barlow Condensed', Impact, sans-serif; --body: 'DM Sans', sans-serif;
 }
 * { box-sizing: border-box; }
