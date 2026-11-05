@@ -64,10 +64,10 @@ const appCartOfferStyles = `
   .cart-shipping-offer-timer { margin-top: 5px !important; }
   .cart-shipping-offer strong { font-variant-numeric: tabular-nums; }`;
 const appCartPromotionStyles = `
-  .thanksgiving-cart-promotion { padding: 12px 0; border-top: 2px solid #cf2948; }
+  .thanksgiving-cart-promotion { padding: 12px 0; border-top: 2px solid #d5fa58; }
   .thanksgiving-cart-promotion .checkout-sale-note { display: grid; gap: 5px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; }
-  .thanksgiving-cart-promotion .checkout-sale-note strong { color: #b5213d; }
-  .thanksgiving-cart-promotion .button-configurator { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 6px; color: #fff; background: #147b70; font-size: 12px; font-weight: 700; text-decoration: none; }`;
+  .thanksgiving-cart-promotion .checkout-sale-note strong { color: #202521; }
+  .thanksgiving-cart-promotion .button-configurator { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 6px; color: #202521; background: #d5fa58; font-size: 12px; font-weight: 700; text-decoration: none; }`;
 
 function shippingOfferScopes() {
   return appCartRoot ? [document, appCartRoot] : [document];

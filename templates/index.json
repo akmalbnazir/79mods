@@ -25,6 +25,18 @@
       "type": "category-grid",
       "settings": {}
     },
+    "black_friday_deals": {
+      "type": "black-friday-deals",
+      "settings": {}
+    },
+    "black_friday_build": {
+      "type": "black-friday-build",
+      "settings": {}
+    },
+    "black_friday_bundles": {
+      "type": "black-friday-bundles",
+      "settings": {}
+    },
     "shop_by_bike": {
       "type": "shop-by-bike",
       "settings": {}
@@ -42,8 +54,11 @@
     "announcement_bar",
     "header",
     "hero",
+    "black_friday_deals",
+    "black_friday_bundles",
     "category_grid",
     "shop_by_bike",
+    "black_friday_build",
     "new_arrival_popup",
     "footer"
   ]

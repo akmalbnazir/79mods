@@ -1,0 +1,20 @@
+{%- if placement == 'announcement' -%}
+  <a class="announcement-thanksgiving announcement-black-friday" href="{{ routes.all_products_collection_url }}"><strong>BLACK FRIDAY SALE</strong><span>15% off automatically at checkout</span></a>
+{%- elsif placement == 'cart' -%}
+  <aside class="checkout-sale-note" aria-label="Black Friday sale">
+    <strong>Black Friday: 15% off at checkout</strong>
+    <span>Automatically applied. No code needed.</span>
+  </aside>
+{%- else -%}
+  <aside class="thanksgiving-promotion bf-promotion" aria-label="Black Friday sale">
+    <div class="thanksgiving-promotion-copy">
+      <p class="thanksgiving-promotion-label">79MODS / BLACK FRIDAY</p>
+      <h2>Better parts. <span>15% off.</span></h2>
+      <p>Automatically applied at checkout. No code needed.</p>
+    </div>
+    <div class="thanksgiving-promotion-actions">
+      <a class="button thanksgiving-shop" href="{{ routes.all_products_collection_url }}">Shop Black Friday <span aria-hidden="true">↗</span></a>
+      {% render 'configurator-link' %}
+    </div>
+  </aside>
+{%- endif -%}

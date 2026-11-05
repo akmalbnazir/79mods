@@ -1,0 +1,36 @@
+{%- assign deal_handles = 'rear-ultra-bee-brakes,super-motos-17in-2,79bike-frame-guards-pro-lite-gt,79bike-baja-light' | split: ',' -%}
+{%- assign deal_labels = 'Ultra Bee Brake Kit,17-inch Super Moto Wheelset,79Bike / Ventus Frame Guards,79Bike Baja Light' | split: ',' -%}
+{%- assign deal_fitment = 'Ultra Bee / Full kit,79Bike / Surron / E-Ride / Ventus,Pro / Lite / GT,79Bike' | split: ',' -%}
+<section class="bf-deals" id="black-friday-deals" aria-labelledby="bf-deals-title">
+  <div class="bf-section-heading">
+    <div><p class="bf-section-kicker">THE BLACK FRIDAY LINEUP</p><h2 id="bf-deals-title">BIG RIDES.<br><span>BETTER DEALS.</span></h2></div>
+    <div class="bf-heading-aside"><p>Brakes, wheels, lights, and protection. Your next setup starts with 15% off at checkout.</p><a class="text-link" href="{{ routes.all_products_collection_url }}">Shop every deal <span aria-hidden="true">↗</span></a></div>
+  </div>
+  <div class="bf-deal-grid">
+    {%- for handle in deal_handles -%}
+      {%- assign deal = all_products[handle] -%}
+      {%- if deal != blank -%}
+        {%- assign available_variants = deal.variants | where: 'available', true | sort: 'price' -%}
+        {%- assign available_variant = available_variants | first -%}
+        {%- assign deal_price = available_variant.price | default: deal.price -%}
+        {%- assign checkout_price = deal_price | times: 85.0 | divided_by: 100 | round -%}
+        <a class="bf-deal-card" href="{{ deal.url }}" aria-label="{{ deal.title | escape }}" data-base-price="{{ deal_price }}" data-checkout-price="{{ checkout_price }}">
+          <div class="bf-deal-image">
+            {%- if deal.featured_image -%}<img src="{{ deal.featured_image | image_url: width: 800 }}" width="800" height="800" alt="{{ deal.featured_image.alt | default: deal.title | escape }}" loading="lazy">{%- endif -%}
+            <span class="bf-deal-badge">{% if deal.available %}15% OFF{% else %}SOLD OUT{% endif %}</span>
+            <span class="bf-deal-arrow" aria-hidden="true">↗</span>
+          </div>
+          <div class="bf-deal-info">
+            <h3>{{ deal_labels[forloop.index0] }}</h3>
+            <span class="bf-deal-fitment">{{ deal_fitment[forloop.index0] }}</span>
+            {% if deal.available %}<div class="bf-deal-prices"><strong>{% if deal.price_varies %}From {% endif %}{{ checkout_price | money }}</strong><s>{{ deal_price | money }}</s></div><p>With 15% off at checkout</p>{% else %}<strong>{{ deal.price | money }}</strong><p>View product availability</p>{% endif %}
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <p class="bf-deals-note">Advertised checkout prices reflect the 15% offer. Shipping and taxes calculated at checkout.</p>
+</section>
+{% schema %}
+{ "name": "Black Friday deal picks", "settings": [] }
+{% endschema %}

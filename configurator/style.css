@@ -1,7 +1,7 @@
 :root {
-  --paper: #f1f0ed; --ink: #42234f; --muted: #6f6d73; --line: rgba(66, 35, 79, .18);
-  --grad: linear-gradient(112deg, #147b70 0%, #267bc1 100%);
-  --cranberry: #cf2948; --gold: #ffe071; --teal: #147b70;
+  --paper: #f7f7f2; --ink: #202521; --muted: #676d67; --line: rgba(32,37,33,.18);
+  --grad: #d5fa58;
+  --cranberry: #202521; --gold: #d5fa58; --teal: #267968;
   --display: 'Barlow Condensed', Impact, sans-serif; --body: 'DM Sans', sans-serif;
 }
 * { box-sizing: border-box; }
@@ -51,7 +51,7 @@ button { font: inherit; cursor: pointer; }
 .coming-soon p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 .part .row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 8px; }
 .part .swatch { width: 20px; height: 20px; }
-.btn { border: 0; background: var(--grad); color: #fff; font-weight: 700; padding: 7px 14px; border-radius: 999px; font-size: 13px; }
+.btn { border: 0; background: var(--grad); color: #202521; font-weight: 700; padding: 7px 14px; border-radius: 6px; font-size: 13px; }
 .btn.ghost { background: #ece9f0; color: var(--ink); }
 .btn:disabled { background: #ddd; color: #999; cursor: not-allowed; }
 
@@ -65,9 +65,9 @@ button { font: inherit; cursor: pointer; }
 .lines div { display: flex; justify-content: space-between; gap: 8px; }
 .total { display: flex; justify-content: space-between; align-items: baseline; margin: 12px 0; padding-top: 10px; border-top: 1px solid var(--line); }
 .total b { font: 900 30px var(--display); }
-.cta { width: 100%; border: 0; background: var(--cranberry); color: #fff; font: 900 20px var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 12px; border-radius: 14px; box-shadow: 0 4px 0 #8f1830; }
+.cta { width: 100%; border: 0; background: var(--cranberry); color: #fff; font: 900 20px var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 12px; border-radius: 14px; box-shadow: 0 4px 0 #101310; }
 .cta:disabled { box-shadow: none; }
-.summary-sale { margin: 8px 0 12px; color: #a21e37; font-size: 12px; line-height: 1.5; }
+.summary-sale { margin: 8px 0 12px; color: #267968; font-size: 12px; line-height: 1.5; }
 .cta:disabled { background: #cfcbd4; cursor: not-allowed; }
 .view-cart { display: block; margin-top: 10px; color: var(--ink); text-align: center; font-size: 13px; font-weight: 700; }
 .view-cart[hidden] { display: none; }

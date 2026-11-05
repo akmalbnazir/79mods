@@ -1,15 +1,18 @@
 {%- assign halloween_ends = '2026-10-31T23:59:00-04:00' | date: '%s' | plus: 0 -%}
 {%- assign promotion_now = 'now' | date: '%s' | plus: 0 -%}
-{%- if promotion_now >= halloween_ends -%}
+{%- assign is_black_friday = false -%}
+{%- if template.suffix == 'black-friday' -%}{%- assign is_black_friday = true -%}{%- endif -%}
+{%- if promotion_now >= halloween_ends and is_black_friday == false -%}
   {% render 'thanksgiving-promotion' %}
 {%- else -%}
-<main class="halloween-page">
+<main class="halloween-page{% if is_black_friday %} bf-bundle-page{% endif %}">
   <div class="halloween-fog" aria-hidden="true"></div>
   <header class="halloween-hero">
-    <p class="halloween-eyebrow"><span aria-hidden="true">🎃</span> {{ section.settings.eyebrow }}</p>
+    <p class="halloween-eyebrow">{% unless is_black_friday %}<span aria-hidden="true">🎃</span> {% endunless %}{{ section.settings.eyebrow }}</p>
     <h1>{{ section.settings.heading }}</h1>
     <p class="halloween-intro">{{ section.settings.intro }}</p>
   </header>
+  {% if is_black_friday %}<p class="bf-bundle-terms">20% off the second eligible item in the bundles below. This is separate from the site-wide 15% offer; checkout confirms eligible discounts and combination rules.</p>{% endif %}
 
   {%- assign shown_bundles = 0 -%}
   <div class="halloween-bundles">
@@ -39,7 +42,7 @@
 
       {%- if buy_count > 0 and get_count > 0 -%}
         {%- assign shown_bundles = shown_bundles | plus: 1 -%}
-        <form class="halloween-bundle halloween-bundle-{{ forloop.index | modulo: 3 }}" action="{{ routes.cart_add_url }}" method="post" data-cart-form data-halloween-bundle data-discount="{{ discount }}" {{ block.shopify_attributes }}>
+        <form id="bundle-{{ forloop.index }}" class="halloween-bundle halloween-bundle-{{ forloop.index | modulo: 3 }}" action="{{ routes.cart_add_url }}" method="post" data-cart-form data-halloween-bundle data-discount="{{ discount }}" {{ block.shopify_attributes }}>
           <div class="halloween-bundle-head">
             <span class="halloween-badge">Bundle {{ shown_bundles }}</span>
             <h2>{{ block.settings.title }}</h2>
@@ -75,7 +78,7 @@
     {%- endfor -%}
 
     {%- if shown_bundles == 0 -%}
-      <p class="halloween-empty">The bundles are hiding in the dark. Check back soon. 🦇</p>
+      <p class="halloween-empty">{% if is_black_friday %}More bundles are on the way. <a href="{{ routes.all_products_collection_url }}">Shop Black Friday parts</a>.{% else %}The bundles are hiding in the dark. Check back soon.{% endif %}</p>
     {%- endif -%}
   </div>
 </main>
@@ -116,7 +119,13 @@
         }
       }
 
-      form.addEventListener('change', update);
+      form.addEventListener('change', (event) => {
+        if (event.target.matches('[data-variant]')) {
+          const pick = event.target.closest('[data-pick-card]').querySelector('[data-pick]');
+          pick.checked = true;
+        }
+        update();
+      });
       update();
     });
   })();
@@ -125,7 +134,7 @@
 
 {% schema %}
 {
-  "name": "Halloween sale",
+  "name": "Sale bundle picker",
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "SEASONAL · LIMITED TIME" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Halloween Sale" },

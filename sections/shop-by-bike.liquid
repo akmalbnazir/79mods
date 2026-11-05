@@ -4,8 +4,8 @@
 <section class="bike-section" aria-labelledby="bike-title">
   <div class="favorites-heading reveal">
     <div>
-      <p class="eyebrow"><span>03</span> SHOP BY BIKE</p>
-      <h2 id="bike-title">FIND YOUR<br><em>RIDE.</em></h2>
+      <p class="eyebrow"><span>03</span> BLACK FRIDAY / SHOP BY BIKE</p>
+      <h2 id="bike-title">YOUR RIDE.<br><em>YOUR DEALS.</em></h2>
     </div>
     <a class="text-link" href="{{ routes.all_products_collection_url }}">Shop all parts <span aria-hidden="true">↗</span></a>
   </div>
@@ -15,12 +15,12 @@
       {%- assign bike = collections[handle] -%}
       <a class="favorite-card bike-card reveal" href="{{ bike.url }}">
         <div class="favorite-image">
-          <img src="{{ bike_files[forloop.index0] | asset_url }}" alt="{{ bike.title | escape }}" loading="lazy">
+          <img src="{{ bike_files[forloop.index0] | asset_url }}" width="800" height="800" alt="{{ bike.title | escape }}" loading="lazy">
           <span class="favorite-index">{{ forloop.index | prepend: '0' }} / BIKE</span>
           <span class="favorite-arrow" aria-hidden="true">↗</span>
         </div>
         <div class="favorite-details"><div><h3>{{ bike.title }}</h3><span>{% if bike_models[forloop.index0] != blank %}{{ bike_models[forloop.index0] }}{% else %}{{ bike.products_count }} parts{% endif %}</span></div></div>
-        <span class="favorite-cta">Shop parts <span aria-hidden="true">↗</span></span>
+        <span class="favorite-cta">Shop Black Friday parts <span aria-hidden="true">↗</span></span>
       </a>
     {%- endfor -%}
   </div>

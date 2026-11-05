@@ -1,0 +1,28 @@
+{%- assign bundle_titles = 'Lights + Brakes,Brakes + Frame Guards,Frame Guards + Wheels' | split: ',' -%}
+{%- assign bundle_buy = 'baja-tailight-blinder,rear-ultra-bee-brakes,79bike-frame-guards-pro-lite-gt' | split: ',' -%}
+{%- assign bundle_get = 'rear-ultra-bee-brakes,79bike-frame-guards-pro-lite-gt,16-19-dirt-wheelset-79bike-surron-eride-ventus' | split: ',' -%}
+<section class="bf-bundle-preview" aria-labelledby="bf-bundle-preview-title">
+  <div class="bf-section-heading">
+    <div><p class="bf-section-kicker">BLACK FRIDAY / PAIR YOUR UPGRADES</p><h2 id="bf-bundle-preview-title">BUILD A BUNDLE.<br><span>SAVE 20%.</span></h2></div>
+    <div class="bf-heading-aside"><p>Our original bundle combinations are back. Get 20% off the second eligible item.</p>{% render 'black-friday-bundle-link' %}</div>
+  </div>
+  <div class="bf-bundle-preview-grid">
+    {%- for title in bundle_titles -%}
+      {%- assign buy = all_products[bundle_buy[forloop.index0]] -%}
+      {%- assign get = all_products[bundle_get[forloop.index0]] -%}
+      {%- assign bundle_page = pages['black-friday'] | default: pages['halloween-sale'] | default: pages['about-us'] -%}
+      <a class="bf-bundle-preview-card" href="{{ bundle_page.url }}?view=black-friday#bundle-{{ forloop.index }}">
+        <div class="bf-bundle-preview-images">
+          {% if buy.featured_image %}<img src="{{ buy.featured_image | image_url: width: 400 }}" width="400" height="400" alt="{{ buy.title | escape }}" loading="lazy">{% endif %}
+          <span aria-hidden="true">+</span>
+          {% if get.featured_image %}<img src="{{ get.featured_image | image_url: width: 400 }}" width="400" height="400" alt="{{ get.title | escape }}" loading="lazy">{% endif %}
+        </div>
+        <div class="bf-bundle-preview-info"><span>20% OFF THE SECOND ITEM</span><h3>{{ title }}</h3><p>Choose your bundle <span aria-hidden="true">↗</span></p></div>
+      </a>
+    {%- endfor -%}
+  </div>
+  <p class="bf-deals-note">Selected product combinations only. Bundle offers are separate from the site-wide 15% promotion; checkout confirms eligible discounts.</p>
+</section>
+{% schema %}
+{ "name": "Black Friday bundles", "settings": [] }
+{% endschema %}

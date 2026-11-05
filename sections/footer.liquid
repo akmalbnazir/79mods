@@ -1,8 +1,5 @@
-<footer class="site-footer">
-  <a class="wordmark footer-wordmark" href="{{ routes.root_url }}"><img src="{{ '79mods_png.avif' | asset_url }}" alt="79mods logo"></a>
-  <span>PARTS FOR THE LONG WAY HOME.</span>
-  <span class="footer-sale"><strong>THANKSGIVING SALE: 15% OFF</strong>Automatically applied at checkout.</span>
-  <a href="{{ routes.all_products_collection_url }}">Shop all parts <span aria-hidden="true">↗</span></a>
-  {% render 'configurator-link' %}
-  <span class="footer-year">© 79MODS {{ 'now' | date: '%Y' }}</span>
+<footer class="site-footer bf-footer">
+  <div class="bf-footer-brand"><a href="{{ routes.root_url }}">79MODS</a><p>Parts for the long way home.</p><span class="footer-year">© 79MODS {{ 'now' | date: '%Y' }}</span></div>
+  <div class="bf-footer-sale"><p>BLACK FRIDAY SALE</p><strong>15% OFF.</strong><span>Automatically applied at checkout.<br>No code needed.</span></div>
+  <nav class="bf-footer-links" aria-label="Footer navigation"><a href="{{ routes.all_products_collection_url }}">Shop Black Friday <span aria-hidden="true">↗</span></a>{% render 'black-friday-bundle-link' %}{% render 'configurator-link' %}<a href="{{ pages['about-us'].url }}?view=help">Customer support <span aria-hidden="true">↗</span></a></nav>
 </footer>

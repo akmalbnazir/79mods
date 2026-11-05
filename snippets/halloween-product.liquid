@@ -2,18 +2,21 @@
   <input class="halloween-pick" type="radio" name="{{ group }}" value="{{ product.id }}" data-pick>
   <span class="halloween-product-image">
     {%- if product.featured_image -%}
-      <img src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
+      <img src="{{ product.featured_image | image_url: width: 400 }}" width="400" height="400" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
     {%- endif -%}
     {%- if discount -%}<span class="halloween-product-tag">{{ discount }}% off</span>{%- endif -%}
     <span class="halloween-check" aria-hidden="true">✓</span>
   </span>
   <span class="halloween-product-title">{{ product.title }}</span>
-  {%- assign remaining = 100 | minus: discount | default: 100 -%}
+  {%- assign remaining = 100 -%}
+  {%- if discount -%}{%- assign remaining = 100 | minus: discount -%}{%- endif -%}
+  {%- assign available_variants = product.variants | where: 'available', true | sort: 'price' -%}
+  {%- assign starting_variant = available_variants | first -%}
   {%- if product.variants.size > 1 -%}
     <select class="halloween-variant" aria-label="Options for {{ product.title | escape }}" data-variant>
       {%- for variant in product.variants -%}
         {%- if variant.available -%}
-          <option value="{{ variant.id }}" data-price="{{ variant.price }}" data-title="{{ product.title | escape }} - {{ variant.title | escape }}">{{ variant.title }} · {% if discount %}{{ variant.price | times: remaining | divided_by: 100 | money }}{% else %}{{ variant.price | money }}{% endif %}</option>
+          <option value="{{ variant.id }}" data-price="{{ variant.price }}" data-title="{{ product.title | escape }} - {{ variant.title | escape }}">{{ variant.title }} · {% if discount %}{{ variant.price | times: remaining | divided_by: 100.0 | round | money }}{% else %}{{ variant.price | money }}{% endif %}</option>
         {%- endif -%}
       {%- endfor -%}
     </select>
@@ -24,9 +27,9 @@
   <span class="halloween-product-price">
     {%- if product.price_varies %}From {% endif -%}
     {%- if discount -%}
-      <s>{{ product.price | money }}</s> {{ product.price | times: remaining | divided_by: 100 | money }}
+      <s>{{ starting_variant.price | money }}</s> {{ starting_variant.price | times: remaining | divided_by: 100.0 | round | money }}
     {%- else -%}
-      {{ product.price | money }}
+      {{ starting_variant.price | money }}
     {%- endif -%}
   </span>
   <a class="halloween-product-link" href="{{ product.url }}">Details ↗</a>

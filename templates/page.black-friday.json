@@ -1,0 +1,49 @@
+{
+  "sections": {
+    "announcement_bar": { "type": "announcement-bar" },
+    "header": { "type": "header" },
+    "bundles": {
+      "type": "main-halloween",
+      "settings": {
+        "eyebrow": "79MODS / BLACK FRIDAY BUNDLES",
+        "heading": "Black Friday Bundles",
+        "intro": "Pair your upgrades. Save 20% on the second eligible item."
+      },
+      "blocks": {
+        "lights_brakes": {
+          "type": "bundle",
+          "settings": {
+            "title": "Lights + Brakes",
+            "offer": "Buy any eligible light, get any eligible brake 20% off",
+            "discount_percent": 20,
+            "buy_products": ["purchase-1", "baja-tailight-blinder", "macfox-baja-headlight", "talaria-xxx-baja-headlight", "universal-baja-headlight"],
+            "get_products": ["rear-ultra-bee-brakes", "ultra-bee-brake-for-e-bikes-macfox-super73-ridstar-and-more", "premium-tuttio-yozma-ultra-bee-brake-kit", "yozma-in10-tuttio-heybike-strike-48v-ultra-bee-brakes-rear", "79bike-falcon-pro-lite-gt-ultra-bee-foot-brake-kit", "surron-eride-pro-ultra-bee-front-brake-kit", "surron-lbx-ultra-bee-foot-brake-kit", "talaria-xxx-ultra-bee-footbrake-kit", "surron-ultra-bee-foot-brake-kit"]
+          }
+        },
+        "brakes_guards": {
+          "type": "bundle",
+          "settings": {
+            "title": "Brakes + Frame Guards",
+            "offer": "Buy any eligible brake, get any eligible frame guard 20% off",
+            "discount_percent": 20,
+            "buy_products": ["rear-ultra-bee-brakes", "ultra-bee-brake-for-e-bikes-macfox-super73-ridstar-and-more", "premium-tuttio-yozma-ultra-bee-brake-kit", "yozma-in10-tuttio-heybike-strike-48v-ultra-bee-brakes-rear", "79bike-falcon-pro-lite-gt-ultra-bee-foot-brake-kit", "surron-eride-pro-ultra-bee-front-brake-kit", "surron-lbx-ultra-bee-foot-brake-kit", "talaria-xxx-ultra-bee-footbrake-kit", "surron-ultra-bee-foot-brake-kit"],
+            "get_products": ["79bike-frame-guards-pro-lite-gt", "color-79bike-ventus-frame-guards-pro-lite-gt"]
+          }
+        },
+        "guards_wheels": {
+          "type": "bundle",
+          "settings": {
+            "title": "Frame Guards + Wheels",
+            "offer": "Buy any eligible frame guard, get any eligible wheelset 20% off",
+            "discount_percent": 20,
+            "buy_products": ["79bike-frame-guards-pro-lite-gt", "color-79bike-ventus-frame-guards-pro-lite-gt"],
+            "get_products": ["surron-light-bee-x-e-ride-pro-supermoto-wheelset-thick-wide-chrome-silver-gloss-black", "79bike-falcon-lite-16-19-wheelset-with-preinstalled-dirt-tires-customizable", "12in-mini-moto-wheels", "16-19-light-bee-eride2-0-1-0-lbx-wheelset-with-dirt-tires", "16-19-dirt-wheelset-79bike-surron-eride-ventus"]
+          }
+        }
+      },
+      "block_order": ["lights_brakes", "brakes_guards", "guards_wheels"]
+    },
+    "footer": { "type": "footer" }
+  },
+  "order": ["announcement_bar", "header", "bundles", "footer"]
+}

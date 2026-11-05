@@ -10,7 +10,9 @@ The configurator runs in a same-origin iframe to keep its full-screen styling se
 
 The `page.configurator` template can be assigned to a Shopify page with handle `configurator`. Until that page exists, the header uses the existing About Us page with `?view=configurator`, which renders the same template. Preview this on a development theme before publishing. Creating static files does not create Shopify page records.
 
-Thanksgiving messaging announces 15% off automatically at checkout; theme code does not create that discount. Before publishing, verify the automatic 15% discount in Shopify Admin and its combination rules with existing shipping offers. Displayed product and build prices remain unchanged until checkout.
+Black Friday messaging announces 15% off automatically at checkout; theme code does not create that discount. Before publishing, verify the automatic 15% discount in Shopify Admin and its combination rules with existing shipping offers. Update any reused discount's old campaign name in Admin. Homepage deal cards show advertised checkout prices; cart and build totals remain Shopify's authoritative prices until checkout.
+
+Black Friday bundles reuse the original Lights + Brakes, Brakes + Frame Guards, and Frame Guards + Wheels product groups with 20% off the second eligible item. The `page.black-friday` template is accessible on the existing Halloween Sale page with `?view=black-friday`, or can be assigned to a dedicated Black Friday page. Enable or rename the matching Shopify Buy X get Y rules before publishing; the bundle offer is separate from the site-wide 15% promotion, and stacking is governed by Shopify's combination rules.
 
 ## Model Limits
 

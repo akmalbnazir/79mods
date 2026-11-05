@@ -1,0 +1,2 @@
+{%- assign bundle_page = pages['black-friday'] | default: pages['halloween-sale'] | default: pages['about-us'] -%}
+<a class="button bf-bundle-link {{ class }}" href="{{ bundle_page.url }}?view=black-friday{{ anchor }}">{{ label | default: 'Shop bundles' }} <span aria-hidden="true">↗</span></a>

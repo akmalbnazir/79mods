@@ -1,24 +1,21 @@
-{% render 'halloween-promotion' %}
-<section class="hero" aria-labelledby="hero-title">
-  <div class="hero-copy">
-    <p class="eyebrow"><span>01</span> PARTS FOR THE WAY YOU RIDE</p>
-    <h1 id="hero-title">MAKE<br>IT <em>YOURS.</em></h1>
-    <p class="hero-description">Good rides get better with the right parts. Find your next upgrade, make it fit, and get back out there.</p>
-    <div class="hero-actions">
-      <a class="button button-dark" href="#shop"><span>Shop the parts</span><span aria-hidden="true">↘</span></a>
+<section class="bf-hero" aria-labelledby="hero-title">
+  <img class="bf-hero-media" src="{{ 'hero-rider.png' | asset_url }}" alt="79mods riders on electric dirt bikes" width="614" height="389" fetchpriority="high">
+  <div class="bf-hero-copy">
+    <p class="bf-kicker">79MODS / BLACK FRIDAY</p>
+    <h1 id="hero-title">BLACK<br>FRIDAY <span>SALE.</span></h1>
+    <p class="bf-hero-offer"><strong>15% OFF</strong> your next upgrade.</p>
+    <p class="bf-hero-terms">Automatically applied at checkout. No code needed.</p>
+    <div class="bf-hero-actions">
+      <a class="button bf-primary" href="#black-friday-deals">Shop Black Friday <span aria-hidden="true">↗</span></a>
       {% render 'configurator-link' %}
     </div>
-    <div class="hero-footnote"><img class="hero-mark" src="{{ '79mods-mark.svg' | asset_url }}" alt="79mods logo"><span>AFTERMARKET PARTS<br>FOR ELECTRIC DIRT BIKES</span></div>
   </div>
-  <div class="hero-image-wrap">
-    <div class="hero-image-glow"></div>
-    <img class="hero-image" src="{{ 'hero-rider.png' | asset_url }}" alt="Rider with a blue electric dirt bike on a repair stand">
-  </div>
+  <div class="bf-hero-bottom"><span>BETTER PARTS. BETTER RIDES.</span><a href="#shop">Find your upgrade <span aria-hidden="true">↓</span></a></div>
 </section>
 
-<section class="proof-bar" aria-label="Shop benefits">
-  <div><span class="proof-number">01</span><p><b>Same-day shipping</b><small>Order by 3 PM ET</small></p></div>
-  <div><span class="proof-number">02</span><p><b>Rider-approved</b><small>Parts built to get used</small></p></div>
-  <div><span class="proof-number">03</span><p><b>Here when you need us</b><small>Real people, real support</small></p></div>
-  <div class="proof-rating"><strong>4.5<span>/5</span></strong><p><b>Rider rated</b><small>845 reviews on 79mods</small></p><span class="rating-stars" aria-label="4.5 out of 5 stars">★★★★★</span></div>
+<section class="bf-benefits" aria-label="Black Friday shopping benefits">
+  <span><strong>15% OFF</strong> at checkout</span>
+  <span>Free shipping over $150</span>
+  <span>Order by 3 PM ET for same-day dispatch</span>
+  <span>Parts for riders, by riders</span>
 </section>
