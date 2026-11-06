@@ -97,14 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-    const motionPreference = window.matchMedia(
+  const motionPreference = window.matchMedia(
     '(prefers-reduced-motion: reduce)'
   );
   const pointerQuery = window.matchMedia(
     '(hover: hover) and (pointer: fine)'
   );
   const interactiveSurfaces = document.querySelectorAll(
-    '.hero-visual, .hero-image-wrap, .category-card, .favorite-card, .collection-product, .product-gallery-item'
+    '.hero-visual, .hero-image-wrap, .category-card, .favorite-card, .collection-product, .product-gallery-item, .bf-deal-card, .bf-bundle-preview-card'
   );
 
   if (!motionPreference.matches && pointerQuery.matches) {

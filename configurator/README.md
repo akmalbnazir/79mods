@@ -14,6 +14,8 @@ Black Friday messaging announces 15% off automatically at checkout; theme code d
 
 Black Friday bundles reuse the original Lights + Brakes, Brakes + Frame Guards, and Frame Guards + Wheels product groups with 20% off the second eligible item. The `page.black-friday` template is accessible on the existing Halloween Sale page with `?view=black-friday`, or can be assigned to a dedicated Black Friday page. Enable or rename the matching Shopify Buy X get Y rules before publishing; the bundle offer is separate from the site-wide 15% promotion, and stacking is governed by Shopify's combination rules.
 
+The campaign keeps the storefront's original blue/purple/pink palette, gradient buttons, floating rider visual, and pointer-responsive cards. `assets/black-friday.css` styles campaign components without replacing the base theme tokens or category/bike styling. Check narrow phones, tablets, desktop, landscape, touch input, and reduced-motion mode on the development theme when changing these styles.
+
 ## Model Limits
 
 Rim previews retain the stock tires and wheel dimensions; they are not exact 17-inch wheel-and-tire conversions. Lite and several print-kit assemblies remain visual approximations, not manufacturer CAD or physical fitment certification. Models without configured, previewable parts show Coming Soon. Catalog errors and sold-out variants disable purchase rather than submitting an unverified SKU.

@@ -1,13 +1,18 @@
-<section class="bf-hero" aria-labelledby="hero-title">
-  <div class="bf-hero-copy">
+<section class="hero bf-hero" aria-labelledby="hero-title">
+  <div class="hero-copy">
     <p class="bf-kicker">79MODS / BLACK FRIDAY</p>
-    <h1 id="hero-title">BLACK<br>FRIDAY <span>SALE.</span></h1>
+    <h1 id="hero-title">BLACK<br>FRIDAY <em>SALE.</em></h1>
     <p class="bf-hero-offer"><strong>15% OFF</strong> your next upgrade.</p>
     <p class="bf-hero-terms">Automatically applied at checkout. No code needed.</p>
     <div class="bf-hero-actions">
       <a class="button bf-primary" href="#black-friday-deals">Shop Black Friday <span aria-hidden="true">↗</span></a>
       {% render 'configurator-link' %}
     </div>
+  </div>
+  <div class="hero-image-wrap">
+    <div class="hero-image-glow" aria-hidden="true"></div>
+    <img class="hero-image" src="{{ 'hero-rider.png' | asset_url }}" width="612" height="408" alt="Riders doing wheelies on electric dirt bikes" fetchpriority="high">
+    <span class="image-stamp" aria-hidden="true">15%<br>OFF</span>
   </div>
   <div class="bf-hero-bottom"><span>BETTER PARTS. BETTER RIDES.</span><a href="#shop">Find your upgrade <span aria-hidden="true">↓</span></a></div>
 </section>
