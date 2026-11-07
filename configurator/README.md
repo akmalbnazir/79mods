@@ -16,7 +16,15 @@ Black Friday bundles reuse the original Lights + Brakes, Brakes + Frame Guards, 
 
 The campaign keeps the storefront's original blue/purple/pink palette, gradient buttons, floating rider visual, and pointer-responsive cards. `assets/black-friday.css` styles campaign components without replacing the base theme tokens or category/bike styling. Check narrow phones, tablets, desktop, landscape, touch input, and reduced-motion mode on the development theme when changing these styles.
 
+### Storefront depth experiment
+
+Theme settings > Storefront experiments > Enable glass and depth UI controls the optional `depth-ui.css` and `depth-ui.js` layer. It is enabled in the development configuration; the schema default is off. Disable it to return to the original restored theme without changing the catalog, campaign, or configurator.
+
+Inspired by Apple's [Materials](https://developer.apple.com/design/human-interface-guidelines/materials) and [Motion](https://developer.apple.com/design/human-interface-guidelines/motion) guidance, glass is reserved for navigation and overlays; prices and product content stay readable. Control magnification is limited to fine hover pointers and respects reduced motion. Glass surfaces respect reduced transparency, increased contrast, and forced colors, with opaque fallbacks in unsupported browsers. The rider image has no magnifier overlay.
+
 ## Model Limits
+
+The garage uses a charcoal workshop backdrop, blue/purple accent strips, a branded wall panel, and a flush display pad. Neutral key/fill lighting preserves part finishes; only the key light casts shadows to limit GPU cost. All room details and textures are generated locally, with no external environment downloads.
 
 Rim previews retain the stock tires and wheel dimensions; they are not exact 17-inch wheel-and-tire conversions. Lite and several print-kit assemblies remain visual approximations, not manufacturer CAD or physical fitment certification. Models without configured, previewable parts show Coming Soon. Catalog errors and sold-out variants disable purchase rather than submitting an unverified SKU.
 

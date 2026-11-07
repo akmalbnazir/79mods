@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ request.locale.iso_code }}" data-cart-mode="shopify" data-cart-root="{{ routes.root_url }}">
+<html lang="{{ request.locale.iso_code }}" data-cart-mode="shopify" data-cart-root="{{ routes.root_url }}"{% if settings.enable_depth_ui %} data-depth-ui{% endif %}>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,6 +17,10 @@
     {{ content_for_header }}
     {{ 'theme.css' | asset_url | stylesheet_tag }}
     {{ 'black-friday.css' | asset_url | stylesheet_tag }}
+    {% if settings.enable_depth_ui %}
+      {{ 'depth-ui.css' | asset_url | stylesheet_tag }}
+      <script src="{{ 'depth-ui.js' | asset_url }}" defer></script>
+    {% endif %}
   </head>
   <body{% if template.suffix == 'halloween' %} class="is-halloween"{% endif %}>
     {{ content_for_layout }}

@@ -6,5 +6,17 @@
     "theme_author": "79mods",
     "theme_support_url": "https://79mods.com",
     "theme_documentation_url": "https://79mods.com"
+  },
+  {
+    "name": "Storefront experiments",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_depth_ui",
+        "label": "Enable glass and depth UI",
+        "default": false,
+        "info": "Experimental floating navigation and dimensional controls. Keeps the 79MODS colors."
+      }
+    ]
   }
 ]

@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "enable_depth_ui": true,
     "content_for_index": [],
     "blocks": {
       "6520862770880189807": {
