@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/OrbitControls.js';
 import { buildGarage } from './garage.js';
 import { createBike, disposeBike } from './bike.js?v=release-finishes-31';
 import { createGlbBike } from './bike_glb.js?v=release-finishes-31';
+import { guardPaint, paintColors, paintEffects, validateGuardPaintProduct } from './guard_paint.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -107,6 +108,9 @@ const currentBike = () => data.bikes.find((b) => b.id === state.bikeId);
 const fullName = () => `${currentBike().brandName} ${currentBike().name}`;
 const fits = (part) => part.fits.includes(state.bikeId) || part.fits.includes(currentBike().brand);
 const canPreview = (part) => !part.previewFits || part.previewFits.includes(state.bikeId);
+const purchaseFits = (part) => !part.purchaseFits || part.purchaseFits.includes(state.bikeId);
+const isSoldOut = (part) => !catalogLoading && !catalog.get(part.id)?.error
+  && !!selectedVariant(part) && !selectedVariant(part).available;
 
 const bikeSlots = () => data.slots.filter((s) => !currentBike().slots || currentBike().slots.includes(s.id));
 const modelParts = () => data.parts.filter((part) => fits(part) && canPreview(part) && bikeSlots().some((slot) => slot.id === part.slot));
@@ -116,7 +120,8 @@ const selectedVariant = (part, pick = state.picks[part.slot]) => {
   return variants.find((variant) => String(variant.id) === String(pick?.variantId)) || variants.find((variant) => variant.available) || variants[0];
 };
 const partPrice = (part) => selectedVariant(part) ? selectedVariant(part).price / 100 : part.price;
-const variantColor = (variant) => /black/i.test(variant?.option2 || variant?.title || '') ? '#18181b' : '#d7d7dc';
+const variantColor = (variant, part) => part?.paintedGuards ? guardPaint(variant).color
+  : part?.finishColor || (/black/i.test(variant?.option2 || variant?.title || '') ? '#18181b' : '#d7d7dc');
 const variantLabel = (part, variant) => {
   if (!part.fitOptions) return variant.title;
   const finish = /black/i.test(variant.option2) ? 'Black' : /chrome/i.test(variant.option2) ? 'Chrome' : variant.option2;
@@ -137,7 +142,7 @@ async function buildBike() {
     scene.add(bike.root);
     for (const [slot, pick] of Object.entries(state.picks)) {
       const part = partById[pick.partId];
-      bike.setSlot(slot, part.variant, pick.color);
+      bike.setSlot(slot, part.variant, pick.color, part.paintedGuards ? guardPaint(selectedVariant(part, pick)) : null);
     }
     bikeLoading = false;
   } finally {
@@ -148,7 +153,8 @@ async function buildBike() {
 function applySlot(slot, animate = true) {
   const pick = state.picks[slot];
   const part = pick && partById[pick.partId];
-  const obj = bike.setSlot(slot, part ? part.variant : 'stock', pick ? pick.color : null);
+  const obj = bike.setSlot(slot, part ? part.variant : 'stock', pick ? pick.color : null,
+    part?.paintedGuards ? guardPaint(selectedVariant(part, pick)) : null);
   if (animate) pops.push({ obj, t: 0 });
 }
 
@@ -233,6 +239,8 @@ function renderParts() {
     const entry = catalog.get(part.id);
     const variant = selectedVariant(part);
     const available = !!variant?.available && !catalogLoading && !entry?.error;
+    const optionsLoaded = !!variant && !catalogLoading && !entry?.error;
+    const previewOnly = !available || !purchaseFits(part);
     const on = pick && pick.partId === part.id;
     const el = document.createElement('div');
     el.className = `part${on ? ' on' : ''}${ok && previewable ? '' : ' disabled'}`;
@@ -240,21 +248,72 @@ function renderParts() {
     el.querySelector('b').textContent = part.name;
     el.querySelector('small').textContent = !ok
       ? `Doesn't fit ${fullName()}`
+      : !purchaseFits(part)
+        ? `Visual preview only for ${fullName()}: product listing does not confirm fitment. ${part.previewNote || ''}`
       : previewable
         ? `Fits ${fullName()}${part.previewNote ? `. ${part.previewNote}` : ''}`
         : `Fits ${fullName()}, but 3D preview isn't available for this model`;
     if (catalogLoading || entry?.error || !available) {
       const status = document.createElement('p');
       status.className = 'part-status';
-      status.textContent = catalogLoading ? 'Checking availability...' : entry?.error ? 'Could not load options. Please try again.' : 'Sold out';
+      status.textContent = catalogLoading ? 'Checking availability...' : entry?.error ? 'Could not load options. Please try again.' : variant ? 'Sold out - preview only' : 'No compatible options available for this bike.';
       el.append(status);
       if (entry?.error) el.append(button('Retry', 'btn ghost', () => loadCatalog(), catalogLoading));
     }
     const variants = variantsFor(part);
-    if (variants.length) {
+    if (part.paintedGuards && optionsLoaded) {
+      for (const [index, optionKey, labelText] of [[0, 'option1', 'Main color'], [1, 'option2', 'Fade / effects']]) {
+        const label = document.createElement('label');
+        label.className = 'variant-field';
+        label.append(labelText);
+        const select = document.createElement('select');
+        select.dataset.paintOption = optionKey;
+        select.setAttribute('aria-label', `${part.name} ${labelText.toLowerCase()}`);
+        select.disabled = addingToCart || bikeLoading || catalogLoading;
+        for (const value of entry.product.options[index].values) {
+          const node = document.createElement('option');
+          node.value = value;
+          const matching = variants.filter((option) => option[optionKey] === value
+            && option[index === 0 ? 'option2' : 'option1'] === variant[index === 0 ? 'option2' : 'option1']);
+          node.textContent = `${index === 1 ? paintEffects[value].label : value}${matching.length && matching.every((option) => !option.available) ? ' - Sold out' : ''}`;
+          node.disabled = !matching.length;
+          node.selected = value === variant[optionKey];
+          select.append(node);
+        }
+        select.onchange = () => {
+          const next = variants.find((option) => option[optionKey] === select.value
+            && option[index === 0 ? 'option2' : 'option1'] === variant[index === 0 ? 'option2' : 'option1']);
+          if (next) choose(part, null, next.id);
+        };
+        label.append(select);
+        el.append(label);
+        if (index === 0) {
+          const swatches = document.createElement('div');
+          swatches.className = 'paint-swatches';
+          swatches.setAttribute('role', 'group');
+          swatches.setAttribute('aria-label', 'Main paint color');
+          for (const value of entry.product.options[0].values) {
+            const next = variants.find((option) => option.option1 === value && option.option2 === variant.option2);
+            const chip = button('', `paint-swatch${value === variant.option1 ? ' on' : ''}`, () => choose(part, null, next.id),
+              !next || addingToCart || bikeLoading || catalogLoading);
+            chip.title = `${value}${next && !next.available ? ' - Sold out (preview only)' : ''}`;
+            chip.setAttribute('aria-label', chip.title);
+            chip.setAttribute('aria-pressed', value === variant.option1);
+            const colors = paintColors[value];
+            chip.style.background = colors.length > 1 ? `linear-gradient(135deg, ${colors[0]}, ${colors[1]})` : colors[0];
+            swatches.append(chip);
+          }
+          el.append(swatches);
+        }
+      }
+      const chosen = document.createElement('p');
+      chosen.className = 'part-status';
+      chosen.textContent = `${variant.option1} / ${variant.option2}`;
+      el.append(chosen);
+    } else if (variants.length > 1 || (variants.length === 1 && variants[0].title !== 'Default Title')) {
       const label = document.createElement('label');
       label.className = 'variant-field';
-      label.append('Wheelset option');
+      label.append(part.slot === 'rims' ? 'Wheelset option' : 'Part option');
       const select = document.createElement('select');
       select.setAttribute('aria-label', `${part.name} option`);
       select.disabled = addingToCart || bikeLoading;
@@ -263,13 +322,12 @@ function renderParts() {
         node.value = option.id;
         node.textContent = variantLabel(part, option);
         if (!option.available) node.textContent += ' - Sold out';
-        node.disabled = !option.available;
         node.selected = option.id === variant?.id;
         select.append(node);
       }
       select.onchange = () => {
         const next = variants.find((option) => String(option.id) === select.value);
-        if (next?.available) choose(part, part.colors[0] || null, next.id);
+        if (next) choose(part, part.colors[0] || null, next.id);
       };
       label.append(select);
       el.append(label);
@@ -297,9 +355,9 @@ function renderParts() {
     if (ok) for (const c of part.colors) {
       sw.append(swatch(c, on && pick.color === c, () => choose(part, c)));
     }
-    row.append(sw, button(on ? 'Remove' : 'Add', on ? 'btn ghost' : 'btn', () => {
+    row.append(sw, button(on ? 'Remove' : previewOnly ? 'Preview' : 'Add', on ? 'btn ghost' : 'btn', () => {
       if (on) { delete state.picks[part.slot]; applySlot(part.slot); refresh(); } else choose(part, pick && pick.partId === part.id ? pick.color : part.colors[0] || null);
-    }, !ok || !previewable || !available || addingToCart || bikeLoading));
+    }, addingToCart || bikeLoading || (!on && (!ok || !previewable || !optionsLoaded))));
     el.append(row);
     cards.push(el);
   }
@@ -318,7 +376,8 @@ function button(label, cls, onClick, disabled = false) {
 function choose(part, color, variantId = selectedVariant(part)?.id) {
   if (!bike || bikeLoading || addingToCart || !variantId) return;
   const variant = variantsFor(part).find((variant) => variant.id === variantId);
-  state.picks[part.slot] = { partId: part.id, color: color || variantColor(variant), variantId };
+  if (!variant || catalogLoading || catalog.get(part.id)?.error || !fits(part) || !canPreview(part)) return;
+  state.picks[part.slot] = { partId: part.id, color: part.paintedGuards ? variantColor(variant, part) : part.finishColor || color || variantColor(variant, part), variantId };
   applySlot(part.slot);
   refresh();
 }
@@ -332,16 +391,26 @@ function renderSummary() {
   for (const p of picks) {
     const row = document.createElement('div');
     const name = document.createElement('span');
-    name.textContent = p.name;
+    const option = selectedVariant(p);
+    name.textContent = `${p.name}${p.paintedGuards && option ? ` - ${option.title}` : ''}${isSoldOut(p) ? ' - Sold out (preview only)' : !purchaseFits(p) ? ' - Fitment unconfirmed (preview only)' : ''}`;
     const price = document.createElement('b');
     price.textContent = money(partPrice(p));
     row.append(name, price);
     lines.append(row);
   }
   $('total').textContent = money(total);
+  const soldOut = picks.some(isSoldOut);
+  const unconfirmed = picks.some((part) => !purchaseFits(part));
+  const notice = $('build-notice');
+  notice.hidden = !soldOut && !unconfirmed;
+  notice.textContent = [
+    soldOut ? 'Sold out - preview only. Remove sold-out parts to purchase this build.' : '',
+    unconfirmed ? `${fullName()} fitment is not confirmed by this product listing. Visual preview only.` : ''
+  ].filter(Boolean).join(' ');
+  document.querySelector('.total > span').textContent = soldOut || unconfirmed ? 'Preview total' : 'Build total';
   $('add-cart').disabled = !picks.length || addingToCart || bikeLoading || catalogLoading
-    || picks.some((part) => !selectedVariant(part)?.available || catalog.get(part.id)?.error);
-  if (!addingToCart) $('add-cart').textContent = modelParts().length ? 'Add build to cart' : 'Coming soon';
+    || picks.some((part) => !selectedVariant(part)?.available || catalog.get(part.id)?.error || !purchaseFits(part));
+  if (!addingToCart) $('add-cart').textContent = soldOut || unconfirmed ? 'Preview only' : modelParts().length ? 'Add build to cart' : 'Coming soon';
   document.querySelectorAll('#bike-chips button, #bike-models button').forEach((button) => { button.disabled = addingToCart; });
 }
 
@@ -363,9 +432,11 @@ async function selectBike(id) {
       delete state.picks[slot];
     } else {
       const previous = previousVariants[slot];
-      const variant = variantsFor(partById[pick.partId]).find((variant) => variant.available && variant.option2 === previous?.option2 && variant.option3 === previous?.option3)
-        || selectedVariant(partById[pick.partId]);
-      if (variant) { pick.variantId = variant.id; pick.color = variantColor(variant); }
+      const part = partById[pick.partId];
+      const variant = variantsFor(part).find((variant) => (part.fitOptions || variant.option1 === previous?.option1)
+        && variant.option2 === previous?.option2 && variant.option3 === previous?.option3)
+        || selectedVariant(part);
+      if (variant) { pick.variantId = variant.id; pick.color = variantColor(variant, partById[pick.partId]); }
     }
   }
   if (!bikeSlots().some((s) => s.id === state.tab)) state.tab = bikeSlots()[0]?.id || '';
@@ -396,6 +467,10 @@ function toast(msg) {
 
 $('add-cart').onclick = async () => {
   if (addingToCart || bikeLoading || catalogLoading || !Object.keys(state.picks).length) return;
+  if (Object.values(state.picks).some((pick) => !purchaseFits(partById[pick.partId]))) {
+    toast('This build contains a preview-only part with unconfirmed fitment. Remove it before purchasing.');
+    return;
+  }
   const bikeName = fullName();
   const picks = Object.values(state.picks).map((pick) => ({ ...pick }));
   addingToCart = true;
@@ -408,6 +483,9 @@ $('add-cart').onclick = async () => {
       const response = await fetch(storefrontPath(`products/${part.id}.js`), { headers: { Accept: 'application/json' } });
       if (!response.ok) throw new Error(`Could not load ${part.name}. Please try again.`);
       const product = await response.json();
+      if (!Array.isArray(product.variants)) throw new Error(`Could not load options for ${part.name}. Please try again.`);
+      if (part.paintedGuards) validateGuardPaintProduct(product);
+      catalog.set(part.id, { product });
       const requestedId = pick.variantId || new URL(part.url, location.href).searchParams.get('variant');
       const variant = requestedId
         ? variantsFor(part, product).find((variant) => String(variant.id) === String(requestedId))
@@ -415,7 +493,12 @@ $('add-cart').onclick = async () => {
       if (!variant) throw new Error(`Choose an option for ${part.name} before adding it.`);
       if (!variant.available) throw new Error(`${part.name} is sold out. Your build has been kept.`);
       const properties = { Bike: bikeName };
-      if (variant.title !== 'Default Title') properties['Wheelset option'] = variant.title;
+      if (variant.title !== 'Default Title') properties[part.slot === 'rims' ? 'Wheelset option' : 'Part option'] = variant.title;
+      if (part.finishName) properties.Finish = part.finishName;
+      if (part.paintedGuards) {
+        properties['Main color'] = variant.option1;
+        properties['Paint effect'] = variant.option2;
+      }
       return { id: variant.id, quantity: 1, properties };
     }));
     const response = await fetch(storefrontPath('cart/add.js'), {
@@ -457,6 +540,9 @@ async function loadCatalog() {
       if (!response.ok) throw new Error('Catalog unavailable');
       const product = await response.json();
       if (!Array.isArray(product.variants)) throw new Error('Invalid product options');
+      if (part.paintedGuards) {
+        validateGuardPaintProduct(product);
+      }
       catalog.set(part.id, { product });
     } catch (error) {
       catalog.set(part.id, { error: error.message });

@@ -70,6 +70,14 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-gt.glb",
+   "frameGuardPreview": {
+    "scale": [1, 1],
+    "offset": [0, 0],
+    "depth": {
+     "frame": [0.079, 0.113],
+     "swingarm": [0.075, 0.125]
+    }
+   },
     "splitWheelRegions": true,
     "wheelPreview": {
      "front": {
@@ -88,7 +96,8 @@
      }
     },
    "slots": [
-    "rims"
+    "rims",
+    "frame-guards"
    ]
   },
   {
@@ -102,6 +111,14 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-pro.glb",
+   "frameGuardPreview": {
+    "scale": [1.06, 1.06],
+    "offset": [0, -0.015],
+    "depth": {
+     "frame": [0.065, 0.117],
+     "swingarm": [0.08, 0.13]
+    }
+   },
     "splitWheelRegions": true,
     "wheelPreview": {
      "front": {
@@ -120,7 +137,8 @@
      }
     },
    "slots": [
-    "rims"
+    "rims",
+    "frame-guards"
    ]
   },
   {
@@ -134,6 +152,14 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-lite.glb",
+   "frameGuardPreview": {
+    "scale": [1, 1],
+    "offset": [0, 0],
+    "depth": {
+     "frame": [0.066, 0.113],
+     "swingarm": [0.075, 0.125]
+    }
+   },
     "splitWheelRegions": true,
     "wheelPreview": {
      "front": {
@@ -152,7 +178,8 @@
      }
     },
    "slots": [
-    "rims"
+    "rims",
+    "frame-guards"
    ],
    "modelNote": "Lite preview: slimmer GT body and handlebars, with unchanged wheels. Not a factory-accurate Lite model."
   },
@@ -232,7 +259,21 @@
    "headY": 0.97,
    "colors": [],
   "glb": "models/talaria-xxx.glb?v=mudguard-aligned-2",
-   "slots": [],
+   "wheelPreview": {
+    "front": {
+     "center": [0.625, 0.25032, 0],
+     "rimRadius": 0.195,
+     "width": 0.066,
+     "tireHalfWidth": 0.053
+    },
+    "rear": {
+     "center": [-0.625, 0.26408, 0],
+     "rimRadius": 0.195,
+     "width": 0.076,
+     "tireHalfWidth": 0.064
+    }
+   },
+   "slots": ["rims"],
    "modelNote": "XXX kit preview: estimated assembly from the supplied print parts, with paired supermoto wheel halves. Not a factory CAD model or fitment reference."
   },
   {
@@ -246,7 +287,22 @@
    "headY": 1.05,
    "colors": [],
    "glb": "models/mx4.glb",
+   "wheelPreview": {
+    "front": {
+     "center": [0.615, 0.32388715, 0],
+     "rimRadius": 0.257,
+     "width": 0.072,
+     "tireHalfWidth": 0.052
+    },
+    "rear": {
+     "center": [-0.615, 0.32388715, 0],
+     "rimRadius": 0.24,
+     "width": 0.09,
+     "tireHalfWidth": 0.064
+    }
+   },
    "slots": [
+    "rims",
     "brakes"
    ]
   },
@@ -261,7 +317,21 @@
    "headY": 0.97,
    "colors": [],
    "glb": "models/talaria-mx5.glb?v=assembled-1",
-   "slots": [],
+   "wheelPreview": {
+    "front": {
+     "center": [0.625, 0.30602, 0],
+     "rimRadius": 0.253,
+     "width": 0.105,
+     "tireHalfWidth": 0.07
+    },
+    "rear": {
+     "center": [-0.625, 0.29577, 0],
+     "rimRadius": 0.248,
+     "width": 0.094,
+     "tireHalfWidth": 0.063
+    }
+   },
+   "slots": ["rims"],
    "modelNote": "MX5 kit preview: estimated assembly from supplied print parts, with the kit's street-style wheels and untextured dark finish. Not factory CAD or a fitment reference."
   }
  ],
@@ -283,6 +353,10 @@
    "name": "Rims"
   },
   {
+   "id": "frame-guards",
+   "name": "Frame guards"
+  },
+  {
    "id": "brakes",
    "name": "Brakes"
   },
@@ -296,6 +370,46 @@
   }
  ],
  "parts": [
+  {
+   "id": "color-79bike-ventus-frame-guards-pro-lite-gt",
+   "slot": "frame-guards",
+   "variant": "falcon-frame-guards",
+   "name": "Custom Painted/Colored 79Bike/Ventus Frame Guards (Pro/Lite/GT)",
+   "price": 249.99,
+   "paintedGuards": true,
+   "previewNote": "Molded-shell preview with beveled edges, raised faces, and automotive clear coat. Includes color shift, fades, and iridescent sparkle. Photo-based geometry and screen finishes are approximate, not factory CAD or paint samples. Allow up to 5 business days for production.",
+   "url": "https://79mods.com/products/color-79bike-ventus-frame-guards-pro-lite-gt",
+   "fits": ["79bike-gt", "79bike-pro", "79bike-lite"],
+   "previewFits": ["79bike-gt", "79bike-pro", "79bike-lite"],
+   "colors": []
+  },
+  {
+   "id": "79bike-frame-guards-pro-lite-gt",
+   "slot": "frame-guards",
+   "variant": "falcon-frame-guards",
+   "name": "79Bike/Ventus Frame Guards (Pro/Lite/GT)",
+   "price": 189.99,
+   "finishColor": "#151518",
+   "finishName": "Black",
+   "previewNote": "Black only. Photo-based molded main-frame and lower guards with raised faces, beveled edge returns, and open mounting holes. Lower guards start beside the main guard's lower mounting hole. Dimensions are approximate, not factory CAD.",
+   "url": "https://79mods.com/products/79bike-frame-guards-pro-lite-gt",
+   "fits": ["79bike-gt", "79bike-pro", "79bike-lite"],
+   "previewFits": ["79bike-gt", "79bike-pro", "79bike-lite"],
+   "colors": []
+  },
+  {
+   "id": "chrome-talaria-xxx-mx3-mx4-supermoto-wheel-set",
+   "slot": "rims",
+   "variant": "supermoto17",
+   "name": "Chrome Talaria XXX/MX3/MX4 Supermoto Wheel Set",
+   "price": 450,
+   "previewNote": "Rim-only visual preview: preserves this model's tires, wheel dimensions, rotors, and sprocket. Not an exact 17-inch wheel-and-tire conversion.",
+   "url": "https://79mods.com/products/chrome-talaria-xxx-mx3-mx4-supermoto-wheel-set",
+   "fits": ["talaria-xxx", "talaria-mx4", "talaria-mx5"],
+   "previewFits": ["talaria-xxx", "talaria-mx4", "talaria-mx5"],
+   "purchaseFits": ["talaria-xxx", "talaria-mx4"],
+   "colors": []
+  },
   {
    "id": "super-motos-17in-2",
   "fitOptions": {

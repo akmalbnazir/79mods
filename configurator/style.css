@@ -47,6 +47,14 @@ button { font: inherit; cursor: pointer; }
 .variant-field { display: grid; gap: 5px; margin-top: 10px; font-size: 12px; font-weight: 700; }
 .variant-field select { width: 100%; min-width: 0; padding: 8px; border: 1px solid var(--line); border-radius: 4px; font: inherit; color: var(--ink); background: #fff; }
 .part-status { margin: 8px 0; color: var(--muted); font-size: 12px; }
+.paint-swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.paint-swatch { width: 28px; height: 28px; border: 2px solid #fff; border-radius: 50%; padding: 0; box-shadow: 0 0 0 1px var(--line); }
+.paint-swatch.on { box-shadow: 0 0 0 2px var(--teal); }
+.paint-swatch:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.paint-swatch:disabled { opacity: .45; cursor: not-allowed; }
+@media (pointer: coarse) {
+  .paint-swatch { width: 44px; height: 44px; }
+}
 .coming-soon h3 { margin: 8px 0; font: 900 24px var(--display); text-transform: uppercase; }
 .coming-soon p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 .part .row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 8px; }
@@ -68,6 +76,8 @@ button { font: inherit; cursor: pointer; }
 .cta { width: 100%; border: 0; background: var(--grad); color: #fff; font: 900 20px var(--display); letter-spacing: .05em; text-transform: uppercase; padding: 12px; border-radius: 14px; box-shadow: 0 4px 0 #49329c; }
 .cta:disabled { box-shadow: none; }
 .summary-sale { margin: 8px 0 12px; color: #6951df; font-size: 12px; line-height: 1.5; }
+.build-notice { margin: 8px 0 12px; padding: 8px 10px; border: 1px solid #a21e37; border-radius: 8px; color: #8e1730; background: #fff0f3; font-size: 12px; line-height: 1.5; }
+.build-notice[hidden] { display: none; }
 .cta:disabled { background: #cfcbd4; cursor: not-allowed; }
 .view-cart { display: block; margin-top: 10px; color: var(--ink); text-align: center; font-size: 13px; font-weight: 700; }
 .view-cart[hidden] { display: none; }
@@ -88,6 +98,7 @@ button { font: inherit; cursor: pointer; }
   .total b { font-size: 22px; }
   .cta { grid-column: 2; grid-row: 1; font-size: 15px; padding: 8px; }
   .summary-sale { grid-column: 1 / -1; grid-row: 2; margin: 4px 0 0; }
-  .view-cart { grid-column: 1 / -1; grid-row: 3; margin-top: 4px; }
+  .build-notice { grid-column: 1 / -1; grid-row: 3; margin: 4px 0 0; font-size: 10px; }
+  .view-cart { grid-column: 1 / -1; grid-row: 4; margin-top: 4px; }
   .viewbar { top: auto; bottom: calc(38vh + 16px); left: 8px; right: auto; }
 }

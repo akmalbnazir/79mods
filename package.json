@@ -5,7 +5,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "build:configurator": "node configurator/tools/build_theme.mjs"
+    "build:configurator": "node configurator/tools/build_theme.mjs",
+    "test:wheel-previews": "node configurator/tools/test_wheel_previews.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.25.0",
