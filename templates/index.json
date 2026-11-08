@@ -9,6 +9,10 @@
  */
 {
   "sections": {
+    "whats_new_popup": {
+      "type": "whats-new-popup",
+      "settings": {}
+    },
     "announcement_bar": {
       "type": "announcement-bar",
       "settings": {}
@@ -47,6 +51,7 @@
     }
   },
   "order": [
+    "whats_new_popup",
     "announcement_bar",
     "header",
     "hero",

@@ -1,0 +1,63 @@
+{%- assign wheels = all_products['super-motos-17in-2'] -%}
+{{ 'whats-new-popup.css' | asset_url | stylesheet_tag }}
+<dialog class="whats-new" id="whats-new-{{ section.id }}" aria-labelledby="whats-new-title-{{ section.id }}" data-whats-new>
+  <div class="whats-new-shell">
+    <header class="whats-new-heading">
+      <div>
+        <p class="whats-new-kicker">79MODS / THE LATEST</p>
+        <h2 id="whats-new-title-{{ section.id }}">WHAT'S <span>NEW.</span></h2>
+        <p>Better deals. Your next build. All in one place.</p>
+      </div>
+      <button class="whats-new-close" type="button" data-whats-new-close aria-label="Close What's New popup" autofocus>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+      </button>
+    </header>
+    <div class="whats-new-grid">
+      <article class="whats-new-card whats-new-sale">
+        <div class="whats-new-visual">
+          <span class="whats-new-label">BLACK FRIDAY IS HERE</span>
+          <div class="whats-new-discount" aria-hidden="true">15<span>%<small>OFF</small></span></div>
+          {%- if wheels.featured_image -%}
+            <img class="whats-new-wheels" src="{{ wheels.featured_image | image_url: width: 800 }}" alt="{{ wheels.featured_image.alt | default: wheels.title | escape }}" width="800" height="{{ 800 | divided_by: wheels.featured_image.aspect_ratio | round }}">
+          {%- endif -%}
+        </div>
+        <div class="whats-new-copy">
+          <p class="whats-new-kicker">THE DEALS + THE SALES</p>
+          <h3>BIG UPGRADES.<br>BETTER PRICES.</h3>
+          <p>Save 15% automatically at checkout. Wheels, brakes, lights, frame guards, and more. No code needed.</p>
+          <div class="whats-new-actions">
+            <a class="button button-dark" href="{{ routes.all_products_collection_url }}">Shop Black Friday <span aria-hidden="true">&#8599;</span></a>
+            {% render 'black-friday-bundle-link', label: 'Explore bundles' %}
+          </div>
+          <p class="whats-new-note">Shipping and taxes calculated at checkout. Product availability varies.</p>
+        </div>
+      </article>
+      <article class="whats-new-card whats-new-build">
+        <div class="whats-new-visual">
+          <span class="whats-new-label">MEET YOUR VIRTUAL GARAGE</span>
+          <span class="whats-new-3d" aria-hidden="true">3D</span>
+          <div class="whats-new-platform" aria-hidden="true"></div>
+          <img class="whats-new-bike" src="{{ 'whats-new-configurator-bike.png' | asset_url }}" alt="Full 79Bike Falcon 3D configurator preview" width="560" height="400">
+        </div>
+        <div class="whats-new-copy">
+          <p class="whats-new-kicker">BUILD IT BEFORE YOU RIDE IT</p>
+          <h3>YOUR BIKE.<br>YOUR WAY.</h3>
+          <p>Step into the 3D configurator. Pick your bike, preview compatible parts, and explore custom frame-guard colors and finishes.</p>
+          <div class="whats-new-actions">
+            {% render 'configurator-link' %}
+          </div>
+          <p class="whats-new-note">Rotate, zoom, and make it yours. Preview geometry and finishes are approximate.</p>
+        </div>
+      </article>
+    </div>
+    <button class="whats-new-continue" type="button" data-whats-new-close>Continue to the store <span aria-hidden="true">&#8594;</span></button>
+  </div>
+</dialog>
+<script src="{{ 'whats-new-popup.js' | asset_url }}" defer></script>
+{% schema %}
+{
+  "name": "What's New popup",
+  "settings": [],
+  "presets": [{ "name": "What's New popup" }]
+}
+{% endschema %}
