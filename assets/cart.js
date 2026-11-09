@@ -82,7 +82,8 @@ const shippingOfferMarkup = `
   </p>`;
 // The Section Store cart drawer renders inside its own shadow root, so theme.css does not reach it.
 const appCartOfferStyles = `
-  .cart-drawer .cart-footer { max-height: calc(100% - 130px); min-height: 0; overflow-y: auto; gap: 6px; padding: 10px 16px; }
+  .cart-drawer .cart-body { flex: 1 1 0; min-height: 0; overflow-y: auto; }
+  .cart-drawer .cart-footer { max-height: calc(100% - 110px); min-height: 0; overflow-y: auto; gap: 6px; padding: 10px 16px; }
   .cart-drawer .cart-footer > * { flex-shrink: 0; }
   .cart-footer .cart-protection-options { margin: 0; padding: 8px 10px; }
   .cart-footer .cart-protection-options fieldset { gap: 2px; }
@@ -114,7 +115,12 @@ const appCartOfferStyles = `
   .cart-protection-description { color: #6d6874; font-size: 10px; }
   .cart-protection-price { font-size: 12px; white-space: nowrap; }
   .cart-protection-status:empty { display: none; }
-  .cart-protection-status { margin: 10px 0 0; color: #a22b36; font-size: 11px; }`;
+  .cart-protection-status { margin: 10px 0 0; color: #a22b36; font-size: 11px; }
+  @media (max-height: 480px) {
+    .cart-drawer .cart-footer { gap: 3px; padding: 6px 12px; }
+    .cart-footer .cart-protection-options { padding: 5px 8px; }
+    .cart-footer .cart-protection-choice { min-height: 24px; }
+  }`;
 const appCartPromotionStyles = `
   .thanksgiving-cart-promotion { padding: 12px 0; border-top: 2px solid #6951df; }
   .thanksgiving-cart-promotion .checkout-sale-note { display: grid; gap: 5px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; }
@@ -669,7 +675,7 @@ function syncAppCartShippingOffer() {
   const footer = appCartRoot.querySelector('.cart-footer');
   const checkout = footer?.querySelector('.cart-checkout-button');
   if (body && footer) {
-    footer.querySelectorAll('.cart-payment-icons, .cart-trust-badges').forEach((element) => body.append(element));
+    footer.querySelectorAll('.cart-payment-icons, .cart-trust-badges, .cart-discount-total').forEach((element) => body.append(element));
   }
   if (body && storePromotion && !appCartRoot.querySelector('[data-thanksgiving-promotion]')) {
     const promotion = document.createElement('div');
