@@ -37,11 +37,6 @@ cartDialog.innerHTML = `
   </aside>`;
 document.body.append(cartDialog);
 
-const storePromotion = document.querySelector('#cart-store-promotion, #cart-halloween-promotion');
-if (storePromotion) {
-  cartDialog.querySelector('.cart-drawer-items').before(storePromotion.content.cloneNode(true));
-}
-
 const itemsContainer = cartDialog.querySelector('.cart-drawer-items');
 const statusMessage = cartDialog.querySelector('.cart-drawer-status');
 const cartFooter = cartDialog.querySelector('.cart-drawer-footer');
@@ -97,8 +92,7 @@ const appCartOfferStyles = `
   .cart-body > .cart-payment-icons,
   .cart-body > .cart-trust-badges { flex-shrink: 0; }
   .cart-body > .cart-protection-options,
-  .cart-body > .cart-shipping-offer,
-  .cart-body > .thanksgiving-cart-promotion { flex-shrink: 0; }
+  .cart-body > .cart-shipping-offer { flex-shrink: 0; }
   .cart-shipping-offer { margin: 0 0 12px; padding: 12px 14px; border: 1px solid rgba(104, 69, 220, .28); border-radius: 8px; color: #18171b; background: rgba(104, 69, 220, .08); font-size: 13px; line-height: 1.5; text-align: left; }
   .cart-shipping-offer[hidden], .cart-shipping-offer [hidden] { display: none; }
   .cart-shipping-offer p { margin: 0; }
@@ -121,11 +115,6 @@ const appCartOfferStyles = `
     .cart-footer .cart-protection-options { padding: 5px 8px; }
     .cart-footer .cart-protection-choice { min-height: 24px; }
   }`;
-const appCartPromotionStyles = `
-  .thanksgiving-cart-promotion { padding: 12px 0; border-top: 2px solid #6951df; }
-  .thanksgiving-cart-promotion .checkout-sale-note { display: grid; gap: 5px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; }
-  .thanksgiving-cart-promotion .checkout-sale-note strong { color: #6951df; }
-  .thanksgiving-cart-promotion .button-configurator { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 999px; color: #fff; background: linear-gradient(112deg, #357cf0, #6751ed 52%, #a73bdc); font-size: 12px; font-weight: 700; text-decoration: none; }`;
 
 function shippingOfferScopes() {
   return appCartRoot ? [document, appCartRoot] : [document];
@@ -677,13 +666,6 @@ function syncAppCartShippingOffer() {
   if (body && footer) {
     footer.querySelectorAll('.cart-payment-icons, .cart-trust-badges, .cart-discount-total').forEach((element) => body.append(element));
   }
-  if (body && storePromotion && !appCartRoot.querySelector('[data-thanksgiving-promotion]')) {
-    const promotion = document.createElement('div');
-    promotion.className = 'thanksgiving-cart-promotion';
-    promotion.dataset.thanksgivingPromotion = '';
-    promotion.append(storePromotion.content.cloneNode(true));
-    body.append(promotion);
-  }
   if (body && !appCartRoot.querySelector('[data-shipping-offer]')) {
     const offer = document.createElement('div');
     offer.className = 'cart-shipping-offer';
@@ -725,7 +707,7 @@ async function connectAppCartDrawer() {
 
   const style = document.createElement('style');
   style.dataset.shippingOfferStyles = '';
-  style.textContent = appCartOfferStyles + appCartPromotionStyles;
+  style.textContent = appCartOfferStyles;
   appCartRoot.append(style);
 
   let scheduled = false;
