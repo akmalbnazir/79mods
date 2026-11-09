@@ -82,6 +82,11 @@ const shippingOfferMarkup = `
   </p>`;
 // The Section Store cart drawer renders inside its own shadow root, so theme.css does not reach it.
 const appCartOfferStyles = `
+  .cart-drawer .cart-footer { max-height: 45%; min-height: 0; overflow-y: auto; }
+  .cart-drawer .cart-footer > * { flex-shrink: 0; }
+  .cart-body > .cart-protection-options,
+  .cart-body > .cart-shipping-offer,
+  .cart-body > .thanksgiving-cart-promotion { flex-shrink: 0; }
   .cart-shipping-offer { margin: 0 0 12px; padding: 12px 14px; border: 1px solid rgba(104, 69, 220, .28); border-radius: 8px; color: #18171b; background: rgba(104, 69, 220, .08); font-size: 13px; line-height: 1.5; text-align: left; }
   .cart-shipping-offer[hidden], .cart-shipping-offer [hidden] { display: none; }
   .cart-shipping-offer p { margin: 0; }
@@ -635,33 +640,32 @@ document.addEventListener('submit', async (event) => {
 function syncAppCartShippingOffer() {
   if (!appCartRoot) return;
   const drawer = appCartRoot.querySelector('.cart-drawer');
-  const footer = appCartRoot.querySelector('.cart-footer');
-  const checkoutLink = footer?.querySelector('.cart-checkout-button');
-  if (footer && checkoutLink && storePromotion && !footer.querySelector('[data-thanksgiving-promotion]')) {
+  const body = appCartRoot.querySelector('.cart-body');
+  if (body && storePromotion && !appCartRoot.querySelector('[data-thanksgiving-promotion]')) {
     const promotion = document.createElement('div');
     promotion.className = 'thanksgiving-cart-promotion';
     promotion.dataset.thanksgivingPromotion = '';
     promotion.append(storePromotion.content.cloneNode(true));
-    checkoutLink.before(promotion);
+    body.append(promotion);
   }
-  if (footer && checkoutLink && !footer.querySelector('[data-shipping-offer]')) {
+  if (body && !appCartRoot.querySelector('[data-shipping-offer]')) {
     const offer = document.createElement('div');
     offer.className = 'cart-shipping-offer';
     offer.dataset.shippingOffer = '';
     offer.hidden = true;
     offer.innerHTML = shippingOfferMarkup;
-    checkoutLink.before(offer);
+    body.append(offer);
     if (lastShippingOfferView) {
       setShippingOfferView(lastShippingOfferView.message, lastShippingOfferView.showTimer);
       if (shippingOfferState.status === 'active') updateShippingOfferCountdown();
     }
   }
-  if (footer && checkoutLink && !footer.querySelector('[data-cart-protection-options]') && protectionProducts.length) {
+  if (body && !appCartRoot.querySelector('[data-cart-protection-options]') && protectionProducts.length) {
     const options = document.createElement('div');
     options.className = 'cart-protection-options';
     options.dataset.cartProtectionOptions = '';
     options.hidden = true;
-    checkoutLink.before(options);
+    body.append(options);
   }
   if (window.currentCart) renderProtectionOptions(appCartRoot, window.currentCart);
 
