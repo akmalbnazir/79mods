@@ -20,6 +20,7 @@ cartDialog.innerHTML = `
     <p class="cart-drawer-status" role="status" aria-live="polite"></p>
     <div class="cart-drawer-items"></div>
     <div class="cart-drawer-footer" hidden>
+      <div class="cart-protection-options" data-cart-protection-options hidden></div>
       <div class="cart-subtotal"><span>Subtotal</span><strong data-cart-subtotal></strong></div>
       <p class="cart-shipping-note">Shipping and taxes calculated at checkout.</p>
       <div class="cart-shipping-offer" data-shipping-offer hidden>
@@ -45,6 +46,25 @@ const itemsContainer = cartDialog.querySelector('.cart-drawer-items');
 const statusMessage = cartDialog.querySelector('.cart-drawer-status');
 const cartFooter = cartDialog.querySelector('.cart-drawer-footer');
 const checkoutButton = cartDialog.querySelector('.cart-checkout');
+const protectionConfig = JSON.parse(document.querySelector('#cart-protection-config')?.textContent || '{}');
+const protectionProducts = [
+  {
+    key: 'shipping',
+    id: protectionConfig.shipping?.id,
+    price: protectionConfig.shipping?.price,
+    expectedPrice: 599,
+    title: 'Shipping protection',
+    description: "Covers your package if it's lost, stolen, or damaged in transit. We'll reship or refund it."
+  },
+  {
+    key: 'order',
+    id: protectionConfig.order?.id,
+    price: protectionConfig.order?.price,
+    expectedPrice: 999,
+    title: 'Order protection',
+    description: "Protect your order against loss, theft, or damage. If something goes wrong, we'll replace or refund it."
+  }
+].filter((product) => product.id && Number(product.price) === product.expectedPrice);
 const shippingOfferState = { cartToken: null, status: 'idle', code: null, expiresAt: 0, request: null };
 let shippingOfferTimer = null;
 let bypassShippingSubmit = false;
@@ -62,7 +82,19 @@ const appCartOfferStyles = `
   .cart-shipping-offer[hidden], .cart-shipping-offer [hidden] { display: none; }
   .cart-shipping-offer p { margin: 0; }
   .cart-shipping-offer-timer { margin-top: 5px !important; }
-  .cart-shipping-offer strong { font-variant-numeric: tabular-nums; }`;
+  .cart-shipping-offer strong { font-variant-numeric: tabular-nums; }
+  .cart-protection-options { margin: 0 0 16px; padding: 14px; border: 1px solid rgba(104, 69, 220, .3); border-radius: 8px; background: rgba(104, 69, 220, .06); color: #18171b; text-align: left; }
+  .cart-protection-options[hidden] { display: none; }
+  .cart-protection-options fieldset { display: grid; gap: 12px; margin: 0; padding: 0; border: 0; }
+  .cart-protection-options legend { margin-bottom: 10px; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .cart-protection-choice { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 9px; font-size: 12px; cursor: pointer; }
+  .cart-protection-choice input { margin: 2px 0 0; accent-color: #7354e7; }
+  .cart-protection-copy { display: grid; gap: 3px; line-height: 1.45; }
+  .cart-protection-copy strong { font-size: 12px; }
+  .cart-protection-description { color: #6d6874; font-size: 10px; }
+  .cart-protection-price { font-size: 12px; white-space: nowrap; }
+  .cart-protection-status:empty { display: none; }
+  .cart-protection-status { margin: 10px 0 0; color: #a22b36; font-size: 11px; }`;
 const appCartPromotionStyles = `
   .thanksgiving-cart-promotion { padding: 12px 0; border-top: 2px solid #6951df; }
   .thanksgiving-cart-promotion .checkout-sale-note { display: grid; gap: 5px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; }
@@ -85,6 +117,65 @@ if (!shopifyCart) {
 
 function formatMoney(cents, currency = 'USD') {
   return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(cents / 100);
+}
+
+function protectionProductForVariant(variantId) {
+  return protectionProducts.find((product) => String(product.id) === String(variantId));
+}
+
+const protectionViews = new WeakMap();
+
+function renderProtectionOptions(root, cart) {
+  const container = root?.querySelector('[data-cart-protection-options]');
+  if (!container) return;
+  const viewKey = JSON.stringify([cart.currency, cart.items, protectionProducts]);
+  if (protectionViews.get(container) === viewKey) return;
+  protectionViews.set(container, viewKey);
+  const hasMerchandise = (cart.items || []).some((item) => !protectionProductForVariant(item.variant_id));
+  if (!hasMerchandise || !protectionProducts.length) {
+    container.hidden = true;
+    return;
+  }
+
+  const fieldset = document.createElement('fieldset');
+  const legend = document.createElement('legend');
+  legend.textContent = 'Optional protection for your entire order';
+  fieldset.append(legend);
+
+  for (const product of protectionProducts) {
+    const item = cart.items.find((cartItem) => String(cartItem.variant_id) === String(product.id));
+    const label = document.createElement('label');
+    label.className = 'cart-protection-choice';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = Boolean(item);
+    checkbox.dataset.protectionVariant = String(product.id);
+    checkbox.setAttribute('aria-label', `${product.title}, ${formatMoney(product.price, cart.currency || 'USD')}`);
+
+    const copy = document.createElement('span');
+    copy.className = 'cart-protection-copy';
+    const title = document.createElement('strong');
+    title.textContent = product.title;
+    const description = document.createElement('span');
+    description.className = 'cart-protection-description';
+    description.textContent = product.description;
+    copy.append(title, description);
+
+    const price = document.createElement('strong');
+    price.className = 'cart-protection-price';
+    price.textContent = formatMoney(product.price, cart.currency || 'USD');
+    label.append(checkbox, copy, price);
+    fieldset.append(label);
+  }
+
+  const status = document.createElement('p');
+  status.className = 'cart-protection-status';
+  status.dataset.protectionStatus = '';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
+  container.replaceChildren(fieldset, status);
+  container.hidden = false;
 }
 
 function getLocalCart() {
@@ -149,6 +240,9 @@ function renderCart(cart) {
   cartDialog.querySelector('[data-cart-heading-count]').textContent = cart.item_count ? `(${cart.item_count})` : '';
   cartFooter.hidden = items.length === 0;
   cartDialog.querySelector('[data-cart-subtotal]').textContent = formatMoney(cart.total_price || 0, cart.currency || 'USD');
+  renderProtectionOptions(cartDialog, cart);
+  renderProtectionOptions(document, cart);
+  renderProtectionOptions(appCartRoot, cart);
   if (!items.length) setShippingOfferView('Your free-shipping offer is available when your bag has items.', false);
 
   if (!items.length) {
@@ -190,14 +284,21 @@ function renderCart(cart) {
 
     const controls = document.createElement('div');
     controls.className = 'cart-quantity';
-    const decrease = makeButton('Decrease quantity', 'cart-quantity-button', '−');
-    decrease.dataset.cartAction = 'decrease';
-    const quantity = document.createElement('span');
-    quantity.textContent = String(item.quantity);
-    quantity.setAttribute('aria-label', `Quantity ${item.quantity}`);
-    const increase = makeButton('Increase quantity', 'cart-quantity-button', '+');
-    increase.dataset.cartAction = 'increase';
-    controls.append(decrease, quantity, increase);
+    const protectionProduct = protectionProductForVariant(item.variant_id);
+    if (protectionProduct) {
+      const quantity = document.createElement('span');
+      quantity.textContent = `Qty ${item.quantity}`;
+      controls.append(quantity);
+    } else {
+      const decrease = makeButton('Decrease quantity', 'cart-quantity-button', '−');
+      decrease.dataset.cartAction = 'decrease';
+      const quantity = document.createElement('span');
+      quantity.textContent = String(item.quantity);
+      quantity.setAttribute('aria-label', `Quantity ${item.quantity}`);
+      const increase = makeButton('Increase quantity', 'cart-quantity-button', '+');
+      increase.dataset.cartAction = 'increase';
+      controls.append(decrease, quantity, increase);
+    }
     details.append(controls);
 
     const price = document.createElement('strong');
@@ -358,6 +459,83 @@ async function updateQuantity(item, quantity) {
   }
 }
 
+async function updateProtectionOption(event) {
+  const checkbox = event.target.closest?.('[data-protection-variant]');
+  if (!checkbox) return;
+  event.preventDefault();
+  const selected = checkbox.checked;
+  const product = protectionProductForVariant(checkbox.dataset.protectionVariant);
+  if (!shopifyCart || !product) {
+    checkbox.checked = !checkbox.checked;
+    const status = checkbox.closest('[data-cart-protection-options]')?.querySelector('[data-protection-status]');
+    if (status) status.textContent = 'Protection options are available at checkout on the Shopify storefront.';
+    else statusMessage.textContent = 'Protection options are available at checkout on the Shopify storefront.';
+    return;
+  }
+
+  const root = checkbox.getRootNode();
+  root.querySelectorAll?.(`[data-protection-variant="${checkbox.dataset.protectionVariant}"]`).forEach((input) => {
+    input.disabled = true;
+  });
+  try {
+    const cart = await getCart();
+    const item = cart.items.find((cartItem) => String(cartItem.variant_id) === String(product.id));
+    let response;
+    if (selected && !item) {
+      response = await fetch(storefrontPath('cart/add.js'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: product.id, quantity: 1 })
+      });
+    } else if (item && (!selected || item.quantity !== 1)) {
+      response = await fetch(storefrontPath('cart/change.js'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ id: item.key, quantity: selected ? 1 : 0 })
+      });
+    }
+
+    if (response) {
+      const updatedCart = await response.json();
+      if (!response.ok) throw new Error(updatedCart.description || 'Could not update order protection. Please try again.');
+      window.currentCart = await getCart();
+    } else {
+      window.currentCart = cart;
+    }
+
+    root.querySelectorAll?.(`[data-protection-variant="${checkbox.dataset.protectionVariant}"]`).forEach((input) => {
+      input.disabled = false;
+    });
+    if (/\/cart\/?$/.test(location.pathname)) {
+      location.reload();
+      return;
+    }
+    renderCart(window.currentCart);
+  } catch (error) {
+    console.error(error);
+    try {
+      const cart = await getCart();
+      protectionViews.delete(root.querySelector('[data-cart-protection-options]'));
+      root.querySelectorAll?.(`[data-protection-variant="${checkbox.dataset.protectionVariant}"]`).forEach((input) => {
+        input.disabled = false;
+      });
+      renderProtectionOptions(root, cart);
+      const status = root.querySelector('[data-protection-status]');
+      if (status) status.textContent = error.message;
+      else statusMessage.textContent = error.message;
+    } catch (refreshError) {
+      root.querySelectorAll?.(`[data-protection-variant="${checkbox.dataset.protectionVariant}"]`).forEach((input) => {
+        input.checked = !selected;
+        input.disabled = false;
+      });
+      const status = root.querySelector('[data-protection-status]');
+      if (status) status.textContent = `Could not confirm the protection update: ${refreshError.message}`;
+      else statusMessage.textContent = `Could not confirm the protection update: ${refreshError.message}`;
+      console.error(refreshError);
+    }
+  }
+}
+
 cartDialog.addEventListener('click', (event) => {
   const closeButton = event.target.closest('[data-close-cart]');
   if (closeButton) {
@@ -373,6 +551,8 @@ cartDialog.addEventListener('click', (event) => {
   const action = actionButton.dataset.cartAction;
   updateQuantity(item, action === 'remove' ? 0 : item.quantity + (action === 'increase' ? 1 : -1));
 });
+
+document.addEventListener('change', updateProtectionOption);
 
 cartDialog.addEventListener('close', () => {
   if (location.pathname === '/cart') history.replaceState(null, '', '/');
@@ -455,10 +635,22 @@ function syncAppCartShippingOffer() {
       if (shippingOfferState.status === 'active') updateShippingOfferCountdown();
     }
   }
+  if (footer && checkoutLink && !footer.querySelector('[data-cart-protection-options]') && protectionProducts.length) {
+    const options = document.createElement('div');
+    options.className = 'cart-protection-options';
+    options.dataset.cartProtectionOptions = '';
+    options.hidden = true;
+    checkoutLink.before(options);
+  }
+  if (window.currentCart) renderProtectionOptions(appCartRoot, window.currentCart);
 
   const isOpen = drawer?.getAttribute('aria-hidden') === 'false';
   if (isOpen && !appCartWasOpen) {
-    getCart().then(ensureShippingOffer).catch((error) => console.error(error));
+    getCart().then((cart) => {
+      window.currentCart = cart;
+      renderProtectionOptions(appCartRoot, cart);
+      return ensureShippingOffer(cart);
+    }).catch((error) => console.error(error));
   }
   appCartWasOpen = isOpen;
 }
@@ -508,6 +700,7 @@ async function connectAppCartDrawer() {
     window.location.assign(link.href);
   }, true);
 
+  appCartRoot.addEventListener('change', updateProtectionOption);
   syncAppCartShippingOffer();
 }
 
@@ -520,6 +713,9 @@ function scheduleShippingOfferRefresh() {
     try {
       const cart = await getCart();
       window.currentCart = cart;
+      renderProtectionOptions(cartDialog, cart);
+      renderProtectionOptions(document, cart);
+      renderProtectionOptions(appCartRoot, cart);
       if (!cart.item_count) {
         setShippingOfferView('Your free-shipping offer is available when your bag has items.', false);
         return;

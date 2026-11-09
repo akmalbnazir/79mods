@@ -46,6 +46,14 @@
         </nav>
       </aside>
     </dialog>
+    {% assign shipping_protection_variant = all_products['shipping-protection'].selected_or_first_available_variant %}
+    {% assign order_protection_variant = all_products['order-protection'].selected_or_first_available_variant %}
+    <script id="cart-protection-config" type="application/json">
+      {
+        "shipping": {% if shipping_protection_variant.available and shipping_protection_variant.price == 599 %}{"id": {{ shipping_protection_variant.id | json }}, "price": {{ shipping_protection_variant.price | json }}}{% else %}null{% endif %},
+        "order": {% if order_protection_variant.available and order_protection_variant.price == 999 %}{"id": {{ order_protection_variant.id | json }}, "price": {{ order_protection_variant.price | json }}}{% else %}null{% endif %}
+      }
+    </script>
     <template id="cart-store-promotion">{% render 'thanksgiving-promotion', placement: 'cart' %}{% render 'configurator-link', class: 'cart-build-link' %}</template>
     <script src="{{ 'theme.js' | asset_url }}" defer></script>
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
