@@ -46,7 +46,11 @@ const itemsContainer = cartDialog.querySelector('.cart-drawer-items');
 const statusMessage = cartDialog.querySelector('.cart-drawer-status');
 const cartFooter = cartDialog.querySelector('.cart-drawer-footer');
 const checkoutButton = cartDialog.querySelector('.cart-checkout');
-const protectionConfig = JSON.parse(document.querySelector('#cart-protection-config')?.textContent || '{}');
+const protectionConfigElement = document.querySelector('#cart-protection-config');
+const protectionConfig = protectionConfigElement ? JSON.parse(protectionConfigElement.textContent) : shopifyCart ? {} : {
+  shipping: { id: 68189165551844, price: 599 },
+  order: { id: 68189158342884, price: 999 }
+};
 const protectionProducts = [
   {
     key: 'shipping',
@@ -465,7 +469,7 @@ async function updateProtectionOption(event) {
   event.preventDefault();
   const selected = checkbox.checked;
   const product = protectionProductForVariant(checkbox.dataset.protectionVariant);
-  if (!shopifyCart || !product) {
+  if (!product) {
     checkbox.checked = !checkbox.checked;
     const status = checkbox.closest('[data-cart-protection-options]')?.querySelector('[data-protection-status]');
     if (status) status.textContent = 'Protection options are available at checkout on the Shopify storefront.';
@@ -478,6 +482,23 @@ async function updateProtectionOption(event) {
     input.disabled = true;
   });
   try {
+    if (!shopifyCart) {
+      const items = getLocalCart().filter((item) => String(item.variant_id) !== String(product.id));
+      if (selected) {
+        items.push({
+          id: String(product.id),
+          variant_id: product.id,
+          title: product.title,
+          product_title: product.title,
+          price: product.price,
+          quantity: 1,
+          url: `/products/${product.key}-protection`
+        });
+      }
+      saveLocalCart(items);
+      renderCart(await getCart());
+      return;
+    }
     const cart = await getCart();
     const item = cart.items.find((cartItem) => String(cartItem.variant_id) === String(product.id));
     let response;
