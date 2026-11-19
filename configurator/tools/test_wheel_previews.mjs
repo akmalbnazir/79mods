@@ -338,10 +338,141 @@ for (const spec of data.bikes.filter((bike) => bike.wheelPreview || bike.stockRi
   }
   console.log(`PASS ${spec.id}: rim swaps, tire envelope, axle alignment, hardware, and stock restoration`);
 }
+for (const spec of data.bikes.filter((bike) => bike.slots.includes('pegs'))) {
+  const bytes = await readFile(resolve(root, 'configurator', spec.glb.split('?')[0]));
+  const bike = await createGlbBike({ ...spec, glb: `data:model/gltf-binary;base64,${bytes.toString('base64')}` });
+  bike.root.updateMatrixWorld(true);
+  const stockPegs = [];
+  bike.root.traverse((object) => {
+    if (object.isMesh && /^peg_(left|right)$/i.test(object.name)) stockPegs.push(object);
+  });
+  assert.ok(stockPegs.length === 0 || stockPegs.length === 2, `${spec.id}: no partial stock peg pair`);
+  assert.ok(stockPegs.every((peg) => peg.visible), `${spec.id}: stock pegs start visible`);
+
+  const frame = bike.root.getObjectByName('frame');
+  const stockFrame = frame.geometry;
+  const cut = spec.stockPegCut;
+  const stockTreadHits = (side) => {
+    const [x, , z] = spec.pegMounts[side < 0 ? 'left' : 'right'];
+    const ray = new THREE.Raycaster();
+    return [0.025, 0.045, 0.065, 0.08].reduce((hits, outward) => {
+      for (const dx of [-0.015, 0, 0.015]) {
+        ray.set(new THREE.Vector3(x + dx, cut.to[1] + 0.001, z + side * outward), new THREE.Vector3(0, -1, 0));
+        hits += ray.intersectObject(frame, false).filter(({ point }) => point.y > cut.from[1]).length;
+      }
+      return hits;
+    }, 0);
+  };
+  if (cut) {
+    for (const side of [-1, 1]) assert.ok(stockTreadHits(side) >= 3, `${spec.id}: factory tread is present on side ${side}`);
+    bike.root.scale.setScalar(1.05);
+  }
+  const chrome = bike.setSlot('pegs', 'wide-pegs', '#d7d7dc');
+  bike.root.scale.setScalar(1);
+  bike.root.updateMatrixWorld(true);
+  if (cut) {
+    assert.notEqual(frame.geometry, stockFrame, `${spec.id}: trimmed scan used for aftermarket pegs`);
+    for (const side of [-1, 1]) assert.equal(stockTreadHits(side), 0, `${spec.id}: no factory tread remains on side ${side}`);
+  }
+  assert.equal(chrome.children.length, 2, `${spec.id}: a complete left/right peg pair`);
+  assert.ok(stockPegs.every((peg) => !peg.visible), `${spec.id}: selected pegs replace stock meshes`);
+  const platformMeshes = chrome.children.map((peg) => peg.getObjectByName('peg_platform'));
+  const disposed = new Map();
+  for (const [index, peg] of chrome.children.entries()) {
+    const side = index === 0 ? -1 : 1;
+    assert.equal(peg.name, side < 0 ? 'peg_left' : 'peg_right');
+    assert.equal(peg.getObjectByName('peg_mounting_ear')?.parent, peg);
+    assert.equal(peg.children.filter((object) => object.name === 'peg_mounting_ear').length, 2);
+    assert.equal(peg.children.filter((object) => object.name === 'traction_screw').length, 12);
+    assert.equal(platformMeshes[index].material.color.getHexString(), 'd7d7dc');
+    const bounds = new THREE.Box3().setFromObject(platformMeshes[index]);
+    const size = bounds.getSize(new THREE.Vector3());
+    assert.ok(Math.abs(size.x - 0.070) < 0.002, `${spec.id}: tread is approximately 70mm fore-aft`);
+    assert.ok(Math.abs(size.z - 0.085) < 0.002, `${spec.id}: tread extends approximately 85mm outboard`);
+    assert.ok(Math.abs(size.y - 0.010) < 0.001, `${spec.id}: tread thickness including bevels`);
+    const pivot = peg.getObjectByName('peg_mounting_pivot').getWorldPosition(new THREE.Vector3());
+    if (spec.pegMounts) {
+      const mount = new THREE.Vector3(...spec.pegMounts[side < 0 ? 'left' : 'right']);
+      assert.ok(pivot.distanceTo(mount) < 0.001, `${spec.id}: aftermarket hinge uses the factory location`);
+    }
+    if (cut) {
+      assert.ok(Math.abs(Math.abs(pivot.z) - cut.start) < 0.007, `${spec.id}: hinge meets the retained mount`);
+    }
+    if (spec.id === 'lbx') {
+      const mount = new THREE.Vector3(...(side < 0 ? [-0.194, 0.339, -0.115] : [-0.191, 0.339, 0.120]));
+      assert.ok(pivot.distanceTo(mount) < 0.001, 'LBX: hinge aligns with the measured stock mount');
+      const frame = bike.root.getObjectByName('frame');
+      const positions = frame.geometry.attributes.position;
+      const point = new THREE.Vector3();
+      let distance = Infinity;
+      for (let i = 0; i < positions.count; i++) {
+        point.fromBufferAttribute(positions, i).applyMatrix4(frame.matrixWorld);
+        distance = Math.min(distance, pivot.distanceTo(point));
+      }
+      assert.ok(distance < 0.012, 'LBX: measured hinge is against the stock frame mesh');
+    }
+    const innerEdge = side < 0 ? bounds.max.z : bounds.min.z;
+    assert.ok(side * (innerEdge - pivot.z) > 0.010, `${spec.id}: the hinge is inboard of the tread on both sides`);
+
+    const raycaster = new THREE.Raycaster();
+    const hitsPlatform = (x, outward) => {
+      const origin = new THREE.Vector3(pivot.x + x, pivot.y + 0.05, pivot.z + side * outward);
+      raycaster.set(origin, new THREE.Vector3(0, -1, 0));
+      return raycaster.intersectObject(platformMeshes[index], false).length > 0;
+    };
+    for (const x of [-0.015, 0.015]) {
+      assert.equal(hitsPlatform(x, 0.032), false, `${spec.id}: inboard through-opening on each side`);
+      assert.equal(hitsPlatform(x, 0.051), true, `${spec.id}: transverse divider between rows`);
+      assert.equal(hitsPlatform(x, 0.072), false, `${spec.id}: outboard opening spans both halves`);
+    }
+    assert.equal(hitsPlatform(0, 0.032), true, `${spec.id}: raised tread divides the inboard row`);
+    assert.equal(hitsPlatform(0, 0.072), false, `${spec.id}: no divider in the outboard row`);
+    raycaster.set(pivot.clone().add(new THREE.Vector3(-0.050, 0, 0)), new THREE.Vector3(1, 0, 0));
+    assert.equal(raycaster.intersectObjects(peg.children.filter((object) => object.name === 'peg_mounting_ear')).length,
+      0, `${spec.id}: both ears have an open, coaxial pivot bore`);
+  }
+  if (stockPegs.length && !spec.pegMounts) {
+    for (const [index, peg] of stockPegs.entries()) {
+      const bounds = new THREE.Box3().setFromObject(peg);
+      const center = bounds.getCenter(new THREE.Vector3());
+      const replacement = chrome.children.find((object) => object.name === peg.name);
+      const mountZ = center.z < 0 ? bounds.max.z - 0.006 : bounds.min.z + 0.006;
+      const pivot = replacement.getObjectByName('peg_mounting_pivot').getWorldPosition(new THREE.Vector3());
+      assert.ok(pivot.distanceTo(new THREE.Vector3(center.x, bounds.min.y + 0.019, mountZ)) < 0.000001,
+        `${spec.id}: replacement peg uses measured ${peg.name} anchor ${index}`);
+    }
+  }
+  const chromeGeometries = new Set();
+  chrome.traverse((object) => { if (object.isMesh) chromeGeometries.add(object.geometry); });
+  for (const geometry of chromeGeometries) {
+    disposed.set(geometry, 0);
+    geometry.addEventListener('dispose', () => disposed.set(geometry, disposed.get(geometry) + 1));
+  }
+
+  const black = bike.setSlot('pegs', 'wide-pegs', '#18181b');
+  bike.root.updateMatrixWorld(true);
+  assert.ok([...disposed.values()].every((count) => count === 1), `${spec.id}: replaced peg geometry is disposed once`);
+  assert.ok(black.children.every((peg) => peg.getObjectByName('peg_platform').material.color.getHexString() === '18181b'),
+    `${spec.id}: selected black finish`);
+  bike.setSlot('pegs', 'stock');
+  assert.equal(frame.geometry, stockFrame, `${spec.id}: original frame geometry restored`);
+  if (cut) for (const side of [-1, 1]) assert.ok(stockTreadHits(side) >= 3, `${spec.id}: both factory treads restored`);
+  assert.equal(black.children.length, 0, `${spec.id}: aftermarket peg geometry removed on stock restore`);
+  assert.ok(stockPegs.every((peg) => peg.visible), `${spec.id}: original stock peg visibility restored`);
+  bike.dispose();
+  console.log(`PASS ${spec.id}: traced 70x85mm tread, divided inboard row, merged outboard opening, inboard pivot, finish swap, and stock restoration`);
+}
+const widePegs = data.parts.find((part) => part.id === 'chrome-wide-pegs');
+for (const spec of data.bikes.filter((bike) => ['eride', 'talaria'].includes(bike.brand))) {
+  assert.ok(spec.pegMounts?.left && spec.pegMounts?.right, `${spec.id}: no approximate axle-offset placement`);
+  assert.ok(spec.slots.includes('pegs') && widePegs.previewFits.includes(spec.id) && widePegs.fitOptions[spec.id],
+    `${spec.id}: peg replacement is available in the configurator`);
+}
+assert.ok(widePegs.purchaseFits.includes('talaria-mx5'), 'Confirmed MX5 peg fitment enables checkout');
 const part = data.parts.find((part) => part.id === 'chrome-talaria-xxx-mx3-mx4-supermoto-wheel-set');
 assert.deepEqual(part.previewFits, Object.keys(expected));
 assert.deepEqual(part.purchaseFits, ['talaria-xxx', 'talaria-mx4']);
-console.log('PASS Talaria fitment: XXX/MX4 purchasing supported; MX5 preview only');
+console.log('PASS Talaria fitment: MX5 pegs can be purchased; MX5 wheelset remains preview only');
 const guards = data.parts.find((part) => part.id === '79bike-frame-guards-pro-lite-gt');
 assert.deepEqual(guards.fits, ['79bike-gt', '79bike-pro', '79bike-lite']);
 assert.deepEqual(guards.previewFits, guards.fits);

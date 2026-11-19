@@ -3,6 +3,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 import { buildRim, mat } from './bike.js?v=release-finishes-31';
 import { guardPaintMaterial } from './guard_paint.js';
+import { widePegKit } from './wide_pegs.js';
+import { cutStockPegs } from './stock_peg_cut.js';
 
 const cache = new Map();
 
@@ -420,11 +422,15 @@ export async function createGlbBike(spec) {
   const solidMat = mat('#1a1a1d', { metal: 0.15, rough: 0.6 }).clone();
   solidMat.side = THREE.DoubleSide;
   const wheels = {};
+  const stockPegs = [];
   let meshes = 0;
   model.traverse((o) => { if (o.isMesh) meshes++; });
   model.traverse((o) => {
     if (!o.isMesh) return;
     o.castShadow = o.receiveShadow = true;
+    if (/^peg_(left|right)$/i.test(o.name)) {
+      stockPegs.push({ object: o, side: /left$/i.test(o.name) ? -1 : 1, visible: o.visible });
+    }
     const isWheel = o.name === 'wheel_front' || o.name === 'wheel_rear';
     if (!spec.preserveMaterials) o.material = isWheel ? wheelMat : meshes === 1 ? solidMat : frameMat;
     if (isWheel) wheels[o.name.endsWith('front') ? 'front' : 'rear'] = o;
@@ -434,8 +440,12 @@ export async function createGlbBike(spec) {
   const swap = new THREE.Group();
   const brake = new THREE.Group();
   const guards = new THREE.Group();
+  const pegs = new THREE.Group();
+  const pegFrame = spec.stockPegCut ? model.getObjectByName('frame') : null;
+  const stockPegFrameGeometry = pegFrame?.geometry;
+  let trimmedPegFrameGeometry;
   let guardTemplate = null;
-  root.add(swap, brake, guards);
+  root.add(swap, brake, guards, pegs);
   root.updateMatrixWorld(true);
   const wheelCenters = Object.fromEntries(
     Object.entries(wheels).map(([side, wheel]) => {
@@ -446,6 +456,28 @@ export async function createGlbBike(spec) {
         : root.worldToLocal(bounds.getCenter(new THREE.Vector3()))];
     })
   );
+  const pegAnchors = [-1, 1].map((side) => {
+    const measured = spec.pegMounts?.[side < 0 ? 'left' : 'right'];
+    const peg = stockPegs.find((entry) => entry.side === side);
+    if (measured) return { ...peg, side, center: new THREE.Vector3(...measured) };
+    if (peg) {
+      const bounds = new THREE.Box3().setFromObject(peg.object);
+      const center = bounds.getCenter(new THREE.Vector3());
+      return {
+        ...peg,
+        center: new THREE.Vector3(center.x, bounds.min.y + 0.019,
+          (side < 0 ? bounds.max.z : bounds.min.z) + side * 0.006)
+      };
+    }
+    return {
+      side,
+      center: new THREE.Vector3(
+        (wheelCenters.rear?.x ?? -spec.wheelbase / 2) + 0.32,
+        (wheelCenters.rear?.y ?? spec.wheelR) + 0.058,
+        side * 0.095
+      )
+    };
+  });
   const tires = {};
   if (spec.stockRimRadius || spec.wheelPreview) {
     for (const [side, wheel] of Object.entries(wheels)) {
@@ -465,6 +497,12 @@ export async function createGlbBike(spec) {
     for (const material of materials) material.dispose();
     guards.clear();
   }
+  function clearPegs() {
+    const geometries = new Set();
+    pegs.traverse((o) => { if (o.isMesh) geometries.add(o.geometry); });
+    for (const geometry of geometries) geometry.dispose();
+    pegs.clear();
+  }
 
   const api = {
     root,
@@ -472,6 +510,8 @@ export async function createGlbBike(spec) {
     dispose() {
       clearRims();
       clearGuards();
+      clearPegs();
+      trimmedPegFrameGeometry?.dispose();
       const guardMaterials = new Set();
       guardTemplate?.traverse((o) => {
         if (o.isMesh) {
@@ -528,6 +568,22 @@ export async function createGlbBike(spec) {
           brake.add(kit);
         }
         return brake;
+      }
+      if (slot === 'pegs') {
+        if (variant !== 'stock' && variant !== 'wide-pegs') throw new Error(`Unknown pegs: ${variant}`);
+        const stock = variant === 'stock';
+        if (pegFrame) {
+          if (!stock) trimmedPegFrameGeometry ??= cutStockPegs(pegFrame, root, spec.stockPegCut);
+          pegFrame.geometry = stock ? stockPegFrameGeometry : trimmedPegFrameGeometry;
+        }
+        clearPegs();
+        for (const peg of stockPegs) peg.object.visible = stock && peg.visible;
+        if (!stock) {
+          for (const peg of pegAnchors) {
+            pegs.add(widePegKit(color, peg.side, peg.center));
+          }
+        }
+        return pegs;
       }
       return new THREE.Group();
     }

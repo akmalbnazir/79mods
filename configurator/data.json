@@ -11,6 +11,10 @@
    "headY": 0.96,
    "colors": [],
    "glb": "models/lbx.glb",
+   "pegMounts": {
+    "left": [-0.194, 0.339, -0.115],
+    "right": [-0.191, 0.339, 0.120]
+   },
    "wheelPreview": {
     "front": {
      "center": [0.59260457, 0.31751974, 0.0011],
@@ -27,7 +31,8 @@
    },
    "slots": [
     "rims",
-    "brakes"
+    "brakes",
+    "pegs"
    ]
   },
   {
@@ -70,6 +75,15 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-gt.glb",
+   "pegMounts": {
+    "left": [-0.189, 0.298, -0.119],
+    "right": [-0.189, 0.298, 0.119]
+   },
+   "stockPegCut": {
+    "from": [-0.222, 0.259],
+    "to": [-0.153, 0.309],
+    "start": 0.123
+   },
    "frameGuardPreview": {
     "scale": [1, 1],
     "offset": [0, 0],
@@ -97,7 +111,8 @@
     },
    "slots": [
     "rims",
-    "frame-guards"
+    "frame-guards",
+    "pegs"
    ]
   },
   {
@@ -111,6 +126,15 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-pro.glb",
+   "pegMounts": {
+    "left": [-0.176, 0.309, -0.129],
+    "right": [-0.176, 0.309, 0.129]
+   },
+   "stockPegCut": {
+    "from": [-0.214, 0.261],
+    "to": [-0.137, 0.328],
+    "start": 0.135
+   },
    "frameGuardPreview": {
     "scale": [1.06, 1.06],
     "offset": [0, -0.015],
@@ -138,7 +162,8 @@
     },
    "slots": [
     "rims",
-    "frame-guards"
+    "frame-guards",
+    "pegs"
    ]
   },
   {
@@ -152,6 +177,15 @@
    "headY": 0.98,
    "colors": [],
    "glb": "models/falcon-lite.glb",
+   "pegMounts": {
+    "left": [-0.189, 0.298, -0.119],
+    "right": [-0.189, 0.298, 0.119]
+   },
+   "stockPegCut": {
+    "from": [-0.222, 0.259],
+    "to": [-0.153, 0.309],
+    "start": 0.123
+   },
    "frameGuardPreview": {
     "scale": [1, 1],
     "offset": [0, 0],
@@ -179,7 +213,8 @@
     },
    "slots": [
     "rims",
-    "frame-guards"
+    "frame-guards",
+    "pegs"
    ],
    "modelNote": "Lite preview: slimmer GT body and handlebars, with unchanged wheels. Not a factory-accurate Lite model."
   },
@@ -194,9 +229,19 @@
    "headY": 0.99,
    "colors": [],
    "glb": "models/eride-s.glb?v=wheel-split-1",
+   "pegMounts": {
+    "left": [-0.150, 0.303, -0.086],
+    "right": [-0.164, 0.303, 0.086]
+   },
+   "stockPegCut": {
+    "from": [-0.194, 0.286],
+    "to": [-0.120, 0.306],
+    "start": 0.091
+   },
    "stockRimRadius": 0.205,
    "slots": [
-    "rims"
+    "rims",
+    "pegs"
    ]
   },
   {
@@ -210,9 +255,14 @@
    "headY": 0.99,
    "colors": [],
    "glb": "models/eride-ss.glb?v=complete-wheels",
+   "pegMounts": {
+    "left": [-0.324, 0.358, -0.074],
+    "right": [-0.324, 0.358, 0.074]
+   },
    "stockRimRadius": 0.205,
    "slots": [
-    "rims"
+    "rims",
+    "pegs"
    ],
    "modelNote": "SS kit preview: estimated assembly from supplied print parts. No separate battery mesh was supplied."
   },
@@ -227,10 +277,20 @@
    "headY": 0.99,
    "colors": [],
    "glb": "models/eride-ss3.glb?v=corrected-assembly-2",
+   "pegMounts": {
+    "left": [-0.268, 0.373, -0.125],
+    "right": [-0.255, 0.373, 0.125]
+   },
+   "stockPegCut": {
+    "from": [-0.337, 0.326],
+    "to": [-0.187, 0.420],
+    "start": 0.131
+   },
    "modelNote": "3.0 kit preview: corrected estimated assembly from supplied print parts, not factory CAD or a fitment reference.",
    "slots": [
     "rims",
-    "brakes"
+    "brakes",
+    "pegs"
    ]
   },
   {
@@ -244,8 +304,12 @@
    "headY": 0.99,
    "colors": [],
    "glb": "models/eride-sr.glb?v=sr-preview-2",
+   "pegMounts": {
+    "left": [-0.323, 0.390, -0.074],
+    "right": [-0.323, 0.390, 0.074]
+   },
    "preserveMaterials": true,
-   "slots": [],
+   "slots": ["pegs"],
    "modelNote": "SR visual approximation based on the SS kit: 19/18 knobby wheels, wider rear tire, estimated battery enclosure and front accessories. Not factory SR geometry or a fitment reference."
   },
   {
@@ -258,7 +322,16 @@
    "seatY": 0.79,
    "headY": 0.97,
    "colors": [],
-  "glb": "models/talaria-xxx.glb?v=mudguard-aligned-2",
+   "glb": "models/talaria-xxx.glb?v=mudguard-aligned-2",
+   "pegMounts": {
+    "left": [-0.075, 0.317, -0.106],
+    "right": [-0.075, 0.317, 0.108]
+   },
+   "stockPegCut": {
+    "from": [-0.127, 0.288],
+    "to": [-0.047, 0.333],
+    "start": 0.111
+   },
    "wheelPreview": {
     "front": {
      "center": [0.625, 0.25032, 0],
@@ -273,7 +346,7 @@
      "tireHalfWidth": 0.064
     }
    },
-   "slots": ["rims"],
+   "slots": ["rims", "pegs"],
    "modelNote": "XXX kit preview: estimated assembly from the supplied print parts, with paired supermoto wheel halves. Not a factory CAD model or fitment reference."
   },
   {
@@ -287,6 +360,10 @@
    "headY": 1.05,
    "colors": [],
    "glb": "models/mx4.glb",
+   "pegMounts": {
+    "left": [-0.151, 0.360, -0.121],
+    "right": [-0.151, 0.360, 0.132]
+   },
    "wheelPreview": {
     "front": {
      "center": [0.615, 0.32388715, 0],
@@ -303,7 +380,8 @@
    },
    "slots": [
     "rims",
-    "brakes"
+    "brakes",
+    "pegs"
    ]
   },
   {
@@ -317,6 +395,15 @@
    "headY": 0.97,
    "colors": [],
    "glb": "models/talaria-mx5.glb?v=assembled-1",
+   "pegMounts": {
+    "left": [-0.168, 0.340, -0.116],
+    "right": [-0.163, 0.341, 0.118]
+   },
+   "stockPegCut": {
+    "from": [-0.201, 0.313],
+    "to": [-0.131, 0.360],
+    "start": 0.123
+   },
    "wheelPreview": {
     "front": {
      "center": [0.625, 0.30602, 0],
@@ -331,7 +418,7 @@
      "tireHalfWidth": 0.063
     }
    },
-   "slots": ["rims"],
+   "slots": ["rims", "pegs"],
    "modelNote": "MX5 kit preview: estimated assembly from supplied print parts, with the kit's street-style wheels and untextured dark finish. Not factory CAD or a fitment reference."
   }
  ],
@@ -361,6 +448,10 @@
    "name": "Brakes"
   },
   {
+   "id": "pegs",
+   "name": "Pegs"
+  },
+  {
    "id": "light",
    "name": "Headlight"
   },
@@ -370,6 +461,69 @@
   }
  ],
  "parts": [
+  {
+   "id": "chrome-wide-pegs",
+   "slot": "pegs",
+   "variant": "wide-pegs",
+   "name": "Chrome Wide Pegs",
+   "price": 44.99,
+   "optionLabel": "Color",
+   "previewNote": "Photo-traced tread with two inboard openings and one wide outboard opening. Dimensions and mount details are approximate.",
+   "url": "https://79mods.com/products/chrome-wide-pegs",
+   "fits": [
+    "79bike-gt",
+    "79bike-pro",
+    "79bike-lite",
+    "lbx",
+    "eride-s",
+    "eride-ss",
+    "eride-30",
+    "eride-sr",
+    "talaria-xxx",
+    "talaria-mx4",
+    "talaria-mx5"
+   ],
+   "previewFits": [
+    "79bike-gt",
+    "79bike-pro",
+    "79bike-lite",
+    "lbx",
+    "eride-s",
+    "eride-ss",
+    "eride-30",
+    "eride-sr",
+    "talaria-xxx",
+    "talaria-mx4",
+    "talaria-mx5"
+   ],
+   "fitOptions": {
+    "79bike-gt": "79Bike Falcon Pro/Lite/GT",
+    "79bike-pro": "79Bike Falcon Pro/Lite/GT",
+    "79bike-lite": "79Bike Falcon Pro/Lite/GT",
+    "lbx": "Surron LBX/S",
+    "eride-s": "E-Ride Pro S/SS/2.0/3.0/SR",
+    "eride-ss": "E-Ride Pro S/SS/2.0/3.0/SR",
+    "eride-30": "E-Ride Pro S/SS/2.0/3.0/SR",
+    "eride-sr": "E-Ride Pro S/SS/2.0/3.0/SR",
+    "talaria-xxx": "Talaria XXX/MX3/4",
+    "talaria-mx4": "Talaria XXX/MX3/4",
+    "talaria-mx5": "Talaria XXX/MX3/4"
+   },
+   "purchaseFits": [
+    "79bike-gt",
+    "79bike-pro",
+    "79bike-lite",
+    "lbx",
+    "eride-s",
+    "eride-ss",
+    "eride-30",
+    "eride-sr",
+    "talaria-xxx",
+    "talaria-mx4",
+    "talaria-mx5"
+   ],
+   "colors": []
+  },
   {
    "id": "color-79bike-ventus-frame-guards-pro-lite-gt",
    "slot": "frame-guards",

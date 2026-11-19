@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/OrbitControls.js';
 import { buildGarage } from './garage.js';
 import { createBike, disposeBike } from './bike.js?v=release-finishes-31';
-import { createGlbBike } from './bike_glb.js?v=release-finishes-31';
+import { createGlbBike } from './bike_glb.js?v=stock-peg-swaps';
 import { guardPaint, paintColors, paintEffects, validateGuardPaintProduct } from './guard_paint.js';
 
 const $ = (id) => document.getElementById(id);
@@ -313,7 +313,7 @@ function renderParts() {
     } else if (variants.length > 1 || (variants.length === 1 && variants[0].title !== 'Default Title')) {
       const label = document.createElement('label');
       label.className = 'variant-field';
-      label.append(part.slot === 'rims' ? 'Wheelset option' : 'Part option');
+      label.append(part.optionLabel || (part.slot === 'rims' ? 'Wheelset option' : 'Part option'));
       const select = document.createElement('select');
       select.setAttribute('aria-label', `${part.name} option`);
       select.disabled = addingToCart || bikeLoading;
