@@ -1,4 +1,5 @@
 {%- assign wheels = all_products['super-motos-17in-2'] -%}
+{%- assign arrival = all_products['yozma-in10-frame-guards'] -%}
 {{ 'whats-new-popup.css' | asset_url | stylesheet_tag }}
 <dialog class="whats-new" id="whats-new-{{ section.id }}" aria-labelledby="whats-new-title-{{ section.id }}" data-whats-new>
   <div class="whats-new-shell">
@@ -6,7 +7,7 @@
       <div>
         <p class="whats-new-kicker">79MODS / THE LATEST</p>
         <h2 id="whats-new-title-{{ section.id }}">WHAT'S <span>NEW.</span></h2>
-        <p>Better deals. Your next build. All in one place.</p>
+        <p>Fresh arrivals. Black Friday deals. All in one place.</p>
       </div>
       <button class="whats-new-close" type="button" data-whats-new-close aria-label="Close What's New popup" autofocus>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
@@ -32,21 +33,20 @@
           <p class="whats-new-note">Shipping and taxes calculated at checkout. Product availability varies.</p>
         </div>
       </article>
-      <article class="whats-new-card whats-new-build">
+      <article class="whats-new-card whats-new-arrival">
         <div class="whats-new-visual">
-          <span class="whats-new-label">MEET YOUR VIRTUAL GARAGE</span>
-          <span class="whats-new-3d" aria-hidden="true">3D</span>
-          <div class="whats-new-platform" aria-hidden="true"></div>
-          <img class="whats-new-bike" src="{{ 'whats-new-configurator-bike.png' | asset_url }}" alt="Full 79Bike Falcon 3D configurator preview" width="560" height="400">
+          <span class="whats-new-label">NEW ARRIVAL / IN STOCK</span>
+          <span class="whats-new-arrival-mark" aria-hidden="true">IN10</span>
+          <img class="whats-new-product-image" src="{{ 'whats-new-yozma-frame-guards.png' | asset_url }}" alt="Yozma IN10 frame guards in glossy black" width="1536" height="1024">
         </div>
         <div class="whats-new-copy">
-          <p class="whats-new-kicker">BUILD IT BEFORE YOU RIDE IT</p>
-          <h3>YOUR BIKE.<br>YOUR WAY.</h3>
-          <p>Step into the 3D configurator. Pick your bike, preview compatible parts, and explore custom frame-guard colors and finishes.</p>
+          <p class="whats-new-kicker">JUST DROPPED</p>
+          <h3>YOZMA IN10<br>FRAME GUARDS.</h3>
+          <p>Our new Yozma IN10 frame guards are in stock now. Save 35% automatically at checkout.</p>
           <div class="whats-new-actions">
-            {% render 'configurator-link' %}
+            <a class="button button-dark" href="{{ arrival.url }}">Shop the new arrival <span aria-hidden="true">&#8599;</span></a>
           </div>
-          <p class="whats-new-note">Rotate, zoom, and make it yours. Preview geometry and finishes are approximate.</p>
+          <p class="whats-new-note">{% if arrival.price_varies %}From {{ arrival.price_min | money }}{% else %}{{ arrival.price | money }}{% endif %} · Product availability varies.</p>
         </div>
       </article>
     </div>

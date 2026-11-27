@@ -20,19 +20,18 @@ html.whats-new-open { overflow: hidden; }
 .whats-new-close svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
 .whats-new-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .whats-new-card { min-width: 0; overflow: hidden; border: 1px solid #ffffffb3; border-radius: 28px; background: #fff; box-shadow: 0 16px 48px #36246914; animation: whats-new-enter .55s ease both; }
-.whats-new-build { animation-delay: .1s; }
+.whats-new-arrival { animation-delay: .1s; }
 .whats-new-visual { position: relative; height: clamp(200px, 27vh, 330px); overflow: hidden; isolation: isolate; }
 .whats-new-sale .whats-new-visual { background: linear-gradient(135deg, #327df5, #764be9 65%, #ed70c9); }
-.whats-new-build .whats-new-visual { background: radial-gradient(ellipse at 50% 80%, #b5a3f7, transparent 65%), #e8e2fb; }
-.whats-new-build .whats-new-label { color: #5738a2; }
+.whats-new-arrival .whats-new-visual { background: radial-gradient(ellipse at 50% 80%, #b5a3f7, transparent 65%), #e8e2fb; }
+.whats-new-arrival .whats-new-label { color: #5738a2; }
 .whats-new-label { position: absolute; top: 22px; left: 24px; z-index: 1; color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; }
 .whats-new-discount { position: absolute; left: 24px; bottom: 16px; display: flex; align-items: center; color: #fff; font-size: clamp(88px, 10vw, 150px); line-height: .85; font-weight: 900; letter-spacing: -.06em; }
 .whats-new-discount > span { font-size: .48em; letter-spacing: -.04em; }
 .whats-new-discount small { display: block; font-size: .42em; letter-spacing: .05em; margin-top: 8px; }
 .whats-new-wheels { position: absolute; right: -4%; bottom: -12%; width: 57%; height: 100%; object-fit: contain; mix-blend-mode: multiply; transform: rotate(-12deg); filter: drop-shadow(0 16px 14px #23153d55); animation: whats-new-float 5s ease-in-out infinite; }
-.whats-new-3d { position: absolute; top: 46px; right: 24px; font-size: clamp(90px, 10vw, 150px); line-height: 1; font-weight: 900; color: #7049e824; }
-.whats-new-platform { position: absolute; left: 15%; right: 15%; bottom: 12px; height: 48px; border: 2px solid #b6a0ff; border-radius: 50%; background: #8b6bef33; box-shadow: 0 0 40px #b497ff88; }
-.whats-new-bike { position: absolute; left: 10%; bottom: 24px; width: 80%; height: calc(100% - 68px); object-fit: contain; filter: drop-shadow(0 12px 8px #49377633); animation: whats-new-float 5s ease-in-out infinite reverse; }
+.whats-new-arrival-mark { position: absolute; right: 20px; bottom: 10px; font-size: clamp(72px, 9vw, 132px); line-height: 1; font-weight: 900; letter-spacing: -.06em; color: #7049e824; }
+.whats-new-product-image { position: absolute; inset: 12% 10% 4%; width: 80%; height: 84%; object-fit: contain; filter: drop-shadow(0 12px 8px #49377633); animation: whats-new-float 5s ease-in-out infinite reverse; }
 .whats-new-copy { padding: 26px; }
 .whats-new-copy h3 { margin: 0 0 14px; font-size: clamp(26px, 3vw, 42px); line-height: 1.05; letter-spacing: -.025em; }
 .whats-new-copy > p:not(.whats-new-kicker) { line-height: 1.55; }
@@ -58,4 +57,4 @@ html.whats-new-open { overflow: hidden; }
   .whats-new-actions { flex-direction: column; }
   .whats-new-actions .button { width: 100%; }
 }
-@media (prefers-reduced-motion: reduce) { .whats-new-card, .whats-new-wheels, .whats-new-bike { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .whats-new-card, .whats-new-wheels, .whats-new-product-image { animation: none; } }

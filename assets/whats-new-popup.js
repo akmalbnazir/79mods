@@ -1,5 +1,5 @@
 (() => {
-  const key = '79mods-whats-new-black-friday-v1';
+  const key = '79mods-whats-new-black-friday-v2';
   const remember = () => {
     try {
       sessionStorage.setItem(key, '1');
